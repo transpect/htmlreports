@@ -42,7 +42,7 @@
   <p:option name="status-dir-uri" select="'status'"/>
   
   <p:import href="errorPI2svrl.xpl"/>
-  <p:import href="http://transpect.io/calabash-extensions/rng-extension/rng-validate-to-PI.xpl"/>
+  <p:import href="http://transpect.io/calabash-extensions/rng-extension/xpl/rng-validate-to-PI.xpl"/>
   <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl" />
   
   <tr:validate-with-rng-PI name="rng2pi">

@@ -25,6 +25,7 @@
     <p:input port="html-in" sequence="true">
       <p:documentation>One or zero documents. If zero, no attempt is made to patch the results into
         the HTML</p:documentation>
+      <p:empty/>
     </p:input>
     <p:input port="parameters" kind="parameter" primary="true">
       <p:documentation>The parameter 'family' is used for looking up and assembling the Schematron
