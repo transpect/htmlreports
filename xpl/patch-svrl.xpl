@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc" 
   xmlns:c="http://www.w3.org/ns/xproc-step" 
+  xmlns:cx="http://xmlcalabash.com/ns/extensions"
+  
+  xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:cascade="http://transpect.io/cascade"
   xmlns:tr="http://transpect.io"
   exclude-inline-prefixes="#all" 
@@ -118,7 +121,7 @@
   <p:sink/>
 
   <cascade:load-cascaded name="load-svrl2xsl" filename="htmlreports/svrl2xsl.xsl"
-    fallback="../xsl/svrl2xsl.xsl">
+    fallback="http://transpect.io/htmlreports/xsl/svrl2xsl.xsl">
     <p:input port="paths">
       <p:pipe port="params" step="patch-svrl"/>
     </p:input>
