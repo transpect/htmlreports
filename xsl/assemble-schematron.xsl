@@ -99,7 +99,11 @@
       </xsl:for-each-group>
       <xsl:apply-templates select="($schematrons/s:schema/xsl:include[matches(@href, 'shared-variables.xsl')])[1]"  mode="tr:assemble-schematron"/>
       <xsl:for-each-group select="$schematrons/s:schema/s:phase" group-by="@id">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+        <phase id="{current-grouping-key()}">
+          <xsl:for-each-group select="current-group()/s:active" group-by="@pattern">
+            <active pattern="{current-grouping-key()}"/>
+          </xsl:for-each-group>
+        </phase>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/s:let" group-by="@name">
         <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
