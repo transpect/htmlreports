@@ -2,9 +2,7 @@
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc" 
   xmlns:c="http://www.w3.org/ns/xproc-step" 
   xmlns:cx="http://xmlcalabash.com/ns/extensions"
-  
   xmlns:html="http://www.w3.org/1999/xhtml"
-  xmlns:cascade="http://transpect.io/cascade"
   xmlns:tr="http://transpect.io"
   exclude-inline-prefixes="#all" 
   version="1.0" 
@@ -120,14 +118,14 @@
   
   <p:sink/>
 
-  <cascade:load-cascaded name="load-svrl2xsl" filename="htmlreports/svrl2xsl.xsl"
+  <tr:load-cascaded name="load-svrl2xsl" filename="htmlreports/svrl2xsl.xsl"
     fallback="http://transpect.io/htmlreports/xsl/svrl2xsl.xsl">
     <p:input port="paths">
       <p:pipe port="params" step="patch-svrl"/>
     </p:input>
     <p:with-option name="debug" select="$debug"/>
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
-  </cascade:load-cascaded>
+  </tr:load-cascaded>
 
   <p:sink/>
 
