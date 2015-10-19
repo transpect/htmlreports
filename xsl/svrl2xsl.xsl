@@ -286,7 +286,7 @@
       xmlns:s="http://purl.oclc.org/dsdl/schematron"
       xmlns:html="http://www.w3.org/1999/xhtml"
       xmlns:tr="http://transpect.io"  
-      exclude-result-prefixes="svrl s xs html tr css aid aid5 idPkg idml2xml c bc l10n"
+      exclude-result-prefixes="svrl s xs html tr css aid aid5 idPkg idml2xml c l10n"
       xmlns="http://www.w3.org/1999/xhtml">
   
       <xslout:output method="xhtml" cdata-section-elements="script"/>
