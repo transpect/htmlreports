@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xsl:stylesheet 
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xslout="bogo"
   xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:s="http://purl.oclc.org/dsdl/schematron"
-  xmlns:aid   = "http://ns.adobe.com/AdobeInDesign/4.0/"
-  xmlns:aid5  = "http://ns.adobe.com/AdobeInDesign/5.0/"
-  xmlns:idPkg = "http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging"
-  xmlns:idml2xml  = "http://transpect.io/idml2xml"
-  xmlns:tr="http://transpect.io"  
+  xmlns:aid="http://ns.adobe.com/AdobeInDesign/4.0/"
+  xmlns:aid5="http://ns.adobe.com/AdobeInDesign/5.0/"
+  xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging"
+  xmlns:idml2xml="http://transpect.io/idml2xml"  
   xmlns:c="http://www.w3.org/ns/xproc-step"  
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:l10n="http://transpect.io/l10n"
-  version="2.0"
-  >
+  xmlns:tr="http://transpect.io"
+  version="2.0">
 
-  <xsl:output method="xml" indent="yes"  />
+  <xsl:output method="xml" indent="yes"/>
 
   <xsl:param name="remove-srcpath" select="'yes'"/>
   <xsl:param name="max-errors-per-rule" as="xs:string?"/>
@@ -72,8 +70,28 @@
         an attribute are considered real errors (plain xsl:message output will appear in a c:error element, too, but without
         any attribute).
         -->
-  
-  <xsl:variable name="srcpath-matching-templates" as="element(tr:message)*">
+
+  <xsl:variable name="base-srcpath" as="xs:string?"
+    select="$html-with-srcpaths/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content"/>
+
+  <xsl:variable name="all-document-srcpaths" select="for $s in $html-with-srcpaths//@srcpath 
+                                                     return tr:normalize-srcpath($s)"/>
+  <xsl:variable name="split-document-srcpaths" as="xs:string*" 
+                select="distinct-values(
+                          for $sp in $all-document-srcpaths[matches(., ';n=\d+$')]
+                          return replace($sp, ';n=\d+$', '')
+                        )"/>
+
+  <xsl:function name="tr:normalize-srcpath" as="xs:string*">
+    <xsl:param name="srcpath-att" as="xs:string?"/>
+    <xsl:sequence select="for $s in $srcpath-att
+                          return for $t in tokenize($s, '\s+')
+                                 return if (contains($t, '?xpath=') and not(starts-with($t, 'file:/')))
+                                        then string-join(($base-srcpath, $t), '')
+                                        else $t"/>
+  </xsl:function>
+
+  <xsl:variable name="collected-messages" as="element(tr:message)*">
     <xsl:apply-templates select="//c:error[@*]" mode="collect-messages"/>
     <xsl:apply-templates select="//svrl:text[s:span[@class eq 'srcpath'] ne '']
                                             [parent::svrl:successful-report | parent::svrl:failed-assert]" 
@@ -83,6 +101,7 @@
   <xsl:template match="c:error[@*]" mode="collect-messages">
     <tr:message srcpath="BC_orphans" xml:id="BC_{generate-id()}" severity="{@type}" 
       type="{parent::c:errors/@tr:rule-family} {@type} {@code}">
+      <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
       <tr:text>
         <xsl:copy-of select="node()"/>  
       </tr:text>
@@ -95,17 +114,91 @@
                                 [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))]" mode="collect-messages">
     <xsl:variable name="role" as="xs:string"
       select="(../@role, $severity-default-role)[1]"/>
-    <tr:message srcpath="{s:span[@class eq 'srcpath']}" xml:id="BC_{generate-id()}" 
+    <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath(s:span[@class eq 'srcpath'])"/>
+    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths(
+                                                                    $normalized-srcpath,
+                                                                    $all-document-srcpaths
+                                                                  )"/>
+    <tr:message srcpath="{if (
+                                      every $ap in $adjusted-srcpath 
+                                      satisfies (ends-with($ap, '?xpath='))
+                                    )
+                                 then $normalized-srcpath
+                                 else $adjusted-srcpath}" xml:id="BC_{generate-id()}" 
       severity="{$role}"
       type="{ancestor-or-self::svrl:schematron-output/@tr:rule-family} {$role} {../@id}">
+      <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
+      <xsl:if test="not($adjusted-srcpath = $normalized-srcpath)">
+        <xsl:attribute name="adjusted-from" select="$normalized-srcpath"/>
+      </xsl:if>
       <xsl:copy-of select="., ../svrl:diagnostic-reference"/>
     </tr:message>
   </xsl:template>
   
+  <xsl:function name="tr:adjust-to-existing-srcpaths" as="xs:string+">
+    <xsl:param name="message-srcpaths" as="xs:string*"/>
+    <xsl:param name="document-srcpaths" as="xs:string*"/>
+    <xsl:variable name="matching" as="xs:string*" select="$message-srcpaths[. = $document-srcpaths]"/>
+    <xsl:variable name="with-xpath" select="$message-srcpaths[contains(., '?xpath=/')]" as="xs:string*"/>
+    <xsl:variable name="without-xpath" select="$message-srcpaths[not(contains(., '?xpath=/'))]" as="xs:string*"/>
+    <!-- This is for srcpaths that are have been derived from generated IDs rather than xpath locations
+      but have been prefixed with the document’s common source dir uri by a Schematron rule: --> 
+    <xsl:variable name="only-lastword" as="xs:string*"
+      select="for $sp in $without-xpath return replace($sp, '^.+/', '')"/>
+    <xsl:choose>
+      <xsl:when test="exists($matching)">
+        <xsl:sequence select="$matching"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+          <xsl:when test="$without-xpath = $message-srcpaths">
+            <xsl:sequence select="$without-xpath[. = $message-srcpaths]"/>
+          </xsl:when>
+          <xsl:when test="exists($with-xpath)">
+            <!-- Backtrack – cut away XPath steps from the end and see whether the more comprehensive path
+              exists in the document. Scenario: a phrase was dissolved after its srcpath found its way to 
+              a report. 
+            -->
+            <xsl:choose>
+              <xsl:when test="$with-xpath = $split-document-srcpaths">
+                <!-- Additional complication: In InDesign, if a ParagraphStyleRange may comprise several paragraphs,
+                     ';n=1', ';n=2', etc. will be appended to each paragraph’s srcpath. Cutting away '/CharacterStyleRange[…]'
+                     at the end won’t give a srcpath that matches either of these paragraphs. --> 
+                <xsl:sequence select="(
+                                        $all-document-srcpaths[some $dsp in $with-xpath 
+                                                               satisfies (starts-with(., concat($dsp, ';n=')))
+                                                              ]
+                                      )[last()]"/><!-- last() is arbitrary, could be any of them -->
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="remove-tails" as="xs:string*" 
+                  select="distinct-values(
+                            for $sp in $with-xpath 
+                            return replace($sp, '/[^/]+$', '')
+                          )[not(. = $message-srcpaths)]"/>
+                <xsl:choose>
+                  <xsl:when test="empty($remove-tails)">
+                    <xsl:sequence select="'BC_orphans'"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:sequence select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths)"/>    
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:sequence select="'BC_orphans'"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
   <xsl:variable name="messages-grouped-by-type" as="document-node(element(tr:document))">
     <xsl:document>
       <tr:document>
-        <xsl:for-each-group select="$srcpath-matching-templates" group-by="@type">
+        <xsl:for-each-group select="$collected-messages" group-by="@type">
           <tr:messages type="{current-grouping-key()}">
             <xsl:perform-sort select="current-group()">
               <!-- Make sure that they will be in document order (because of the structure of Saxon’s generated IDs): -->
@@ -135,7 +228,9 @@
   </xsl:variable>
     
   <xsl:template match="tr:message" mode="link">
-    <xsl:variable name="pos" select="index-of(../*/@xml:id, @xml:id)"/>
+    <xsl:variable name="pos" select="index-of(../*/@xml:id, @xml:id)" as="xs:integer"/>
+    <xsl:variable name="id-plus-pos" as="xs:string" 
+      select="string-join((@xml:id, string((index-of(tokenize(@srcpath, '\s+'), current-grouping-key()))[1])), '_')"/>
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:if test="$pos lt $maxerr and exists(following-sibling::tr:message)">
@@ -144,10 +239,13 @@
       <xsl:attribute name="rendered-key">
         <xsl:number value="index-of($message-types, @type)" format="A"/>
       </xsl:attribute>
+      <xsl:attribute name="xml:id" select="$id-plus-pos"/>
       <xsl:attribute name="occurrence" select="$pos"/>
       <xsl:copy-of select="*"/>
     </xsl:copy>
   </xsl:template>
+  
+  
 
   <!-- overwrite these templates in your project svrl2xsl to insert extra CSS or JavaScript -->  
   <xsl:template name="project-specific-css" xmlns="http://www.w3.org/1999/xhtml"/>
@@ -187,12 +285,17 @@
       xmlns:css="http://www.w3.org/1996/css"
       xmlns:s="http://purl.oclc.org/dsdl/schematron"
       xmlns:html="http://www.w3.org/1999/xhtml"
-      xmlns:tr="http://transpect.io"  
-      exclude-result-prefixes="svrl s xs html tr css aid aid5 idPkg idml2xml c l10n"
+      xmlns:transpect="http://www.le-tex.de/namespace/transpect"  
+      exclude-result-prefixes="svrl s xs html transpect css aid aid5 idPkg idml2xml c bc l10n"
       xmlns="http://www.w3.org/1999/xhtml"
       >
   
       <xslout:output method="xhtml" cdata-section-elements="script"/>
+      <xslout:function name="tr:contains-token" as="xs:boolean">
+        <xslout:param name="space-separated-list" as="xs:string?"/>
+        <xslout:param name="token" as="xs:string?"/>
+        <xslout:sequence select="$token = tokenize($space-separated-list, '\s+')"/>
+      </xslout:function>
       
       <xslout:variable name="src-dir-uri" select="/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content" as="xs:string?"/>
       <!--<xslout:key name="by-srcpath" match="*[@srcpath]" 
@@ -240,15 +343,31 @@
             </xslout:choose>
           </xslout:for-each>
         </xslout:variable>
-        <xslout:copy>
-          <xslout:apply-templates select="@*" mode="#current"/>
-          <xslout:for-each select="distinct-values($expanded)">
-            <s-p>
-              <xslout:sequence select="."/>
-            </s-p>
-          </xslout:for-each>
-          <xslout:apply-templates mode="#current"/>
-        </xslout:copy>
+        <xslout:choose>
+          <xslout:when test="local-name() = ('br', 'a', 'span', 'sub', 'sup', 'img')">
+            <xslout:for-each select="distinct-values($expanded)">
+              <s-p>
+                <xslout:sequence select="."/>
+              </s-p>
+            </xslout:for-each>
+            <xslout:copy>
+              <xslout:apply-templates select="@*" mode="#current"/>
+              <xslout:apply-templates mode="#current"/>
+            </xslout:copy>            
+          </xslout:when>
+          <xslout:otherwise>
+            <xslout:copy>
+              <xslout:apply-templates select="@*" mode="#current"/>
+              <xslout:for-each select="distinct-values($expanded)">
+                <s-p>
+                  <xslout:sequence select="."/>
+                </s-p>
+              </xslout:for-each>
+              <xslout:apply-templates mode="#current"/>
+            </xslout:copy>            
+          </xslout:otherwise>
+        </xslout:choose>
+        
       </xslout:template>
       
       <xslout:key name="by-srcpath" match="*[html:s-p]" use="html:s-p"/>
@@ -271,6 +390,34 @@
       
       <xslout:template mode="remove-fallback"
         match="html:div[@class = 'BC_fallback']/html:p[not(descendant::html:span[contains(@class, 'BC_marker')])]"/>
+
+      <xslout:key name="message-link-target-without-srcpath-position" match="html:span[matches(@id, '^BC_[de\d]+_\d+$')]"
+        use="concat('#', replace(@id, '^(.+)_\d+$', '$1'))"/>
+      
+      <!-- href is always generated without positional suffix while the IDs contain such a suffix.
+        Look for the last ID with the same base and a suffix and adjust href accordingly -->
+      <xslout:template match="html:a[@class = 'BC_link'][key('message-link-target-without-srcpath-position', @href)]"
+        mode="remove-fallback">
+        <xslout:copy>
+          <xslout:attribute name="href" select="concat('#', (key('message-link-target-without-srcpath-position', @href))[last()]/@id)"/>
+          <xslout:apply-templates select="@* except @href, node()" mode="#current"/>
+        </xslout:copy>
+      </xslout:template>
+
+      <!-- avoid duplicate message markers when there were two matching srcpaths. The last marker prevails -->
+      <xslout:template  match="html:span[tr:contains-token(@class, 'tooltip')]
+                                        [
+                                          html:span[matches(@id, '^BC_[de\d]+_\d+$')]
+                                                   [ 
+                                                     some $same-id-marker in
+                                                     key(
+                                                       'message-link-target-without-srcpath-position', 
+                                                       concat('#', replace(@id, '^(.+)_\d+$', '$1'))
+                                                     ) 
+                                                     satisfies ($same-id-marker &gt;&gt; .)
+                                                     (: &gt;&gt; corresponds with [last()] in the preceding template :)
+                                                   ]
+                                        ]" mode="remove-fallback"/>
 
       <!-- main processing in default mode: -->
       <xslout:template match="/*">
@@ -311,7 +458,7 @@
             #BC_orphans { margin-bottom: 1em; background-color: #EFEFEF;
              background: repeating-linear-gradient(135deg, #DDDDDD, #DDDDDD 10px, #EEEEEE 10px, #EEEEEE 20px) repeat scroll 0 0 rgba(0, 0, 0, 0);
              border-radius: 0.4em; min-height: 3em; margin-bottom: 1em;  padding: 0.25em 1em; vertical-align: middle; box-shadow:0.2em 0.2em 0.15em #999; overflow-y:auto; overflow-x:hidden;}
-            #BC_orphans span.tooltip { float:left; margin-bottom:0.2em; }
+            #BC_orphans span.tooltip { float:left; margin-bottom:0.2em; text-indent:0 }
             #BC_reportmenu, #BC_reportswitch { position:fixed; left:65%; display:block; float:right; width:35%; 
             z-index:101; font-family:Calibri, Helvetica, sans-serif;}
             #BC_reportswitch {display:none; color: #eee; margin-top: -1.5%; text-align: right;}
@@ -321,7 +468,7 @@
             .BC_content_wide {width:95% !important}
             #BC_nav, #BC_msg_container{background-color:#efefef; margin:0 0 7% 0; padding:1% 2% 1% 2%; max-height:20em;
             overflow-y:scroll; overflow-x:hidden; font-family:Calibri, Helvetica, sans-serif;}
-            #BC_msg_container a { color: #aaf; }
+            #BC_msg_container a { color: #8080d0; }
             #BC_nav ul { padding: 0; margin: 0.4em 0}
             #BC_nav p.BC_family-label { margin: 0.5em 0.2em 0.2em 0 }
             #BC_reportmenu h3{font-size:0.8em; font-weight:bold; margin: 0.8em 0; text-transform:uppercase; font-family:Cambria, serif; }
@@ -351,6 +498,7 @@
             .BC_severity li, .BC_warning, li.no-messages{text-indent:1em; text-transform:none}
             li.no-messages{ color:#5aba16; font-weight:bold; }
             span.tooltip_description span.label { font-weight:bold; font-size:114%; display:inline-block; padding:0.25em; margin:0em 0em 0.5em 0em;}
+            span.BC_step-name { display:block; text-align:right; font-weight:normal; font-style:italic; font-size:smaller }
             
             /* fallback for removed content */
             div.BC_fallback { margin-top: 1em; background-color: #EFEFEF;
@@ -373,7 +521,8 @@
             .tooltip_description.fatal-error_notoggle, .tooltip_description.warning_notoggle, .tooltip_description.error_notoggle, .tooltip_description.Info_notoggle, .tooltip_description.info_notoggle{ text-indent:0em; display:none; }
             .BC_link{ font-size:small; background-color:#f7f7f7; text-decoration:none; opacity:0.8 }
             .BC_link:hover{ background-color:#ddd; }
-            span.tooltip{ font-family:Calibri, Helvetica, sans-serif; font-size:10pt; font-weight:normal; padding:0 0.4em; width:2.5em; margin-right:0.5em;}
+            span.BC_marker { cursor: pointer }
+            span.tooltip{ font-family:Calibri, Helvetica, sans-serif; font-size:10pt; font-weight:normal; font-style:normal; padding:0 0.4em; width:2.5em; margin-right:0.5em;}
             ul.BC_severity li{ list-style-type:none; display:inline-block; margin-right:2em; }
             
             p.BC_family-label a:before {
@@ -506,13 +655,13 @@
                 <xsl:call-template name="l10n:rules-heading">
                   <xsl:with-param name="display-note" as="xs:boolean"
                     select="$maxerr gt 0
-                    and (
-                    some $count in (
-                    for $m in $messages-grouped-by-type/tr:document/tr:messages 
-                    return count($m/tr:message)
-                    )
-                    satisfies ($count gt $maxerr)
-                    )"/>
+                            and (
+                              some $count in (
+                                for $m in $messages-grouped-by-type/tr:document/tr:messages 
+                                return count($m/tr:message)
+                              )
+                              satisfies ($count gt $maxerr)
+                            )"/>
                   <xsl:with-param name="max-errors" as="xs:string" select="$max-errors-per-rule"/>
                 </xsl:call-template>
                 
@@ -568,6 +717,11 @@
                                     <xsl:number value="index-of($message-types, $span-title)" format="A"/>
                                     <xsl:text>&#x2193;</xsl:text>
                                   </a>
+                                  <!--<a class="BC_link"
+                                    href="#{($linked-messages-grouped-by-srcpath/tr:document/tr:messages/tr:message[@type eq $span-title])[1]/@xml:id}">
+                                    <xsl:number value="index-of($message-types, $span-title)" format="A"/>
+                                    <xsl:text>&#x2193;</xsl:text>
+                                  </a>-->
                                   <span title="{$span-title}" class="BC_marker {$span-title}">
 
                                     <xsl:text>&#x2002;</xsl:text>
@@ -671,33 +825,12 @@
   	</xsl:if>
     <!-- We ditched match="key('by-srcpath', …)" because of a possible Saxon bug, 
       http://saxon.markmail.org/message/freszzsbtuniw5o3 -->
-  	<xslout:template match="*[html:s-p = '{$tokenized}']" priority="{position()}">
+  	<xslout:template match="html:s-p[. = '{$tokenized}']" priority="{position()}">
     	<xslout:variable name="same-key-elements" as="element(*)*" 
-        select="key('by-srcpath', '{$tokenized}')"/>
-      <xslout:choose>
-        <xslout:when test=". is ($same-key-elements)[1]">
-          <xslout:choose>
-            <!-- render message in front of an anchor or a linebreak, otherwise link wont work / message wont show -->
-            <xslout:when test="self::*:a or self::*:br or self::*:span or self::*:img">
-              <xsl:apply-templates mode="#current"/>
-              <xslout:copy copy-namespaces="no">
-                <xslout:apply-templates select="@*" mode="#current"/>
-                <xslout:apply-templates mode="#current"/>
-              </xslout:copy>    
-            </xslout:when>
-            <xslout:otherwise>
-              <xslout:copy copy-namespaces="no">
-                <xslout:apply-templates select="@*" mode="#current"/>
-                <xsl:apply-templates mode="#current"/>
-                <xslout:apply-templates mode="#current"/>
-              </xslout:copy>
-            </xslout:otherwise>
-          </xslout:choose>
-        </xslout:when>
-        <xslout:otherwise>
-          <xslout:next-match/>
-        </xslout:otherwise>
-      </xslout:choose>
+        select="key('by-srcpath', .)"/>
+      <xslout:if test=".. is ($same-key-elements)[1]">
+        <xsl:apply-templates mode="#current"/>
+      </xslout:if>
     </xslout:template>
   </xsl:template>
   
@@ -712,11 +845,7 @@
         </xsl:otherwise>
       </xsl:choose>
      
-     <xsl:variable name="srcpathindex" as="xs:integer" select="(index-of(tokenize(@srcpath, '\s+'), ../@srcpath))[1]"/>
-     
-      <span title="{@type}"
-        class="BC_marker {@type}"
-        id="{@xml:id}{if ($srcpathindex &gt; 1) then concat('_srcpathindex', $srcpathindex) else ''}">
+      <span title="{@type}" class="BC_marker {@type}" id="{@xml:id}">
         <xsl:value-of select="@occurrence"/> 
       </span>
       <span class="tooltip_description {@severity}_notoggle" title="{@type}">
@@ -726,14 +855,32 @@
         </span>
         <br/>
         <xsl:apply-templates select="(svrl:diagnostic-reference[@xml:lang eq $interface-language], *:text)[1]" mode="#current"/>
+        <br/>
+        <xsl:if test="@adjusted-from">
+          <xsl:call-template name="l10n:adjusted-srcpath"/>
+        </xsl:if>
+        <xsl:call-template name="l10n:step-name"/>
       </span>
     </span>
+    <xsl:text>&#x200b;</xsl:text><!-- allow line breaks -->
+  </xsl:template>
+
+  <xsl:template name="l10n:step-name">
+    <span class="BC_step-name">
+      <br/>
+      Conversion step: <xsl:value-of select="@tr:step-name"/>
+    </span>
+  </xsl:template>
+
+  <xsl:template name="l10n:adjusted-srcpath" xmlns="http://www.w3.org/1999/xhtml">
+    <span title="srcpath {@adjusted-from} was removed">Note: This message originated from a location within the document that did not retain its location information during conversion.
+          The message might now be attached to the surrounding paragraph or even to another paragraph nearby.</span>
   </xsl:template>
   
-  <!-- unwrap rich text messages that are wrapped in a p -->
-  <xsl:template match="*:text/html:p" mode="create-template">
+  <!-- unwrap rich text messages that are wrapped in a p. No, we won’t, although it’s illegal in inline context -->
+  <!--<xsl:template match="*:text/html:p" mode="create-template">
     <xsl:apply-templates mode="render-message"/>
-  </xsl:template>
+  </xsl:template>-->
   
   <!-- Allow HTML markup in the XHTML namespace in messages: --> 
   <xsl:template match="html:* | @*" mode="create-template render-message" xmlns="http://www.w3.org/1999/xhtml">

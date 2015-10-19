@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc" 
-  xmlns:c="http://www.w3.org/ns/xproc-step" 
-  xmlns:cx="http://xmlcalabash.com/ns/extensions"
-  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns:c="http://www.w3.org/ns/xproc-step"
+  xmlns:html="http://www.w3.org/1999/xhtml" 
   xmlns:tr="http://transpect.io"
   exclude-inline-prefixes="#all" 
   version="1.0" 
@@ -21,9 +20,14 @@
   </p:input>
   <p:input port="reports" sequence="true">
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-      <p>SVRL outputs that carry @transpect:rule-family attributes on their top-level
+      <p>SVRL outputs that carry @tr:rule-family attributes on their top-level
         elements or c:errors elements with try/catch results. Only <code>c:errors/c:error[@code]</code>
-        errors will be visualized in the HTML report (i.e., they need a code attribute).</p></p:documentation>
+        errors will be visualized in the HTML report (i.e., they need a code attribute).</p>
+      <p>The reports may either be supplied as a sequence of documents or as a single document,
+        wrapped in a c:reports element. The latter will facilitate debugging since it makes standalone
+      invocation easier – you only need to supply the htmlreports/reports.xml document of a previous
+      run’s debug directory.</p>
+    </p:documentation>
   </p:input>
   <p:input port="params" kind="parameter" primary="true"/>
 
@@ -40,7 +44,7 @@
   <p:import href="http://transpect.io/cascade/xpl/load-cascaded.xpl"/>
   <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl" />
   <p:import href="http://transpect.io/xproc-util/simple-progress-msg/xpl/simple-progress-msg.xpl"/>
-
+  
   <tr:simple-progress-msg name="start-msg" file="patch-svrl-start.txt">
     <p:input port="msgs">
       <p:inline>
@@ -55,12 +59,31 @@
 
   <p:sink/>
 
-  <p:wrap-sequence name="reports" wrapper="c:reports">
+  <p:split-sequence initial-only="true" test="position() = 1">
     <p:input port="source">
-      <p:pipe port="reports" step="patch-svrl"/>
+      <p:pipe port="reports" step="patch-svrl"/>  
     </p:input>
-  </p:wrap-sequence>
+  </p:split-sequence>
   
+  <p:choose name="reports">
+    <p:when test="/c:reports">
+      <p:output port="result" primary="true"/>
+      <p:identity>
+        <p:input port="source">
+          <p:pipe port="reports" step="patch-svrl"/>
+        </p:input>
+      </p:identity>
+    </p:when>
+    <p:otherwise>
+      <p:output port="result" primary="true"/>
+      <p:wrap-sequence wrapper="c:reports">
+        <p:input port="source">
+          <p:pipe port="reports" step="patch-svrl"/>
+        </p:input>
+      </p:wrap-sequence>
+    </p:otherwise>
+  </p:choose>
+
   <p:sink/>
   
   <p:xslt name="reorder-messages-by-category">
@@ -119,7 +142,7 @@
   <p:sink/>
 
   <tr:load-cascaded name="load-svrl2xsl" filename="htmlreports/svrl2xsl.xsl"
-    fallback="http://transpect.io/htmlreports/xsl/svrl2xsl.xsl">
+    fallback="http://transpect.le-tex.de/htmlreports/xsl/svrl2xsl.xsl">
     <p:input port="paths">
       <p:pipe port="params" step="patch-svrl"/>
     </p:input>

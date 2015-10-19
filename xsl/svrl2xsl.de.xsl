@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xsl:stylesheet 
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:l10n="http://transpect.io/l10n"
+  xmlns:l10n="http://transpect.io/namespace/l10n"
+  xmlns:tr="http://transpect.io"  
   xmlns="http://www.w3.org/1999/xhtml"
   version="2.0">
 
@@ -16,8 +16,8 @@
     <h3>Prüfregeln 
       <xsl:if test="$display-note">
         <br/>
-        <span style="font-size:small; font-weight:normal">Es werden höchstens <xsl:value-of
-            select="$max-errors-per-rule"/> Meldungen für jede Prüfregel angezeigt.</span>
+        <span style="font-size:small; font-weight:normal">Es werden höchstens 
+          <xsl:value-of select="$max-errors-per-rule"/> Meldungen für jede Prüfregel angezeigt.</span>
       </xsl:if>
     </h3>
   </xsl:template>
@@ -34,8 +34,19 @@
       diagnostische Zwecke: </span>
   </xsl:template>
 
+  <xsl:template name="l10n:adjusted-srcpath" xmlns="http://www.w3.org/1999/xhtml">
+    <span title="srcpth {@adjusted-from} wurde entfernt">Anm.: Diese Meldung stammt von einer Stelle im Dokument, deren Ursprungsinformation im Lauf der Konvertierung entfernt wurde.
+          Nun kann es sein, dass sie sich am umgebenden Absatz oder sogar an einem anderen Absatz in der Nähe befindet.</span>
+  </xsl:template>
   <xsl:template name="l10n:severity-heading">
     <h3>Schweregrad</h3>
+  </xsl:template>
+
+  <xsl:template name="l10n:step-name">
+    <span class="BC_step-name">
+      <br/> 
+      Konvertierungsschritt: <xsl:value-of select="@tr:step-name"/>
+    </span>
   </xsl:template>
 
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">

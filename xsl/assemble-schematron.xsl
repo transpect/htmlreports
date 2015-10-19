@@ -97,6 +97,9 @@
       <xsl:for-each-group select="$schematrons/s:schema/xsl:include[not(matches(@href, 'shared-variables.xsl'))]" group-by="@href">
         <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
+      <xsl:for-each-group select="$schematrons/s:schema/xsl:param" group-by="@name">
+        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+      </xsl:for-each-group>
       <xsl:apply-templates select="($schematrons/s:schema/xsl:include[matches(@href, 'shared-variables.xsl')])[1]"  mode="tr:assemble-schematron"/>
       <xsl:for-each-group select="$schematrons/s:schema/s:phase" group-by="@id">
         <phase id="{current-grouping-key()}">
@@ -162,6 +165,16 @@
 		</xsl:copy>
 	</xsl:template>
   
+  <xsl:template match="@role[. = 'warn']" mode="tr:assemble-schematron">
+    <xsl:attribute name="{name()}" select="'warning'"/>
+  </xsl:template>
+
+  <xsl:template match="@role" mode="tr:assemble-schematron">
+    <!-- 'Info' → 'info' -->
+    <xsl:attribute name="{name()}" select="lower-case(.)"/>
+  </xsl:template>
+
+
   <xsl:template match="@* | *" mode="tr:assemble-schematron tr:expand-includes">
     <xsl:copy copy-namespaces="no">
       <xsl:apply-templates select="@*, node()" mode="#current"/>
