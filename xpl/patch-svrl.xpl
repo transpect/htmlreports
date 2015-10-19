@@ -142,7 +142,7 @@
   <p:sink/>
 
   <tr:load-cascaded name="load-svrl2xsl" filename="htmlreports/svrl2xsl.xsl"
-    fallback="http://transpect.le-tex.de/htmlreports/xsl/svrl2xsl.xsl">
+    fallback="http://transpect.io/htmlreports/xsl/svrl2xsl.xsl">
     <p:input port="paths">
       <p:pipe port="params" step="patch-svrl"/>
     </p:input>

@@ -41,7 +41,7 @@
     </p:output>
 
     <p:import href="assemble-schematron.xpl"/>
-    <p:import href="http://transpect.io/xproc-util/store-debug/store-debug.xpl" />
+    <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl" />
     <p:import href="http://transpect.io/xproc-util/simple-progress-msg/xpl/simple-progress-msg.xpl"/>
     
     <p:choose name="actually-do-something">

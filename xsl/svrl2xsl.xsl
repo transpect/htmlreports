@@ -285,10 +285,9 @@
       xmlns:css="http://www.w3.org/1996/css"
       xmlns:s="http://purl.oclc.org/dsdl/schematron"
       xmlns:html="http://www.w3.org/1999/xhtml"
-      xmlns:transpect="http://www.le-tex.de/namespace/transpect"  
-      exclude-result-prefixes="svrl s xs html transpect css aid aid5 idPkg idml2xml c bc l10n"
-      xmlns="http://www.w3.org/1999/xhtml"
-      >
+      xmlns:tr="http://transpect.io"  
+      exclude-result-prefixes="svrl s xs html tr css aid aid5 idPkg idml2xml c bc l10n"
+      xmlns="http://www.w3.org/1999/xhtml">
   
       <xslout:output method="xhtml" cdata-section-elements="script"/>
       <xslout:function name="tr:contains-token" as="xs:boolean">
