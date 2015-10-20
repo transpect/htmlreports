@@ -55,7 +55,7 @@
     <p:with-option name="debug" select="$debug"/>
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
     <p:input port="schema">
-      <p:document href="http://transpect.io/schema-schematron/1.0/rng/iso-schematron.rng"/>
+      <p:document href="../schema/iso-schematron/1.0/rng/iso-schematron.rng"/>
     </p:input>
   </tr:validate-with-rng>
 

@@ -149,63 +149,6 @@
     <p:with-option name="debug" select="$debug"/>
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
   </tr:load-cascaded>
-
-  <p:sink/>
-
-  <!-- jquery -->
-  <p:identity>
-    <p:input port="source">
-      <p:data href="../js/jquery.min.js" content-type="application/octet-stream"/>
-    </p:input>
-  </p:identity>
-  <p:add-attribute match="html:script" attribute-name="src" name="jquery-script">
-    <p:input port="source">
-      <p:inline><script xmlns="http://www.w3.org/1999/xhtml" id="jquery"/></p:inline>
-    </p:input>
-    <p:with-option name="attribute-value"
-      select="concat('data:application/x-javascript;base64,', replace(/*/node(), '\s+', ''))"/>
-  </p:add-attribute>
-
-  <p:sink/>
-  
-  <!-- mathjax for mathml browser rendering -->
-  <p:add-attribute match="html:script" attribute-name="src" name="mathjax-script">
-    <p:input port="source">
-      <p:inline><script xmlns="http://www.w3.org/1999/xhtml" id="mathjax"/></p:inline>
-    </p:input>
-    <p:with-option name="attribute-value" select="'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'"/>
-  </p:add-attribute>
-  
-  <p:sink/>
-
-  <!-- keypress to support browser hotkeys -->
-  <p:identity>
-    <p:input port="source">
-      <p:data href="../js/keypress.min.js" content-type="application/octet-stream"/>
-    </p:input>
-  </p:identity>
-  <p:add-attribute match="html:script" attribute-name="src" name="keypress-script">
-    <p:input port="source">
-      <p:inline><script xmlns="http://www.w3.org/1999/xhtml" id="keypress"/></p:inline>
-    </p:input>
-    <p:with-option name="attribute-value"
-      select="concat('data:application/x-javascript;base64,', replace(/*/node(), '\s+', ''))"/>
-  </p:add-attribute>
-  
-  <p:sink/>
-  
-  <p:identity>
-    <p:input port="source">
-      <p:data href="../icons/doge.png" content-type="image/png"/>
-    </p:input>
-  </p:identity>
-  <p:add-attribute match="html:img" attribute-name="src" name="doge-img">
-    <p:input port="source">
-      <p:inline><img xmlns="http://www.w3.org/1999/xhtml" id="doge" class="doge" alt="wow"/></p:inline>
-    </p:input>
-    <p:with-option name="attribute-value"
-      select="concat('data:image/png;base64,', replace(/*/node(), '\s+', ''))"/>
-  </p:add-attribute>
   
   <p:sink/>
 
@@ -217,10 +160,6 @@
           (for example sections that will be discarded later) a HTML @class 'bc_ignore' can be added to 
           the content. Those elements and its children will not carry messages in the htmlreport.</p:documentation>
       </p:pipe>
-      <p:pipe port="result" step="jquery-script"/>
-      <p:pipe port="result" step="keypress-script"/>
-      <p:pipe port="result" step="mathjax-script"/>
-      <p:pipe port="result" step="doge-img"/>
     </p:input>
     <p:input port="stylesheet">
       <p:pipe step="load-svrl2xsl" port="result"/>
