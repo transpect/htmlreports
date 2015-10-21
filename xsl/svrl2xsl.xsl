@@ -36,11 +36,11 @@
                                                       else 0"/>
 
 
-  <xsl:variable name="doge" as="element(html:img)" select="collection()/html:img[@id = 'doge']"/>
+<!--  <xsl:variable name="doge" as="element(html:img)" select="collection()/html:img[@id = 'doge']"/>
   <xsl:variable name="jquery" as="element(html:script)" select="collection()/html:script[@id = 'jquery']"/>
   <xsl:variable name="keypress" as="element(html:script)" select="collection()/html:script[@id = 'keypress']"/>
   <xsl:variable name="mathjax" as="element(html:script)" select="collection()/html:script[@id = 'mathjax']"/>
-  
+-->  
   <xsl:namespace-alias stylesheet-prefix="xslout" result-prefix="xsl"/>
   
   <!--  The messages need to be grouped by their srcpaths, since these paths will translate to individual
@@ -542,12 +542,12 @@
             <xsl:call-template name="project-specific-css"/>
           </style>
 
-          <xsl:sequence select="$keypress"/>
+<!--          <xsl:sequence select="$keypress"/>
           <xslout:text>&#xa;</xslout:text>
           <xsl:sequence select="$mathjax"/>
           <xslout:text>&#xa;</xslout:text>
           <xsl:sequence select="$jquery"/>
-          
+-->          
           <script type="text/javascript">
             <xsl:call-template name="project-specific-js"/>
             $(document).ready(function() {
@@ -625,7 +625,7 @@
           </div>
 
           <div id="BC_logo" xmlns="http://www.w3.org/1999/xhtml">
-            <xsl:sequence select="$doge"/>
+            <!--<xsl:sequence select="$doge"/>-->
           </div>
           <div id="BC_mainwrapper" xmlns="http://www.w3.org/1999/xhtml">
             <div id="BC_reportswitch">
