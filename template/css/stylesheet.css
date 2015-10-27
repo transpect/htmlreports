@@ -1,0 +1,73 @@
+/* 
+ * general
+ */
+body {
+  padding-top:70px;
+  position:relative;
+  font-family:'Roboto', 'Helvetica Neue', helvetica, sans-serif;
+  padding:0; margin:0;
+  background-color: #f8f8f8;
+}
+
+main div.row {margin-right:0; margin-left:0}
+/* 
+ * header
+ */
+header{background-color:#f8f8f8;
+    margin: auto;
+    width: 100%;
+    border-bottom: 1px solid transparent;
+    -moz-border-image: -moz-linear-gradient(bottom, #FC913A 0%, #e53935 100%);
+    -webkit-border-image: -webkit-linear-gradient(bottom, #f3e500 0%, #e53935 100%);
+    border-image: linear-gradient(bottom, #f3e500 0%, #e53935 100%);
+    border-image-slice: 1;}
+}
+header nav.navbar{margin-bottom:0; position:fixed}
+#tr-content{box-shadow: -2px 2px 5px #ddd; background-color:#fff; }
+
+/* a bit affix magic */
+#tr-report, #tr-content, #tr-minitoc-wrapper{padding-top:100px}
+#tr-report.affix, #tr-minitoc-wrapper.affix {padding-top:50px;
+-webkit-transition: background .5s ease-in-out,padding .5s ease-in-out;
+-moz-transition: background .5s ease-in-out,padding .5s ease-in-out;
+transition: background .5s ease-in-out,padding .5s ease-in-out;}
+#tr-minitoc-wrapper.affix{position:relative}
+
+.navbar-toggle .icon-bar {background-color:#ccc}
+#tr-logo{padding:0 1em;margin:0}
+
+/* 
+ * minitoc
+ */ 
+.BC_minitoc-item {padding-left:0.5em; font-size:0.9em; border-left: 3px solid #eee; }
+.BC_minitoc-item a{padding:0 !important; color: #777}
+.BC_minitoc-level-h2{padding-left:1.25em; }
+/* scroll-spy hover */
+.active a{color:#e53935 !important; font-weight:bold}
+.active {border-left: 3px solid #e53935}
+/* 
+ * report
+ */
+ #tr-report{color:#777}
+.BC_tooltip{font-size:0.9em}
+#BC_title{margin:0; font-weight:bold}
+.BC_family-summary{ margin-bottom:0; }
+#tr-report .well {margin-bottom:0}
+#tr-report .checkbox {margin-top:5px; margin-bottom:5px}
+
+/*
+#tr-minitoc{background-color:blue}
+#tr-content{background-color:red}
+#tr-report{background-color:green}
+*/
+
+
+@media (min-width: 1200px){
+  #tr-minitoc, #tr-report{position:fixed;}  
+}
+
+@media (max-width: 1200px){
+  #tr-report.affix{ left:58.33333333% !important; /* fix wrong placement after affix */}
+}
+
+

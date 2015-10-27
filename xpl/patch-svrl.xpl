@@ -40,6 +40,7 @@
   <p:import href="http://transpect.io/cascade/xpl/load-cascaded.xpl"/>
   <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl" />
   <p:import href="http://transpect.io/xproc-util/simple-progress-msg/xpl/simple-progress-msg.xpl"/>
+  <p:import href="http://transpect.io/xproc-util/html-embed-resources/xpl/html-embed-resources.xpl"/>
 
   <tr:simple-progress-msg name="start-msg" file="patch-svrl-start.txt">
     <p:input port="msgs">
@@ -102,6 +103,54 @@
   </tr:store-debug>
 
   <p:sink/>
+  
+  <!--  * load HTML template. The template is the base of 
+        * the HTML report and the content is injected into 
+        * the div with the id 'tr-content' 
+        * -->
+  
+  <p:load name="load-template">
+    <p:with-option name="href" select="'http://transpect.io/htmlreports/template/template.html'"/>
+  </p:load>
+  
+  <p:add-xml-base/>
+  
+  <tr:store-debug pipeline-step="htmlreports/template-loaded" extension="html">
+    <p:with-option name="active" select="$debug"/>
+    <p:with-option name="base-uri" select="$debug-dir-uri"/>
+  </tr:store-debug>
+  
+  <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="inject-body">
+    <p:input port="insertion" select="/html:html/html:body/*">
+      <p:pipe port="result" step="filter-document"/>
+    </p:input>
+  </p:insert>
+  
+  <p:insert match="//html:html/html:head" position="last-child" name="inject-head">
+    <p:input port="insertion" select="/html:html/html:head/html:link[@type eq 'text/css']">
+      <p:pipe port="result" step="filter-document"/>
+    </p:input>
+  </p:insert>
+  
+  <tr:store-debug pipeline-step="htmlreports/template-injected" extension="html">
+    <p:with-option name="active" select="$debug"/>
+    <p:with-option name="base-uri" select="$debug-dir-uri"/>
+  </tr:store-debug>
+  
+  <!-- and this is where the magic happens. all extenal resources are embedded via data uri -->
+  
+  <tr:html-embed-resources name="html-embed-resources">
+    <p:with-option name="fail-on-error" select="'false'">
+      <p:documentation>sometimes resources such as CSS overrides in the content repository don't exist</p:documentation>
+    </p:with-option>
+  </tr:html-embed-resources>
+  
+  <tr:store-debug pipeline-step="htmlreports/template-with-data-uris" extension="html">
+    <p:with-option name="active" select="$debug"/>
+    <p:with-option name="base-uri" select="$debug-dir-uri"/>
+  </tr:store-debug>
+  
+  <p:sink/>
 
   <tr:store-debug pipeline-step="htmlreports/reports">
     <p:input port="source">
@@ -126,8 +175,10 @@
 
   <p:xslt name="create-patch-xsl">
     <p:input port="source">
-      <p:pipe step="reorder-messages-by-category" port="result"/>
-      <p:pipe step="filter-document" port="result">
+      <p:pipe step="reorder-messages-by-category" port="result">
+        <p:documentation>The SVRL report.</p:documentation>
+      </p:pipe>
+      <p:pipe step="html-embed-resources" port="result">
         <p:documentation>To be able to avoid some messages to be rendered in special sections of the XML 
           (for example sections that will be discarded later) a HTML @class 'bc_ignore' can be added to 
           the content. Those elements and its children will not carry messages in the htmlreport.</p:documentation>
@@ -157,38 +208,27 @@
 
   <p:sink/>
 
+  <!-- for-each only used for debugging -->
+
   <p:for-each>
     <p:iteration-source>
       <p:pipe step="create-patch-xsl" port="secondary"/>
     </p:iteration-source>
+    
     <tr:store-debug>
       <p:with-option name="pipeline-step" select="concat('htmlreports', replace(base-uri(), '^.+(/.+?).xml', '$1'))"/>
       <p:with-option name="active" select="$debug"/>
       <p:with-option name="base-uri" select="$debug-dir-uri"/>
     </tr:store-debug>
+    
     <p:sink/>
+    
   </p:for-each>
-
-  <p:insert match="/*/*:body" position="first-child" name="create-element-for-orphaned-messages">
-    <p:input port="source">
-      <p:pipe step="patch-svrl" port="source"/>
-    </p:input>
-    <p:input port="insertion">
-      <p:inline>
-        <div xmlns="http://www.w3.org/1999/xhtml" id="BC_orphans">
-          <p srcpath="BC_orphans"/>
-          <p style="text-indent:0em" srcpath=""/>
-        </div>
-      </p:inline>
-    </p:input>
-  </p:insert>
-
-  <tr:store-debug pipeline-step="htmlreports/pre-patch" extension="xhtml">
-    <p:with-option name="active" select="$debug"/>
-    <p:with-option name="base-uri" select="$debug-dir-uri"/>
-  </tr:store-debug>
-
+  
   <p:xslt name="create-fallback" initial-mode="create-fallback">
+    <p:input port="source">
+      <p:pipe step="html-embed-resources" port="result"/>
+    </p:input>
     <p:input port="stylesheet">
       <p:pipe step="create-patch-xsl" port="result"/>
     </p:input>
