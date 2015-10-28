@@ -526,6 +526,7 @@
               background-color:#ffe082;
               color:#e65100;
               border-color:#ffc107;
+              font-weight:bold
             }
             button.warning:hover, .warning_notoggle:hover, #BC_toggle_warning.active:hover{
               background-color:#ffc107;
@@ -535,6 +536,7 @@
               background-color:#d9edf7;
               color:#31708f;
               border-color:#bce8f1;
+              font-weight:bold
             }
             button.info:hover, .info_notoggle:hover{
               background-color:#bce8f1;
