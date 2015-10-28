@@ -29,25 +29,25 @@ transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
  * minitoc
  */ 
 .BC_minitoc{margin-left:1%}
-.BC_minitoc-item {padding-left:1em; font-size:0.9em; border-left: 3px solid #eee; }
+.BC_minitoc-item {padding-left:1em; font-size:0.9em; border-left: 2px solid #777; }
 .BC_minitoc-item a{padding:0 !important; color: #777}
 .BC_minitoc-level-h2{padding-left:1.5em; }
 /* scroll-spy hover */
 #tr-minitoc .active a{color:#e53935 !important; }
-#tr-minitoc .active {border-left: 3px solid #e53935 !important}
+#tr-minitoc .active {border-left: 2px solid #fff !important}
 /* 
  * report
  */
 #tr-report {font-size:0.9em; color:#777}
 #BC_family-label{font-size:1em; }
 .BC_severity button {margin-right:5px}
-
 .BC_family-summary{ margin-bottom:0; }
 #tr-report .well {margin-bottom:0}
 #tr-report .checkbox {margin-top:5px; margin-bottom:5px}
-
 #tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold}
-
+/* report message */
+.BC_message, .BC_tooltip{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; font-size:0.9em}
+.BC_step-name{font-weight:normal; margin-top:0.6em}
 /*
 #tr-minitoc{background-color:blue}
 #tr-content{background-color:red}

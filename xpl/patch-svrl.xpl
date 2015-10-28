@@ -15,6 +15,8 @@
   <p:option name="max-errors-per-rule" required="false" select="'200'"/>
   <p:option name="severity-default-name" required="false" select="'no-role'"/>
   <p:option name="report-title" required="false" select="''"/>
+  <p:option name="show-adjusted-srcpath" select="'yes'"/>
+  <p:option name="show-step-name" select="'yes'"/>
 
   <p:input port="source" primary="true">
     <p:documentation>An XML document with srcpath attributes. Typically an XHTML rendering.</p:documentation>
@@ -193,12 +195,8 @@
     <p:with-param name="report-title" select="$report-title"/>
     <p:with-param name="severity-default-name" select="$severity-default-name"/>
     <p:with-param name="max-errors-per-rule" select="$max-errors-per-rule"/>
-    <p:with-param name="jQuery-uri" select="'jquery.min.js'">
-      <p:documentation>If you use a file: URI, don’t forget to copy the file into the htmlreport directory (e.g. in your
-        Makefile, since you don’t know inside XProc where the htmlreport port output will be stored). You don’t have to specify
-        this parameter at all if you pass a base64-encoded JS file wrapped in a c:data document as the 2nd document on the
-        source port. It will be used as data: URI then. </p:documentation>
-    </p:with-param>
+    <p:with-param name="show-adjusted-srcpath" select="$show-adjusted-srcpath"/>
+    <p:with-param name="show-step-name" select="$show-step-name"/>
   </p:xslt>
 
   <tr:store-debug pipeline-step="htmlreports/patch-svrl" extension="xsl">

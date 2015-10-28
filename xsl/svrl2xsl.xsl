@@ -18,6 +18,8 @@
   <xsl:param name="file" as="xs:string?"/>
 
   <xsl:param name="report-title" select="'Report'" as="xs:string"/>
+  <xsl:param name="show-adjusted-srcpath" select="'yes'" as="xs:string"/>
+  <xsl:param name="show-step-name" select="'yes'" as="xs:string"/>
 
   <xsl:variable name="html-with-srcpaths" select="collection()[2]" as="document-node(element(html:html))"/>
 
@@ -510,7 +512,7 @@
         <xslout:copy copy-namespaces="no">
           <xslout:apply-templates mode="#current"/>
           <style type="text/css">
-            button.error, button.error_notoggle, .message.error, #BC_toggle_error.active{
+            button.error, button.error_notoggle, .BC_message.error, #BC_toggle_error.active{
               background-color:#f2dede; 
               color:#a94442;
               border-color:#ebccd1;
@@ -520,7 +522,7 @@
               background-color:#ebccd1;
               color:#fff;
             }
-            button.warning, .warning_notoggle, .message.warning, #BC_toggle_warning.active{
+            button.warning, .warning_notoggle, .BC_message.warning, #BC_toggle_warning.active{
               background-color:#ffe082;
               color:#ff6f00;
               border-color:#ffc107;
@@ -530,7 +532,7 @@
               background-color:#ffc107;
               color:#fff;
             }
-            button.info, .info_notoggle, .message.info{
+            button.info, .info_notoggle, .BC_message.info{
               background-color:#d9edf7;
               color:#31708f;
               border-color:#bce8f1;
@@ -1113,13 +1115,17 @@
       </xsl:if>
       <span title="{@type}" class="BC_marker {@type}" id="{@xml:id}"/>
       <div class="collapse" id="msg_{@xml:id}">
-        <div class="well message {@severity}">
-          <xsl:apply-templates select="(svrl:diagnostic-reference[@xml:lang eq $interface-language], *:text)[1]"
-            mode="#current"/>
-          <xsl:if test="@adjusted-from">
-            <xsl:call-template name="l10n:adjusted-srcpath"/>
+        <div class="well BC_message {@severity}">
+          <div class="BC_message-text">
+            <xsl:apply-templates select="(svrl:diagnostic-reference[@xml:lang eq $interface-language], *:text)[1]"
+              mode="#current"/>
+          </div>
+          <xsl:if test="$show-adjusted-srcpath eq 'yes' and @adjusted-from">
+              <xsl:call-template name="l10n:adjusted-srcpath"/>
           </xsl:if>
-          <xsl:call-template name="l10n:step-name"/>
+          <xsl:if test="$show-step-name eq 'yes'">
+            <xsl:call-template name="l10n:step-name"/>
+          </xsl:if>
         </div>
       </div>
 
@@ -1148,16 +1154,16 @@
         * named templates for customization: import this stylesheet and overwrite the templates.
         * -->
 
-  <xsl:template name="l10n:step-name">
-    <span class="BC_step-name">
-      <br/> Conversion step: <xsl:value-of select="@tr:step-name"/>
-    </span>
+  <xsl:template name="l10n:step-name" xmlns="http://www.w3.org/1999/xhtml"> 
+    <p class="BC_step-name">
+      Conversion step: <xsl:value-of select="@tr:step-name"/>
+    </p>
   </xsl:template>
 
   <xsl:template name="l10n:adjusted-srcpath" xmlns="http://www.w3.org/1999/xhtml">
-    <span title="srcpath {@adjusted-from} was removed">Note: This message originated from a location within the document
+    <p class="BC_srcpath_msg" title="srcpath {@adjusted-from} was removed">Note: This message originated from a location within the document
       that did not retain its location information during conversion. The message might now be attached to the
-      surrounding paragraph or even to another paragraph nearby.</span>
+      surrounding paragraph or even to another paragraph nearby.</p>
   </xsl:template>
 
   <!-- unwrap rich text messages that are wrapped in a p. No, we won’t, although it’s illegal in inline context -->
