@@ -1099,9 +1099,11 @@
         <xsl:value-of select="@rendered-key"/>
         <xsl:value-of select="@occurrence"/>
       </button>
-      <xsl:variable name="previous-message" select="preceding::tr:message[@type eq $type][2]" as="element(tr:message)?"/>
+      <xsl:variable name="previous-message" select="preceding::tr:message[@type eq $type][1]" as="element(tr:message)?"/>
+      <!--<xsl:message select="'ääääääää&#xa;', xs:string($previous-message/@xml:id), xs:string($previous-message/@type), '#&#xa;', 
+        xs:string(@xml:id), xs:string($type), '&#xa;####'"></xsl:message>-->
       <xsl:if test="exists($previous-message)">
-        <a class="BC_link" href="{$previous-message/@href}">
+        <a class="BC_link" href="#{$previous-message/@xml:id}">
           <button class="btn btn-default btn-xs {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
             <span class="BC_arrow-up">&#x25b4;</span>
           </button>
