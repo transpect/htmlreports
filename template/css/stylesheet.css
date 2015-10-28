@@ -17,13 +17,13 @@ header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
 
 /* a bit affix magic */
 #tr-report.affix, #tr-minitoc-wrapper.affix {margin-top:-95px;
--webkit-transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;
--moz-transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;
-transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
+-webkit-transition: background .5s ease-in-out,margin .5s ease-in-out;
+-moz-transition: background .5s ease-in-out,margin .5s ease-in-out;
+transition: background .5s ease-in-out,margin .5s ease-in-out;}
 #tr-minitoc-wrapper.affix{position:relative}
 
 .navbar-toggle .icon-bar {background-color:#ccc}
-#tr-logo{padding:0 2em 0 0;margin:0}
+#tr-logo{padding:0 1em 0 0;margin:0}
 
 /* 
  * minitoc
@@ -39,7 +39,7 @@ transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
 /* 
  * report
  */
-#tr-report {font-size:0.9em; color:#777}
+#tr-report {font-size:0.9em; color:#777; overflow-y:scroll; height:100%; padding-bottom:100px;}
 #BC_family-label{font-size:1em; }
 .BC_severity button {margin-right:5px}
 .BC_severity button {font-weight:bold}
@@ -48,6 +48,8 @@ transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
 #tr-report .checkbox {margin-top:5px; margin-bottom:5px}
 #tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold}
 /* report message */
+#tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0}
+#tr-report li.BC_tooltip{ padding: 5px 15px}
 .BC_message, .BC_tooltip{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; font-size:0.9em}
 .BC_step-name{font-weight:normal; margin-top:0.6em}
 .BC_error_count{font-size:0.9em}
