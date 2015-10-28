@@ -1092,14 +1092,15 @@
   </xsl:template>
 
   <xsl:template match="tr:message" mode="create-template" xmlns="http://www.w3.org/1999/xhtml">
-    <span class="BC_tooltip {string-join((@type, @severity), '__')}">
-      <button class="btn btn-default btn-xs {string-join((@type, @severity), '__')}" type="button"
+    <xsl:variable name="type" select="@type" as="attribute(type)"/>
+    <span class="BC_tooltip {string-join(($type, @severity), '__')}">
+      <button class="btn btn-default btn-xs {string-join(($type, @severity), '__')}" type="button"
         data-toggle="collapse" data-target="#msg_{@xml:id}" aria-expanded="false" aria-controls="msg_{@xml:id}">
         <xsl:value-of select="@rendered-key"/>
         <xsl:value-of select="@occurrence"/>
       </button>
-      <xsl:variable name="previous-message" select="preceding::tr:message[1]" as="element(tr:message)?"/>
-      <xsl:if test="exists($previous-message) and matches(@type, $previous-message/@type)">
+      <xsl:variable name="previous-message" select="preceding::tr:message[@type eq $type][2]" as="element(tr:message)?"/>
+      <xsl:if test="exists($previous-message)">
         <a class="BC_link" href="{$previous-message/@href}">
           <button class="btn btn-default btn-xs {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
             <span class="BC_arrow-up">&#x25b4;</span>
