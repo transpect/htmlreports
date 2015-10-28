@@ -5,7 +5,7 @@
   xmlns:aid5="http://ns.adobe.com/AdobeInDesign/5.0/" xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging"
   xmlns:idml2xml="http://www.le-tex.de/namespace/idml2xml" xmlns:tr="http://transpect.io"
   xmlns:c="http://www.w3.org/ns/xproc-step" xmlns:html="http://www.w3.org/1999/xhtml"
-  xmlns:l10n="http://www.le-tex.de/namespace/l10n" version="2.0">
+  xmlns:l10n="http://www.le-tex.de/namespace/l10n" xmlns:cx="http://xmlcalabash.com/ns/extensions" version="2.0">
 
   <xsl:output method="xml" indent="yes"/>
 
@@ -285,8 +285,8 @@
     <xslout:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
       xmlns:css="http://www.w3.org/1996/css" xmlns:s="http://purl.oclc.org/dsdl/schematron"
-      xmlns:html="http://www.w3.org/1999/xhtml" xmlns:tr="http://transpect.io"
-      exclude-result-prefixes="svrl s xs html tr css aid aid5 idPkg idml2xml c l10n"
+      xmlns:html="http://www.w3.org/1999/xhtml" xmlns:tr="http://transpect.io" xmlns:cx="http://xmlcalabash.com/ns/extensions" 
+      exclude-result-prefixes="svrl s xs html tr css aid aid5 idPkg idml2xml c cx l10n"
       xmlns="http://www.w3.org/1999/xhtml">
 
       <xslout:import href="http://transpect.io/xslt-util/hex/xsl/hex.xsl"/>

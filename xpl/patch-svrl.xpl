@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc" 
-  xmlns:c="http://www.w3.org/ns/xproc-step" 
-  xmlns:cx="http://xmlcalabash.com/ns/extensions"  
+  xmlns:c="http://www.w3.org/ns/xproc-step"  
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:tr="http://transpect.io"
   exclude-inline-prefixes="#all" 
@@ -128,7 +127,7 @@
     </p:input>
   </p:insert>
   
-  <p:insert match="//html:html/html:head" position="last-child" name="inject-head">
+  <p:insert match="/html:html/html:head" position="last-child" name="inject-head">
     <p:input port="insertion" select="/html:html/html:head/html:link[@type eq 'text/css']">
       <p:pipe port="result" step="filter-document"/>
     </p:input>
