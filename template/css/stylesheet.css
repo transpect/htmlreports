@@ -41,6 +41,7 @@ transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
 #tr-report {font-size:0.9em; color:#777}
 #BC_family-label{font-size:1em; }
 .BC_severity button {margin-right:5px}
+.BC_severity button {font-weight:bold}
 .BC_family-summary{ margin-bottom:0; }
 #tr-report .well {margin-bottom:0}
 #tr-report .checkbox {margin-top:5px; margin-bottom:5px}
