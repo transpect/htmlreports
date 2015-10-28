@@ -13,7 +13,7 @@ header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
  *  content
  */ 
 
-#tr-content{box-shadow: -2px 2px 5px #ddd; background-color:#fff; border-radius:4px; padding:15px; font-family: Georgia, Times, serif}
+#tr-content{box-shadow: 2px 2px 5px #ddd; background-color:#fff; border-radius:4px; padding:15px; font-family: Georgia, Times, serif}
 
 /* a bit affix magic */
 #tr-report.affix, #tr-minitoc-wrapper.affix {margin-top:-95px;
@@ -23,7 +23,7 @@ transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
 #tr-minitoc-wrapper.affix{position:relative}
 
 .navbar-toggle .icon-bar {background-color:#ccc}
-#tr-logo{padding:0 1em;margin:0}
+#tr-logo{padding:0 2em 0 0;margin:0}
 
 /* 
  * minitoc
@@ -48,6 +48,7 @@ transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
 /* report message */
 .BC_message, .BC_tooltip{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; font-size:0.9em}
 .BC_step-name{font-weight:normal; margin-top:0.6em}
+.BC_error_count{font-size:0.9em}
 /*
 #tr-minitoc{background-color:blue}
 #tr-content{background-color:red}
