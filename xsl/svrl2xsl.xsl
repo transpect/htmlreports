@@ -778,6 +778,10 @@
         </xslout:copy>
       </xslout:template>
       
+      <xslout:template match="html:title">
+        <xsl:value-of select="$report-title"/>
+      </xslout:template>
+      
       <!--  *
             * report menu
             * -->
