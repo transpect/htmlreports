@@ -519,17 +519,17 @@
               font-weight:bold
             }
             button.error:hover, .error_notoggle:hover, #BC_toggle_error.active:hover{
-              background-color:#ebccd1;
+              background-color:#f2dede;
               color:#fff;
             }
             button.warning, .warning_notoggle, .BC_message.warning, #BC_toggle_warning.active{
               background-color:#ffe082;
               color:#e65100;
-              border-color:#ffc107;
+              border-color:#ffe082;
               font-weight:bold
             }
             button.warning:hover, .warning_notoggle:hover, #BC_toggle_warning.active:hover{
-              background-color:#ffc107;
+              background-color:#e65100;
               color:#fff;
             }
             button.info, .info_notoggle, .BC_message.info{
@@ -539,7 +539,7 @@
               font-weight:bold
             }
             button.info:hover, .info_notoggle:hover{
-              background-color:#bce8f1;
+              background-color:#d9edf7;
               color:#fff;
             }
             .BC_no-messages{
