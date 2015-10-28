@@ -765,15 +765,25 @@
         </xslout:copy>
       </xslout:template>-->
 
+      <!--  *
+            * custom title
+            * -->
+
+      <xslout:template match="html:*[@id eq 'tr-headline']">
+        <xslout:copy copy-namespaces="no">
+          <xslout:apply-templates select="@*"/>
+          <a href="#" id="BC_title"><xsl:value-of select="$report-title"/></a>
+        </xslout:copy>
+      </xslout:template>
+      
+      <!--  *
+            * report menu
+            * -->
+
       <xslout:template match="html:*[@id eq 'tr-report']">
         <xslout:copy copy-namespaces="no">
           <xslout:apply-templates select="@*"/>
           <div class="BC_summary">
-            <div id="BC_header" class="panel-body">
-              <p id="BC_title">
-                <xsl:value-of select="$report-title"/>
-              </p>
-            </div>
             <!--          <div id="doge1" class="doge">very check</div>
           <div id="doge2" class="doge">so demo</div>
           <div id="doge3" class="doge">amaze</div>
@@ -905,7 +915,7 @@
                               <a class="BC_link" href="#{$href-id}">
                                 <button type="button" class="btn btn-default btn-xs {$current-severity}">
                                   <xsl:number value="index-of($message-types, $span-title)" format="A"/>
-                                  <span class="BC_arrow-down">&#x2193;</span>
+                                  <span class="BC_arrow-down">&#x25be;</span>
                                 </button>
                               </a>
                               <span title="{$span-title}" class="BC_marker {$span-title}"/>
@@ -1090,14 +1100,14 @@
       <xsl:if test="exists($previous-message) and matches(@type, $previous-message/@type)">
         <a class="BC_link" href="{$previous-message/@href}">
           <button class="btn btn-default btn-xs {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
-            <span class="BC_arrow-down">&#x2191;</span>
+            <span class="BC_arrow-up">&#x25b4;</span>
           </button>
         </a>
       </xsl:if>
       <xsl:if test="@href">
         <a class="BC_link" href="{@href}">
           <button class="btn btn-default btn-xs {string-join((@type, @severity), '__')}">
-            <span class="BC_arrow-down">&#x2193;</span>
+            <span class="BC_arrow-down">&#x25be;</span>
           </button>
         </a>
       </xsl:if>
