@@ -287,6 +287,8 @@
       exclude-result-prefixes="svrl s xs html tr css aid aid5 idPkg idml2xml c l10n"
       xmlns="http://www.w3.org/1999/xhtml">
 
+      <xslout:import href="http://transpect.io/xslt-util/hex/xsl/hex.xsl"/>
+
       <xslout:output method="xhtml" cdata-section-elements="script"/>
       <xslout:function name="tr:contains-token" as="xs:boolean">
         <xslout:param name="space-separated-list" as="xs:string?"/>
@@ -414,11 +416,10 @@
               });
               
               
-              /* show/hide all elements with class BC_tooltip.NAME */
+              /* checkbox: toggle elements with class BC_tooltip.NAME */
               
               $(".BC_toggle").change(function () {
                 if($(this).is(':checked')){
-              
                   $(".BC_tooltip." + this.id.replace(/BC_toggle_/, "")).show();
                   $(this).next().show();
                 } else {
@@ -426,6 +427,19 @@
                   $(this).next().hide();
                 }
               });
+              
+              /* button: toggle elements with class BC_tooltip.NAME */
+              
+              $("button.BC_toggle").click(function () {
+                if($(this).hasClass('active')){
+                  $(".BC_tooltip." + this.id.replace(/BC_toggle_/, "")).hide();
+                  $(this).removeClass('active')
+                } else {
+                  $(".BC_tooltip." + this.id.replace(/BC_toggle_/, "")).show();
+                  $(this).addClass('active')
+                }
+              });
+              
               
             });
           </script>
@@ -496,45 +510,40 @@
         <xslout:copy copy-namespaces="no">
           <xslout:apply-templates mode="#current"/>
           <style type="text/css">
-            button.error,
-            button.error_notoggle,
-            .message.error{
-              background-color:#f2dede;
+            button.error, button.error_notoggle, .message.error, #BC_toggle_error.active{
+              background-color:#f2dede; 
               color:#a94442;
               border-color:#ebccd1;
               font-weight:bold
             }
-            button.error:hover,
-            .error_notoggle:hover{
+            button.error:hover, .error_notoggle:hover, #BC_toggle_error.active:hover{
               background-color:#ebccd1;
               color:#fff;
             }
-            button.warning,
-            .warning_notoggle,
-            .message.warning{
+            button.warning, .warning_notoggle, .message.warning, #BC_toggle_warning.active{
               background-color:#ffe082;
               color:#ff6f00;
               border-color:#ffc107;
               font-weight:bold
             }
-            button.warning:hover,
-            .warning_notoggle:hover{
+            button.warning:hover, .warning_notoggle:hover, #BC_toggle_warning.active:hover{
               background-color:#ffc107;
               color:#fff;
             }
-            button.info,
-            .info_notoggle,
-            .message.info{
+            button.info, .info_notoggle, .message.info{
               background-color:#d9edf7;
               color:#31708f;
               border-color:#bce8f1;
               font-weight:bold
             }
-            button.info:hover,
-            .info_notoggle:hover{
+            button.info:hover, .info_notoggle:hover{
               background-color:#bce8f1;
               color:#fff;
-            }</style>
+            }
+            .BC_no-messages{
+              color:#33691e 
+              }
+          </style>
           <!--<script>
             <script type="text/javascript">
               <xsl:call-template name="project-specific-js"/>
@@ -807,18 +816,23 @@
                   * -->
             <xsl:call-template name="l10n:severity-heading"/>
 
-            <div class="BC_severity checkbox panel-body">
+            <div class="BC_severity">
               <xsl:for-each-group
                 select="  //*:text[parent::svrl:successful-report | parent::svrl:failed-assert]
                 [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))] 
                 | //*:error"
                 group-by="(@type, ../@role, $severity-default-role)[1]">
+                
+                <button type="button" class="btn btn-sm active BC_toggle" id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}">
+                  <xsl:value-of select="l10n:severity-role-label(current-grouping-key())"/>
+                </button>
+                
                 <!-- list each severity category -->
-                <label class="checkbox-inline">
+                <!--<label class="checkbox-inline">
                   <input type="checkbox" checked="checked" class="checkbox BC_toggle"
                     id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}"/>
                   <xsl:value-of select="l10n:severity-role-label(current-grouping-key())"/>
-                </label>
+                </label>-->
               </xsl:for-each-group>
             </div>
 
@@ -948,16 +962,23 @@
       </xslout:template>
 
       <xslout:template match="html:*[@id eq 'tr-minitoc']">
+        <xslout:variable name="headlines" select="//html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]"/>
+        <xslout:variable name="factor" select="5" as="xs:integer"/>
+        <xslout:variable name="max-digits" select="string-length(xs:string(count($headlines) * $factor))"/>
         <xslout:copy>
           <xslout:apply-templates select="@*|node()"/>
           <ul class="BC_minitoc nav">
             <li class="hidden active">
               <a class="page-scroll" href="#page-top"/>
             </li>
-            <xslout:for-each select="//html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]">
+            <xslout:for-each select="$headlines">
+              <xslout:variable name="hexpos" select="tr:dec-to-hex(position() * $factor)"/>
+              <xslout:variable name="colordigits" select="concat(string-join(for $i in (1 to ($max-digits - string-length(xs:string( $hexpos )) - 1 )) return '0', ''), $hexpos )"/>
+              
               <xslout:variable name="href" select="concat('#scroll-', generate-id(.))"/>
               <xslout:variable name="class" select="concat('BC_minitoc-item BC_minitoc-level-', local-name())"/>
               <li>
+                <xslout:attribute name="style" select="concat('border-left: 2px solid #ff', $colordigits, '00')"/>
                 <xslout:attribute name="class" select="$class"/>
                 <a class="page-scroll">
                   <xslout:attribute name="href" select="$href"/>
@@ -1008,7 +1029,7 @@
   </xsl:template>
 
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
-    <li class="no-messages list-group-item">✓<span class="sr-only">Error:</span></li>
+    <li class="BC_no-messages list-group-item">✓<span class="sr-only">Error:</span></li>
   </xsl:template>
 
   <xsl:template name="l10n:report-toggle-label" xmlns="http://www.w3.org/1999/xhtml">
@@ -1065,6 +1086,14 @@
         <xsl:value-of select="@rendered-key"/>
         <xsl:value-of select="@occurrence"/>
       </button>
+      <xsl:variable name="previous-message" select="preceding::tr:message[1]" as="element(tr:message)?"/>
+      <xsl:if test="exists($previous-message) and matches(@type, $previous-message/@type)">
+        <a class="BC_link" href="{$previous-message/@href}">
+          <button class="btn btn-default btn-xs {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
+            <span class="BC_arrow-down">&#x2191;</span>
+          </button>
+        </a>
+      </xsl:if>
       <xsl:if test="@href">
         <a class="BC_link" href="{@href}">
           <button class="btn btn-default btn-xs {string-join((@type, @severity), '__')}">
