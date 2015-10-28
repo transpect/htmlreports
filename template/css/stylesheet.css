@@ -1,39 +1,25 @@
 /* 
  * general
  */
-body {
-  position:relative;
-  font-family:'Roboto', 'Helvetica Neue', helvetica, sans-serif;
-  padding:0; margin:0;
-  background-color: #f8f8f8;
-}
+body { position:relative; font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; padding:0; margin:0; background-color: #f8f8f8; }
 
 main div.row {margin-right:0; margin-left:0}
 /* 
  * header
  */
-header{background-color:#f8f8f8; font-weight:300;
-    margin: auto;
-    width: 100%;
-}
+header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
 
 /*
- *  navbar
+ *  content
  */ 
-#tr-topnav{
-    /* for links that overlap with the fixed navbar*/  
-    padding:0;
-    margin:0
-}
 
-#tr-content{box-shadow: -2px 2px 5px #ddd; background-color:#fff; }
+#tr-content{box-shadow: -2px 2px 5px #ddd; background-color:#fff; border-radius:4px; padding:15px; font-family: Georgia, Times, serif}
 
 /* a bit affix magic */
-#tr-report, #tr-content, #tr-minitoc-wrapper{padding-top:0px}
-#tr-report.affix, #tr-minitoc-wrapper.affix {padding-top:0px;
--webkit-transition: background .5s ease-in-out,padding .5s ease-in-out;
--moz-transition: background .5s ease-in-out,padding .5s ease-in-out;
-transition: background .5s ease-in-out,padding .5s ease-in-out;}
+#tr-report.affix, #tr-minitoc-wrapper.affix {margin-top:-95px;
+-webkit-transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;
+-moz-transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;
+transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
 #tr-minitoc-wrapper.affix{position:relative}
 
 .navbar-toggle .icon-bar {background-color:#ccc}
@@ -47,20 +33,20 @@ transition: background .5s ease-in-out,padding .5s ease-in-out;}
 .BC_minitoc-item a{padding:0 !important; color: #777}
 .BC_minitoc-level-h2{padding-left:1.5em; }
 /* scroll-spy hover */
-#tr-minitoc .active a{color:#e53935 !important; font-weight:bold}
+#tr-minitoc .active a{color:#e53935 !important; }
 #tr-minitoc .active {border-left: 3px solid #e53935 !important}
 /* 
  * report
  */
- #tr-report{color:#777}
+#tr-report {font-size:0.9em; color:#777}
+#BC_family-label{font-size:1em; }
 .BC_severity button {margin-right:5px}
-.BC_tooltip a{font-size:0.9em; color:#777}
-#BC_title{margin:0; font-weight:bold}
+
 .BC_family-summary{ margin-bottom:0; }
 #tr-report .well {margin-bottom:0}
 #tr-report .checkbox {margin-top:5px; margin-bottom:5px}
 
-#tr-report .BC_no-messages{background-color:#33691e; color:#fff; font-weight:bold}
+#tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold}
 
 /*
 #tr-minitoc{background-color:blue}
