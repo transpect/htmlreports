@@ -23,24 +23,24 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 #tr-minitoc-wrapper.affix{position:relative}
 
 .navbar-toggle .icon-bar {background-color:#ccc}
-#tr-logo{padding:0 1em 0 0;margin:0}
+#tr-logo{padding:0 1rem 0 0;margin:0}
 
 /* 
  * minitoc
  */ 
 .BC_minitoc{margin-left:1%}
-.BC_minitoc-item {padding-left:1em; font-size:0.9em; border-left: 2px solid #777; }
+.BC_minitoc-item {padding-left:1rem; font-size:1.2rem; border-left: 2px solid #777; }
 .BC_minitoc-item a{padding:0 !important; color: #777}
 .BC_minitoc-item a:focus{background-color:inherit !important}
-.BC_minitoc-level-h2{padding-left:1.5em;}
+.BC_minitoc-level-h2{padding-left:1.5rem;}
 /* scroll-spy hover */
 #tr-minitoc .active a{color:#e53935 !important;}
 #tr-minitoc .active {border-left: 2px solid #fff !important}
 /* 
  * report
  */
-#tr-report {font-size:0.9em; color:#777; overflow-y:scroll; height:100%; padding-bottom:100px;}
-#BC_family-label{font-size:1em; }
+#tr-report {font-size:1.2rem; color:#777; overflow-y:scroll; height:100%; padding-bottom:100px;}
+#BC_family-label{font-size:1rem; }
 .BC_severity button {margin-right:5px}
 .BC_severity button {font-weight:bold}
 .BC_family-summary{ margin-bottom:0; }
@@ -50,9 +50,9 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 /* report message */
 #tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0}
 #tr-report li.BC_tooltip{ padding: 5px 15px}
-.BC_message, .BC_tooltip{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; font-size:0.9em}
-.BC_step-name{font-weight:normal; margin-top:0.6em}
-.BC_error_count{font-size:0.9em}
+.BC_message, .BC_tooltip{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; font-size:1.2rem}
+.BC_step-name{font-weight:normal; margin-top:0.6rem}
+.BC_error_count{font-size:1rem}
 /*
 #tr-minitoc{background-color:blue}
 #tr-content{background-color:red}
