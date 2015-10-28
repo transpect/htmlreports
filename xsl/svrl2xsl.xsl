@@ -529,7 +529,7 @@
               font-weight:bold
             }
             button.warning:hover, .warning_notoggle:hover, #BC_toggle_warning.active:hover{
-              background-color:#e65100;
+              background-color:#ffe082;
               color:#fff;
             }
             button.info, .info_notoggle, .BC_message.info{

@@ -31,9 +31,10 @@ transition: background 1.0s ease-in-out,margin 1.0s ease-in-out;}
 .BC_minitoc{margin-left:1%}
 .BC_minitoc-item {padding-left:1em; font-size:0.9em; border-left: 2px solid #777; }
 .BC_minitoc-item a{padding:0 !important; color: #777}
-.BC_minitoc-level-h2{padding-left:1.5em; }
+.BC_minitoc-item a:focus{background-color:inherit !important}
+.BC_minitoc-level-h2{padding-left:1.5em;}
 /* scroll-spy hover */
-#tr-minitoc .active a{color:#e53935 !important; }
+#tr-minitoc .active a{color:#e53935 !important;}
 #tr-minitoc .active {border-left: 2px solid #fff !important}
 /* 
  * report
