@@ -110,11 +110,20 @@
         * the div with the id 'tr-content' 
         * -->
   
-  <p:load name="load-template">
+<!--  <p:load name="load-template">
     <p:with-option name="href" select="'http://transpect.io/htmlreports/template/template.html'"/>
   </p:load>
   
-  <p:add-xml-base/>
+  <p:add-xml-base/>-->
+  
+  <tr:load-cascaded name="load-template" filename="htmlreports/template.html">
+    <p:with-option name="fallback" select="resolve-uri('../template/template.html')"/>
+    <p:input port="paths">
+      <p:pipe port="params" step="patch-svrl"/>
+    </p:input>
+    <p:with-option name="debug" select="$debug"/>
+    <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
+  </tr:load-cascaded>
   
   <tr:store-debug pipeline-step="htmlreports/template-loaded" extension="html">
     <p:with-option name="active" select="$debug"/>
