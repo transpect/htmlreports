@@ -980,7 +980,6 @@
       <xslout:template match="html:*[@id eq 'tr-minitoc']">
         <xslout:variable name="headlines" select="//html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]"/>
         <xslout:variable name="factor" select="5" as="xs:integer"/>
-        <xslout:variable name="max-digits" select="string-length(xs:string(count($headlines) * $factor))"/>
         <xslout:copy>
           <xslout:apply-templates select="@*|node()"/>
           <ul class="BC_minitoc nav">
@@ -988,13 +987,13 @@
               <a class="page-scroll" href="#page-top"/>
             </li>
             <xslout:for-each select="$headlines">
-              <xslout:variable name="hexpos" select="tr:dec-to-hex(position() * $factor)"/>
-              <xslout:variable name="colordigits" select="concat(string-join(for $i in (1 to ($max-digits - string-length(xs:string( $hexpos )) - 1 )) return '0', ''), $hexpos )"/>
+              <xslout:variable name="color-value" select="tr:dec-to-hex(position() * $factor)"/>
+              <xslout:variable name="fill-value" select="string-join(for $i in (string-length($color-value) to 1)  return '0', '')"/>
               
               <xslout:variable name="href" select="concat('#scroll-', generate-id(.))"/>
               <xslout:variable name="class" select="concat('BC_minitoc-item BC_minitoc-level-', local-name())"/>
               <li>
-                <xslout:attribute name="style" select="concat('border-left: 2px solid #ff', $colordigits, '00')"/>
+                <xslout:attribute name="style" select="concat('border-left: 2px solid #ff', $fill-value, $color-value, '00')"/>
                 <xslout:attribute name="class" select="$class"/>
                 <a class="page-scroll">
                   <xslout:attribute name="href" select="$href"/>
