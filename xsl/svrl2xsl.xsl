@@ -969,16 +969,17 @@
       <!--  *
             * generate mini-toc and patch headlines
             * -->
+      
+      <xslout:variable name="headlines" select="//html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]"/>
 
       <xslout:template match="html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]">
         <xslout:copy>
           <xslout:attribute name="id" select="concat('scroll-', generate-id(.))"/>
-          <xslout:apply-templates select="@*|node()" mode="#current"/>
+          <xslout:apply-templates select="@* except @id|node()" mode="#current"/>
         </xslout:copy>
       </xslout:template>
 
       <xslout:template match="html:*[@id eq 'tr-minitoc']">
-        <xslout:variable name="headlines" select="//html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]"/>
         <xslout:variable name="factor" select="5" as="xs:integer"/>
         <xslout:copy>
           <xslout:apply-templates select="@*|node()"/>
