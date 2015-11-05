@@ -532,13 +532,13 @@
               background-color:#ffe082;
               color:#fff;
             }
-            button.info, .info_notoggle, .BC_message.info{
+            button.info, .info_notoggle, .BC_message.info, #BC_toggle_info.active{
               background-color:#d9edf7;
               color:#31708f;
               border-color:#bce8f1;
               font-weight:bold
             }
-            button.info:hover, .info_notoggle:hover{
+            button.info:hover, .info_notoggle:hover, #BC_toggle_info.active:hover{
               background-color:#d9edf7;
               color:#fff;
             }
@@ -1201,6 +1201,9 @@
       </xsl:when>
       <xsl:when test="$interface-language eq 'en' and $role eq 'warning'">
         <xsl:value-of select="'Warning'"/>
+      </xsl:when>
+      <xsl:when test="$interface-language eq 'en' and $role eq 'info'">
+        <xsl:value-of select="'Info'"/>
       </xsl:when>
       <xsl:when test="$interface-language eq 'en' and $role eq 'fatal-error'">
         <xsl:value-of select="'Fatal Error'"/>
