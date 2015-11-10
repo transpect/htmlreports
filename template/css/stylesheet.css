@@ -8,14 +8,15 @@ main div.row {margin-right:0; margin-left:0}
  * header
  */
 header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
-
+/*
+ * footer
+ */
+ #tr-footer{padding:15px 0;}
 /*
  *  content
  */ 
-
 #tr-content{box-shadow: 2px 2px 5px #ddd; background-color:#fff; border-radius:4px; padding:15px; font-family: Georgia, Times, serif}
-
-/* a bit affix magic */
+/* smooth transitions for minitoc and report */
 #tr-report.affix, #tr-minitoc-wrapper.affix {margin-top:-95px;
 -webkit-transition: background .5s ease-in-out,margin .5s ease-in-out;
 -moz-transition: background .5s ease-in-out,margin .5s ease-in-out;
@@ -28,6 +29,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 /* 
  * minitoc
  */ 
+ #tr-minitoc {max-width:23%}
 .BC_minitoc{margin-left:1%}
 .BC_minitoc-item {padding-left:1rem; font-size:1.2rem; border-left: 2px solid #777; }
 .BC_minitoc-item a{padding:0 !important; color: #777}
@@ -53,12 +55,6 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .BC_message, .BC_tooltip{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; font-size:1.2rem}
 .BC_step-name{font-weight:normal; margin-top:0.6rem}
 .BC_error_count{font-size:1rem}
-/*
-#tr-minitoc{background-color:blue}
-#tr-content{background-color:red}
-#tr-report{background-color:green}
-*/
-
 
 @media (min-width: 1200px){
   #tr-minitoc, #tr-report{position:fixed;}  
