@@ -47,6 +47,7 @@
     <p:with-option name="pipeline-step" select="concat('schematron/', /c:param-set/c:param[@name eq 'family']/@value)" >
       <p:pipe step="cons" port="result"/>
     </p:with-option>
+    <p:with-option name="extension" select="'sch'"/>
     <p:with-option name="active" select="$debug" />
     <p:with-option name="base-uri" select="$debug-dir-uri" />
   </tr:store-debug>
