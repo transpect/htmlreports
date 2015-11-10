@@ -116,7 +116,7 @@
   
   <p:add-xml-base/>-->
   
-  <tr:load-cascaded name="load-template" filename="htmlreports/template.html">
+  <tr:load-cascaded name="load-template" filename="htmlreports/template/template.html">
     <p:with-option name="fallback" select="resolve-uri('../template/template.html')"/>
     <p:input port="paths">
       <p:pipe port="params" step="patch-svrl"/>
