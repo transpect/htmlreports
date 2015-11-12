@@ -60,7 +60,10 @@
     </p:input>
   </tr:validate-with-rng-PI>
   
-  <tr:store-debug pipeline-step="rngvalid/global/with-PIs">
+  <tr:store-debug>
+    <p:with-option name="pipeline-step" select="concat('rngvalid/', /*/name(), '/with-PIs_2')">
+      <p:pipe port="source" step="validate-with-rng"/>
+    </p:with-option>
     <p:with-option name="active" select="$debug"/>
     <p:with-option name="base-uri" select="$debug-dir-uri"/>
   </tr:store-debug>
