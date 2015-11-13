@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc"
   xmlns:tr="http://transpect.io"
-  version="1.0" 
+  version="1.0"
   name="validate-with-rng"
   type="tr:validate-with-rng">
   
@@ -61,13 +61,13 @@
   </tr:validate-with-rng-PI>
   
   <tr:store-debug>
-    <p:with-option name="pipeline-step" select="concat('rngvalid/', /*/name(), '/with-PIs_2')">
+    <p:with-option name="pipeline-step" select="concat('rngvalid/', /*/local-name(), '/with-PIs_2')">
       <p:pipe port="source" step="validate-with-rng"/>
     </p:with-option>
     <p:with-option name="active" select="$debug"/>
     <p:with-option name="base-uri" select="$debug-dir-uri"/>
   </tr:store-debug>
-    
+      
   <tr:errorPI2svrl name="errorPI2svrl" severity="error">
     <p:with-option name="debug" select="$debug"/>
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
