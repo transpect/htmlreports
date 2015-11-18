@@ -139,6 +139,7 @@
   <p:insert match="/html:html/html:head" position="last-child" name="inject-head">
     <p:input port="insertion" 
       select="/html:html/html:head/(html:link[@type eq 'text/css'] 
+                                    | html:style
                                     | html:meta[@name = 'source-dir-uri'])">
       <p:pipe port="result" step="filter-document"/>
     </p:input>
