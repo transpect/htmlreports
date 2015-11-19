@@ -1,9 +1,12 @@
 /* 
  * general
  */
-body { position:relative; font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; padding:0; margin:0; background-color: #f8f8f8; }
-
+body { position:relative; padding:0; margin:0 !important; background-color: #f8f8f8;  }
 main div.row {margin-right:0; margin-left:0}
+/*
+ * fonts
+ */
+#tr-topnav a, #tr-minitoc a, #tr-report *{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; }
 /* 
  * header
  */
@@ -32,9 +35,9 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
  #tr-minitoc {max-width:23%}
 .BC_minitoc{margin-left:1%}
 .BC_minitoc-item {padding-left:1rem; font-size:1.2rem; border-left: 2px solid #777; }
-.BC_minitoc-item a{padding:0 !important; color: #777}
+.BC_minitoc-item a{padding:0 !important; color: #777 !important}
 .BC_minitoc-item a:focus{background-color:inherit !important}
-.BC_minitoc-level-h2{padding-left:1.5rem;}
+.BC_minitoc-level-h2{padding-left:1.5rem !important;}
 /* scroll-spy hover */
 #tr-minitoc .active a{color:#e53935 !important;}
 #tr-minitoc .active {border-left: 2px solid #fff !important}
@@ -52,7 +55,8 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 /* report message */
 #tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0}
 #tr-report li.BC_tooltip{ padding: 5px 15px}
-.BC_message, .BC_tooltip{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; font-size:1.2rem}
+#tr-report .BC_link{color:#337ab7 !important}
+.BC_message, .BC_tooltip{font-size:1.2rem !important}
 .BC_step-name{font-weight:normal; margin-top:0.6rem}
 .BC_error_count{font-size:1rem}
 
