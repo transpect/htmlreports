@@ -9,6 +9,7 @@
 
   <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
   <p:import href="patch-svrl.xpl"/>
+  <p:import href="http://transpect.io/schematron/xpl/oxy-schematron.xpl"/>
   
   <p:declare-step name="validate-with-schematron" type="tr:validate-with-schematron">
 
@@ -207,7 +208,7 @@
       <p:output port="partial-reports">
         <p:pipe port="result" step="add-family-attribute"/>
       </p:output>
-      <p:validate-with-schematron name="sch" assert-valid="false">
+      <tr:oxy-validate-with-schematron name="sch" assert-valid="false">
         <p:input port="schema">
           <p:pipe port="schema" step="validate-with-schematron2"/>
         </p:input>
@@ -224,7 +225,7 @@
         <p:with-param name="allow-foreign" select="'true'">
           <p:empty/>
         </p:with-param>
-      </p:validate-with-schematron>
+      </tr:oxy-validate-with-schematron>
                 
       <p:sink/>
 
