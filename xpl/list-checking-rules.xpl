@@ -19,7 +19,7 @@
       depend on the input elements (of course).</p>
       <h4>Use case 1</h4>
       <p>Schematron documents and Relax NG schemas.</p>
-      <p>If the Schematron documents have an transpect:rule-family attribute, it will be used as a heading.</p>
+      <p>If the Schematron documents have an tr:rule-family attribute, it will be used as a heading.</p>
       <h4>Use case 2</h4>
       <p>A messages-grouped-by-type.xml document as produced on the secondary port of patch-svrl.xpl</p>
     </p:documentation>

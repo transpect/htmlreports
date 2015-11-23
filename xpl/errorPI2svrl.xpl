@@ -27,7 +27,7 @@
   </p:output>
   <p:output port="report" sequence="true">
     <p:documentation>The errors that were encoded as PIs, now as SVRL documents.
-      They may carry a @transpect:rule-family attribute on the top-level element. It could
+      They may carry a @tr:rule-family attribute on the top-level element. It could
       be 'w2d' in the example above. The XSLT, ../xsl/errorPI2svrl.xsl, has to take
       care of proper result document generation for each of these virtual checking 
       families.</p:documentation>

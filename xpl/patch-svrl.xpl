@@ -22,7 +22,7 @@
   </p:input>
   <p:input port="reports" sequence="true">
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-      <p>SVRL outputs that carry @transpect:rule-family attributes on their top-level
+      <p>SVRL outputs that carry @tr:rule-family attributes on their top-level
         elements or c:errors elements with try/catch results. Only <code>c:errors/c:error[@code]</code>
         errors will be visualized in the HTML report (i.e., they need a code attribute).</p></p:documentation>
   </p:input>

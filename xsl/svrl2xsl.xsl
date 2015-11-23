@@ -3,9 +3,9 @@
   xmlns:svrl="http://purl.oclc.org/dsdl/svrl" xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:s="http://purl.oclc.org/dsdl/schematron" xmlns:aid="http://ns.adobe.com/AdobeInDesign/4.0/"
   xmlns:aid5="http://ns.adobe.com/AdobeInDesign/5.0/" xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging"
-  xmlns:idml2xml="http://www.le-tex.de/namespace/idml2xml" xmlns:tr="http://transpect.io"
+  xmlns:idml2xml="http://transpect.io/idml2xml" xmlns:tr="http://transpect.io"
   xmlns:c="http://www.w3.org/ns/xproc-step" xmlns:html="http://www.w3.org/1999/xhtml"
-  xmlns:l10n="http://www.le-tex.de/namespace/l10n" xmlns:cx="http://xmlcalabash.com/ns/extensions" version="2.0">
+  xmlns:l10n="http://transpect.io/l10n" xmlns:cx="http://xmlcalabash.com/ns/extensions" version="2.0">
 
   <xsl:output method="xml" indent="yes"/>
 
