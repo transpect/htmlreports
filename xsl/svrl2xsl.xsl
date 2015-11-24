@@ -524,7 +524,7 @@
             }
             button.warning, .warning_notoggle, .BC_message.warning, #BC_toggle_warning.active{
               background-color:#ffe082;
-              color:#e65100;
+              color:#e67000;
               border-color:#ffe082;
               font-weight:bold
             }
