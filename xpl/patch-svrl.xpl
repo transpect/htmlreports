@@ -109,13 +109,7 @@
         * the HTML report and the content is injected into 
         * the div with the id 'tr-content' 
         * -->
-  
-<!--  <p:load name="load-template">
-    <p:with-option name="href" select="'http://transpect.io/htmlreports/template/template.html'"/>
-  </p:load>
-  
-  <p:add-xml-base/>-->
-  
+    
   <tr:load-cascaded name="load-template" filename="htmlreports/template/template.html">
     <p:with-option name="fallback" select="resolve-uri('../template/template.html')"/>
     <p:input port="paths">
@@ -133,6 +127,16 @@
   <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="inject-body">
     <p:input port="insertion" select="/html:html/html:body/*">
       <p:pipe port="result" step="filter-document"/>
+    </p:input>
+  </p:insert>
+  
+  <!-- later, messages without srcpath are patched into this section -->
+  
+  <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="create-element-for-orphaned-messages">
+    <p:input port="insertion">
+      <p:inline>
+        <div xmlns="http://www.w3.org/1999/xhtml" id="BC_orphans"><p srcpath="BC_orphans"/><p srcpath=""/></div>
+      </p:inline>
     </p:input>
   </p:insert>
   
