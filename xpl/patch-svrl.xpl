@@ -7,6 +7,11 @@
   version="1.0" 
   type="tr:patch-svrl" 
   name="patch-svrl">
+  
+  <p:documentation xmlns="http://www.w3.org/1999/xhtml"> 
+    <p>This step patches error report(s) into an HTML document 
+      and provide an HTML report.</p> 
+  </p:documentation>
 
   <p:option name="debug" required="false" select="'no'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
@@ -22,14 +27,19 @@
   </p:input>
   <p:input port="reports" sequence="true">
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-      <p>SVRL outputs that carry @tr:rule-family attributes on their top-level
-        elements or c:errors elements with try/catch results. Only <code>c:errors/c:error[@code]</code>
+      <p>SVRL outputs that carry <code>@tr:rule-family</code> attributes on their top-level
+        elements or <code>c:errors</code> elements with try/catch results. Only <code>c:errors/c:error[@code]</code>
         errors will be visualized in the HTML report (i.e., they need a code attribute).</p></p:documentation>
   </p:input>
-  <p:input port="params" kind="parameter" primary="true"/>
+  <p:input port="params" kind="parameter" primary="true">
+    <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+      <p>A parameter set with the top-level element <code>c:param-set</code></p></p:documentation>
+  </p:input>
 
   <p:output port="result" primary="true">
     <p:pipe step="remove-fallback" port="result"/>
+    <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+      <p>The HTML report document containing the error messages.</p></p:documentation>
   </p:output>
   <p:output port="secondary" sequence="true">
     <p:documentation>messages-grouped-by-type.xml, linked-messages-grouped-by-srcpath.xml

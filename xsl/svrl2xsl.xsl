@@ -1097,6 +1097,9 @@
     </xslout:template>
   </xsl:template>
 
+  <!-- this template is used to create the error marker
+    which appears in the content section of the HTML report -->
+
   <xsl:template match="tr:message" mode="create-template" xmlns="http://www.w3.org/1999/xhtml">
     <xsl:variable name="type" select="@type" as="attribute(type)"/>
     <span class="BC_tooltip {string-join(($type, @severity), '__')}">
