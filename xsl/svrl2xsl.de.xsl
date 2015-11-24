@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:l10n="http://transpect.io/namespace/l10n"
+  xmlns:l10n="http://transpect.io/l10n"
   xmlns:tr="http://transpect.io"  
   xmlns="http://www.w3.org/1999/xhtml"
   version="2.0">
