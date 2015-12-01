@@ -98,11 +98,17 @@
   </tr:store-debug>
   
   <p:sink/>
-
-  <p:delete name="filter-document" match="@xml:base">
+  
+  <tr:html-embed-resources name="html-embed-resources-before-delete">
     <p:input select="/html:html" port="source">
       <p:pipe port="source" step="patch-svrl"/>
     </p:input>
+    <p:with-option name="fail-on-error" select="'false'">
+      <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
+    </p:with-option>
+  </tr:html-embed-resources>
+
+  <p:delete name="filter-document" match="@xml:base">
     <p:documentation>Just in case that there are blank lines in front of the XHTML -- these
     will constitute an empty document by themselves. In addition, @xml:base attributes 
     will give a funny link click experience.</p:documentation>
