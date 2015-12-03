@@ -57,7 +57,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 #tr-report li.BC_tooltip{ padding: 5px 15px}
 #tr-report .BC_link{color:#337ab7 !important}
 .BC_message, .BC_tooltip{font-size:1.2rem !important}
-.BC_step-name{font-weight:normal; margin-top:0.6rem}
+.BC_step-name{font-weight:normal; font-style:italic; font-size:10px; margin-top:0.6rem}
 .BC_error_count{font-size:1rem}
 
 
