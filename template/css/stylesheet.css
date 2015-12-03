@@ -60,6 +60,8 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .BC_step-name{font-weight:normal; margin-top:0.6rem}
 .BC_error_count{font-size:1rem}
 
+
+#BC_orphans { margin-bottom:1em; border-bottom:2px solid #bfd6e3; padding:0.25em 0em 1em 0em }
 @media (min-width: 1200px){
   #tr-minitoc, #tr-report{position:fixed;}  
 }
