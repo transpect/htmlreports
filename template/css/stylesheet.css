@@ -61,7 +61,8 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .BC_error_count{font-size:1rem}
 
 
-#BC_orphans { margin-bottom:1em; border-bottom:2px solid #bfd6e3; padding:0.25em 0em 1em 0em }
+#BC_orphans { margin:-1.05em -1.05em 1.05em; border-bottom:1px solid #bfd6e3; background-color:#FAFAFA; padding:1.25em 1em 1em 1em; border-top-left-radius:3px; border-top-right-radius:3px; }
+
 @media (min-width: 1200px){
   #tr-minitoc, #tr-report{position:fixed;}  
 }
