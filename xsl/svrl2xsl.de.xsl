@@ -64,7 +64,7 @@
         <xsl:value-of select="'Fehler'"/>
       </xsl:when>
       <xsl:when test="$role eq 'warning'">
-        <xsl:value-of select="'Warnung'"/>
+        <xsl:value-of select="'Warnungen'"/>
       </xsl:when>
       <xsl:when test="$role = ('Info', 'info')">
         <xsl:value-of select="'Informationen'"/>
