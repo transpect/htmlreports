@@ -512,6 +512,16 @@
         <xslout:copy copy-namespaces="no">
           <xslout:apply-templates mode="#current"/>
           <style type="text/css">
+            button.fatal-error, button.fatal-error_notoggle, .BC_message.fatal-error, #BC_toggle_fatal-error.active{
+              color:#f2dede; 
+              background-color:#a94442;
+              border-color:#ebccd1;
+              font-weight:bold
+            }
+            button.fatal-error:hover, .fatal-error_notoggle:hover, #BC_toggle_fatal-error.active:hover{
+              background-color:#a94442;
+              color:#fff;
+            }
             button.error, button.error_notoggle, .BC_message.error, #BC_toggle_error.active{
               background-color:#f2dede; 
               color:#a94442;
