@@ -48,9 +48,11 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 #BC_family-label{font-size:1rem; }
 .BC_severity button {margin-right:5px}
 .BC_severity button {font-weight:bold}
+.BC_link button {min-width:30px}
 .BC_family-summary{ margin-bottom:0; }
 #tr-report .well {margin-bottom:0}
 #tr-report .checkbox {margin-top:5px; margin-bottom:5px}
+#tr-report .badge {background-color:#888} 
 #tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold}
 /* report message */
 #tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0}
@@ -70,5 +72,3 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 @media (max-width: 1200px){
   #tr-report.affix{ left:58.33333333% !important; /* fix wrong placement after affix */}
 }
-
-
