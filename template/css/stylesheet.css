@@ -1,7 +1,7 @@
 /* 
  * general
  */
-body { position:relative; padding:0; margin:0 !important; background-color: #f8f8f8;  }
+body { position:relative; padding:0; margin:0 !important; background-color: #f8f8f8 !important;  }
 main div.row {margin-right:0; margin-left:0}
 /*
  * fonts
