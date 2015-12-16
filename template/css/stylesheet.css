@@ -1,4 +1,4 @@
-/* 
+/*
  * general
  */
 body { position:relative; padding:0; margin:0 !important; background-color: #f8f8f8 !important;  }
@@ -7,7 +7,7 @@ main div.row {margin-right:0; margin-left:0}
  * fonts
  */
 #tr-topnav a, #tr-minitoc a, #tr-report *{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; }
-/* 
+/*
  * header
  */
 header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
@@ -17,7 +17,7 @@ header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
  #tr-footer{padding:15px 0;}
 /*
  *  content
- */ 
+ */
 #tr-content{box-shadow: 2px 2px 5px #ddd; background-color:#fff; border-radius:4px; padding:15px; font-family: Georgia, Times, serif}
 /* smooth transitions for minitoc and report */
 #tr-report.affix, #tr-minitoc-wrapper.affix {margin-top:-95px;
@@ -29,30 +29,30 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .navbar-toggle .icon-bar {background-color:#ccc}
 #tr-logo{padding:0 1rem 0 0;margin:0}
 
-/* 
+/*
  * minitoc
- */ 
+ */
  #tr-minitoc {max-width:23%; overflow-y:scroll; height:100%}
 .BC_minitoc{margin-left:1%}
 .BC_minitoc-item {padding-left:1rem; font-size:1.2rem; border-left: 2px solid #777; }
-.BC_minitoc-item a{padding:0 !important; color: #777 !important;}
+.BC_minitoc-item a{color: #777 !important; padding: 2px 0 !important}
 .BC_minitoc-item a:focus{background-color:inherit !important}
 .BC_minitoc-level-h2{padding-left:1.5rem !important;}
 /* scroll-spy hover */
 #tr-minitoc .active a{color:#e53935 !important;}
 #tr-minitoc .active {border-left: 2px solid #fff !important}
-/* 
+/*
  * report
  */
 #tr-report {font-size:1.2rem; color:#777; overflow-y:scroll; height:100%; padding-bottom:100px;}
-#BC_family-label{font-size:1rem; }
+.BC_family-label-collapse {width:20px}
 .BC_severity button {margin-right:5px}
 .BC_severity button {font-weight:bold}
 .BC_link button {min-width:30px}
 .BC_family-summary{ margin-bottom:0; }
 #tr-report .well {margin-bottom:0}
 #tr-report .checkbox {margin-top:5px; margin-bottom:5px}
-#tr-report .badge {background-color:#888} 
+#tr-report .badge {background-color:#888}
 #tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold}
 /* report message */
 #tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0}
@@ -66,7 +66,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 #BC_orphans { margin:-1.05em -1.05em 1.05em; border-bottom:1px solid #bfd6e3; background-color:#FAFAFA; padding:1.25em 1em 1em 1em; border-top-left-radius:3px; border-top-right-radius:3px; }
 
 @media (min-width: 1200px){
-  #tr-minitoc, #tr-report{position:fixed;}  
+  #tr-minitoc, #tr-report{position:fixed;}
 }
 
 @media (max-width: 1200px){
