@@ -22,10 +22,6 @@
     </h3>
   </xsl:template>
   
-  <xsl:template name="l10n:message-heading">
-    <h3>Meldung</h3>
-  </xsl:template>
-  
   <xsl:template name="l10n:fallback-for-removed-content">
     <span>Der Inhalt, auf den sich die Meldung bezieht, steht im aktuellen HTML-Rendering nicht zur Verfügung.
     	Es ist auch möglich, dass der Inhalt zwar vorhanden ist, aber zu wenig Informationen über seinen Ursprung miführt. 
@@ -51,10 +47,6 @@
 
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
     <li class="no-messages">OK</li>
-  </xsl:template>
-  
-  <xsl:template name="l10n:report-toggle-label">
-    <span id="BC_reportswitch-btn">Bericht anzeigen&#x2009;/&#x2009;verbergen</span>
   </xsl:template>
 
   <xsl:function name="l10n:severity-role-label" as="xs:string">

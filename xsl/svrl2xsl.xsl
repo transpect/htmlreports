@@ -12,8 +12,7 @@
   <xsl:param name="remove-srcpath" select="'yes'"/>
   <xsl:param name="max-errors-per-rule" as="xs:string?"/>
   <xsl:param name="severity-default-name" select="'no-role'" as="xs:string"/>
-  <!--  <xsl:param name="jQuery-uri" select="'https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'"/>
--->
+
   <xsl:param name="interface-language" select="'en'" as="xs:string"/>
   <xsl:param name="file" as="xs:string?"/>
 
@@ -298,21 +297,7 @@
         <xslout:sequence select="$token = tokenize($space-separated-list, '\s+')"/>
       </xslout:function>
 
-      <xslout:variable name="src-dir-uri" select="/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content"
-        as="xs:string?"/>
-      <!--<xslout:key name="by-srcpath" match="*[@srcpath]" 
-        use="for $s in
-               if ($src-dir-uri) 
-               then 
-                 if (@srcpath = 'BC_orphans') 
-                 then 'BC_orphans'
-                 else 
-                   if (@srcpath = '')
-                   then $src-dir-uri
-                   else for $s in tokenize(@srcpath, '\s+') 
-                        return string-join(($src-dir-uri[not(starts-with($s, 'file:'))], $s), '') 
-               else tokenize(@srcpath, '\s+')
-             return ($s, replace($s, ';n=\d+$', ''))"/>-->
+      <xslout:variable name="src-dir-uri" select="/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content" as="xs:string?"/>
 
       <xslout:template match="*[@srcpath]" mode="create-fallback">
         <xslout:variable name="expanded" as="xs:string*">
@@ -383,10 +368,6 @@
       <xslout:template match="html:body" mode="create-fallback">
         <xslout:copy>
           <xslout:apply-templates select="@*, node()" mode="#current"/>
-          <!--<div class="BC_fallback" xmlns="http://www.w3.org/1999/xhtml">
-            <xsl:apply-templates select="$linked-messages-grouped-by-srcpath/tr:document/tr:messages"
-              mode="create-fallback"/>
-          </div>-->
           <script type="text/javascript">
             $( document ).ready(function() {
             
@@ -556,226 +537,9 @@
               color:#33691e 
               }
           </style>
-          <!--<script>
-            <script type="text/javascript">
-              <xsl:call-template name="project-specific-js"/>
-              $(document).ready(function() {
-              
-              $("span.BC_marker").click(function () {
-                var message = $(this).next().clone();
-                message.toggle();
-                $("#BC_msg").empty().append(message);
-              }); 
-              
-              $("a.BC_link").click(function () {
-              var content = $(this).attr('href');
-              var message = $("span" + content).next().clone();
-              message.toggle();
-              $("#BC_msg").empty().append(message);
-              });
-              
-              $("ul.BC_severity li input").change(function () {
-              severityname = $(this).attr("name");
-              if ($(this).is(':checked')){
-              $("input." + severityname).prop('checked', true);
-              } else { 
-              $("input." + severityname).prop('checked', false);
-              }
-              });
-              
-              $(".BC_toggle").change(function () {
-              if($(this).is(':checked')){
-              $("span.BC_tooltip." + this.id.replace(/BC_toggle_/, "")).show();
-              $(this).next().show();
-              }
-              else {
-              $("span.BC_tooltip." + this.id.replace(/BC_toggle_/, "")).hide();
-              $(this).next().hide();
-              }
-              
-              });  
-                            
-              $('li.BC_family p').click(function () {
-              $(this).siblings('ul').slideToggle();
-              $(this).find('a').toggleClass('fold');
-              });
-              
-            </script>
-          </script>-->
         </xslout:copy>
       </xslout:template>
 
-      <!--<xslout:template match="html:head">
-        <xslout:copy copy-namespaces="no">
-          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-          <meta http-equiv="cache-control" content="no-cache" />
-          <meta http-equiv="pragma" content="no-cache" />
-          <xslout:copy-of select="@*, node()" copy-namespaces="no"/>
-          <style type="text/css">
-            /* 
-             *  General Layout 
-             */
-            body{background-color:#333; margin:0}
-            /* 
-             *  General Layout 
-             */
-            #BC_header{padding: 0.5% 3% 0.5% 3%; background-color:#231f20; color:#fff; }
-            #BC_logo{top: 1%; left:3%; position:absolute;  height:40px; width:200px}
-            #BC_mainwrapper{margin:2% 3% 2% 3%;}
-            /* 
-             *  Content Layout
-             */
-            #BC_orphans { margin-bottom: 1em; background-color: #EFEFEF;
-             background: repeating-linear-gradient(135deg, #DDDDDD, #DDDDDD 10px, #EEEEEE 10px, #EEEEEE 20px) repeat scroll 0 0 rgba(0, 0, 0, 0);
-             border-radius: 0.4em; min-height: 3em; margin-bottom: 1em;  padding: 0.25em 1em; vertical-align: middle; box-shadow:0.2em 0.2em 0.15em #999; overflow-y:auto; overflow-x:hidden;}
-            #BC_orphans span.BC_tooltip { float:left; margin-bottom:0.2em; text-indent:0 }
-            #BC_reportmenu, #BC_reportswitch { position:fixed; left:65%; display:block; float:right; width:35%; 
-            z-index:101; font-family:Calibri, Helvetica, sans-serif;}
-            #BC_reportswitch {display:none; color: #eee; margin-top: -1.5%; text-align: right;}
-            #BC_reportswitch-btn {cursor:pointer; margin-right:2%; font-size:0.8em; font-family:Calibri, Helvetica, sans-serif; background-color:#333; font-weight:bold; border-radius:0.4em; padding:1%}
-            #BC_content{ float:left; width:60%; background-color:#fff; padding:1% 2% 1% 2%; margin:0 0 1% 0;  } 
-            #BC_content, #BC_nav, #BC_msg_container{border-radius:0.4em; box-shadow:0.2em 0.2em 0.15em #000;}
-            .BC_content_wide {width:95% !important}
-            #BC_nav, #BC_msg_container{background-color:#efefef; margin:0 0 7% 0; padding:1% 2% 1% 2%; max-height:20em;
-            overflow-y:scroll; overflow-x:hidden; font-family:Calibri, Helvetica, sans-serif;}
-            #BC_msg_container a { color: #8080d0; }
-            #BC_nav ul { padding: 0; margin: 0.4em 0}
-            #BC_nav p.BC_family-label { margin: 0.5em 0.2em 0.2em 0 }
-            #BC_reportmenu h3{font-size:0.8em; font-weight:bold; margin: 0.8em 0; text-transform:uppercase; font-family:Cambria, serif; }
-            #clear-float{clear:both}
-            /* 
-             *  Page Title
-             */
-             #BC_title{font-size:0.9em; text-align:right; font-family: Calibri, Helvetica, sans-serif; }
-            /* 
-             *  Logo
-             */
-            #BC_logo{background-image:url('logo.png'); background-repeat:no-repeat;}
-            
-            .wow { font-family: "Comic Sans", "Comic Sans MS", cursive; font-size: larger; color: fuchsia }
-            .doge { display:none; font-family: "Comic Sans", "Comic Sans MS", cursive; z-index: 1337; }
-            #BC_logo img {position: fixed; z-index: 22222 }
-            #doge1 { position: fixed; top: 0%; left:25%; color: #0f0; font-size:640%; text-shadow: 5px 4px 0 #eee,7px 6px 0 #707070;}
-            #doge2 { position: fixed; top: 10%; left:50%; color: magenta; font-size:540%; font-weight:bold; text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de, 0 0 100px #ff00de, 0 0 150px #ff00de;}
-            #doge3 { position: fixed; bottom: 5%; left:45%; color: yellow; font-size:480%; font-weight:bold; text-shadow: 3pt 2pt goldenrod; letter-spacing:.5em; }
-            #doge4 { position: fixed; top: 40%; left:20%; color: cyan; font-size:420%; color: rgba(0,168,255,0.5); text-shadow:
-            3px 2px 0 rgba(255,0,180,0.5); }
-            #doge5 { position: fixed; bottom: 10%; left:12%; color: red; font-size:720%; font-weight:bold ; text-shadow: 3pt 2pt yellow; -moz-transform: rotate(30deg); -ms-transform: rotate(30deg); -o-transform: rotate(30deg); -webkit-transform: rotate(30deg); }
-            #doge6 { position: fixed; bottom: 20%; right:5%; color: #a54a2a; font-size:540%; text-shadow: 3pt 2pt #cb4 }
-            /* start report bar*/
-            .BC_family{text-transform:uppercase}
-            .BC_family, .BC_severity, #BC_msg{font-size:0.8em}
-            .BC_severity li, .BC_warning, li.no-messages{text-indent:1em; text-transform:none}
-            li.no-messages{ color:#5aba16; font-weight:bold; }
-            span.BC_tooltip_description span.label { font-weight:bold; font-size:114%; display:inline-block; padding:0.25em; margin:0em 0em 0.5em 0em;}
-            span.BC_step-name { display:block; text-align:right; font-weight:normal; font-style:italic; font-size:smaller }
-            
-            /* fallback for removed content */
-            div.BC_fallback { margin-top: 1em; background-color: #EFEFEF;
-             background: repeating-linear-gradient(135deg, #DDDDDD, #DDDDDD 10px, #EEEEEE 10px, #EEEEEE 20px) repeat scroll 0 0 rgba(0, 0, 0, 0);
-             border-radius: 0.4em; min-height: 3em; margin-bottom: 1em;  padding: 0.25em 1em; vertical-align: middle; box-shadow:0.2em 0.2em 0.15em #999; overflow-y:auto; overflow-x:hidden;}
-            div.BC_fallback span.BC_srcpath { font-size:small; font-family: monospace; }
-            
-            /* warning messages */
-            .BC_tooltip{background-color:#eed; }
-            .BC_tooltip_description{display:none}
-            .error_notoggle{ color:#df0101; font-weight:bold}
-            .error{background-color:#ff4400; }
-            
-            input.BC_toggle{ padding-right:0.2em; width:15px;height:15px; vertical-align:middle;}
-            .fatal-error, .fatal-error_notoggle, .fatal-error_notoggle ul { background-color:#c23; color:#fff; font-weight:bold; text-indent:0em;}
-            .warning, .warning_notoggle{ background-color:#ff6; text-indent:0em;}
-            .Info, .Info_notoggle, .info, .info_notoggle{ background-color:#79D0DB; text-indent:0em; }
-            .BC_top ul li{list-style-type:none; margin-top:0.3em;}
-            .BC_top li p{margin-top:0;margin-bottom:0}
-            .BC_tooltip_description.fatal-error_notoggle, .BC_tooltip_description.warning_notoggle, .BC_tooltip_description.error_notoggle, .BC_tooltip_description.Info_notoggle, .BC_tooltip_description.info_notoggle{ text-indent:0em; display:none; }
-            .BC_link{ font-size:small; background-color:#f7f7f7; text-decoration:none; opacity:0.8 }
-            .BC_link:hover{ background-color:#ddd; }
-            span.BC_marker { cursor: pointer }
-            span.BC_tooltip{ font-family:Calibri, Helvetica, sans-serif; font-size:10pt; font-weight:normal; font-style:normal; padding:0 0.4em; width:2.5em; margin-right:0.5em;}
-            ul.BC_severity li{ list-style-type:none; display:inline-block; margin-right:2em; }
-            
-            p.BC_family-label a:before {
-              content: "−";
-              color: #eee;
-              background-color: #666;
-              padding: 0 0.2em;
-              margin-right: 0.2em;
-            }
-            p.BC_family-label a.fold:before {
-              content: "+";
-            }
-
-            /* misc. good default values */
-            img {max-width:100%}
-            
-            /* end report bar*/
-            <xsl:call-template name="project-specific-css"/>
-          </style>
-
-          <!-\-<xsl:sequence select="$keypress"/>-\->
-          <xslout:text>&#xa;</xslout:text>
-          <!-\-<xsl:sequence select="$mathjax"/>-\->
-          <xslout:text>&#xa;</xslout:text>
-          <!-\-<xsl:sequence select="$jquery"/>-\->
-          
-          <script type="text/javascript">
-            <xsl:call-template name="project-specific-js"/>
-            $(document).ready(function() {
-        
-               $("span.BC_marker").click(function () {
-                 var message = $(this).next().clone();
-                 message.toggle();
-                 $("#BC_msg").empty().append(message);
-               }); 
-               
-               $("a.BC_link").click(function () {
-                 var content = $(this).attr('href');
-                 var message = $("span" + content).next().clone();
-                 message.toggle();
-                 $("#BC_msg").empty().append(message);
-               });
-                  
-              <!-\- toggle messages of types fatal error, error, warning, $severity-default-name and other -\->
-              $("ul.BC_severity li input").change(function () {
-                severityname = $(this).attr("name");
-                if ($(this).is(':checked')){
-                  $("input." + severityname).prop('checked', true);
-                } else { 
-                  $("input." + severityname).prop('checked', false);
-                }
-              });
-
-              $(".BC_toggle").change(function () {
-                if($(this).is(':checked')){
-                  $("span.BC_tooltip." + this.id.replace(/BC_toggle_/, "")).show();
-                  $(this).next().show();
-                }
-                else {
-                 $("span.BC_tooltip." + this.id.replace(/BC_toggle_/, "")).hide();
-                 $(this).next().hide();
-                }
-               
-              });  
-            
-              $("#BC_reportswitch").show();
-              $("#BC_reportswitch").click(function(){
-                $("#BC_reportmenu").toggle();
-                $("#BC_content").toggleClass("BC_content_wide");
-              });
-              
-              $('li.BC_family p').click(function () {
-                $(this).siblings('ul').slideToggle();
-                $(this).find('a').toggleClass('fold');
-              });
-              
-              keypress.sequence_combo("w o w", function() {
-                $(".doge").toggle();
-              }, false);
-            });
-          </script>
-        </xslout:copy>
-      </xslout:template>-->
 
       <!--  *
             * custom title
@@ -800,47 +564,14 @@
         <xslout:copy copy-namespaces="no">
           <xslout:apply-templates select="@*"/>
           <div class="BC_summary">
-            <!--          <div id="doge1" class="doge">very check</div>
-          <div id="doge2" class="doge">so demo</div>
-          <div id="doge3" class="doge">amaze</div>
-          <div id="doge4" class="doge">such open sauce</div>
-          <div id="doge5" class="doge">wow</div>
-          <div id="doge6" class="doge">much 
-            <xsl:value-of select="if ($file) then replace($file, '^.+\.', '') else 'data'"/>
-          </div>
-          
-          <div id="BC_logo" xmlns="http://www.w3.org/1999/xhtml">
-            <xsl:sequence select="$doge"/>
-          </div>-->
-            <!--<div id="BC_mainwrapper" xmlns="http://www.w3.org/1999/xhtml">-->
-            <!--<div id="BC_reportswitch">
-                <xsl:call-template name="l10n:report-toggle-label"/>
-              </div>-->
-            <!--<div id="BC_reportmenu">-->
-            <!--<div id="BC_nav" class="BC_top">-->
-            <!--<xsl:call-template name="l10n:severity-heading"/>-->
             <xsl:if test="//*:text[parent::svrl:successful-report | parent::svrl:failed-assert][not(../@role)]">
               <xsl:message>INFO: There are messages without a role attribute. These are moved to severity
                   &quot;<xsl:value-of select="$severity-default-role"/>&quot;.</xsl:message>
             </xsl:if>
 
-            <!--<xsl:call-template name="l10n:rules-heading">
-                    <xsl:with-param name="display-note" as="xs:boolean"
-                      select="$maxerr gt 0
-                      and (
-                      some $count in (
-                      for $m in $messages-grouped-by-type/tr:document/tr:messages 
-                      return count($m/tr:message)
-                      )
-                      satisfies ($count gt $maxerr)
-                      )"/>
-                    <xsl:with-param name="max-errors" as="xs:string" select="$max-errors-per-rule"/>
-                  </xsl:call-template>-->
-
             <!--  *
                   * report: severity filter 
                   * -->
-            <xsl:call-template name="l10n:severity-heading"/>
 
             <div class="BC_severity">
               <xsl:for-each-group
@@ -853,12 +584,6 @@
                   <xsl:value-of select="l10n:severity-role-label(current-grouping-key())"/>
                 </button>
                 
-                <!-- list each severity category -->
-                <!--<label class="checkbox-inline">
-                  <input type="checkbox" checked="checked" class="checkbox BC_toggle"
-                    id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}"/>
-                  <xsl:value-of select="l10n:severity-role-label(current-grouping-key())"/>
-                </label>-->
               </xsl:for-each-group>
             </div>
 
@@ -953,25 +678,9 @@
                   * -->
 
             <div xml:id="BC_msg_container" id="BC_msg_container" class="BC_top">
-              <xsl:call-template name="l10n:message-heading"/>
               <div xml:id="BC_msg" id="BC_msg"/>
             </div>
-            <!--</div>-->
-            <!-- process main content -->
-
-            <!--<div xml:id="BC_content" id="BC_content">
-              <xslout:apply-templates mode="#current"/>
-            </div>-->
-            <!-- clear float div -->
-            <!--<div id="clear-float"/>-->
-            <!--</div>-->
-
-
-
           </div>
-
-
-
 
         </xslout:copy>
       </xslout:template>
@@ -1048,20 +757,8 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template name="l10n:message-heading" xmlns="http://www.w3.org/1999/xhtml">
-    <!--<h3>Message</h3>-->
-  </xsl:template>
-
-  <xsl:template name="l10n:severity-heading" xmlns="http://www.w3.org/1999/xhtml">
-    <!--<h3>Filter</h3>-->
-  </xsl:template>
-
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
     <li class="BC_no-messages list-group-item">✓<span class="sr-only">Error:</span></li>
-  </xsl:template>
-
-  <xsl:template name="l10n:report-toggle-label" xmlns="http://www.w3.org/1999/xhtml">
-    <button id="BC_reportswitch-btn" type="button" class="btn btn-default">hide&#x2009;/&#x2009;show report</button>
   </xsl:template>
 
   <xsl:function name="tr:ignored-in-html" as="xs:boolean">
@@ -1119,8 +816,7 @@
         <xsl:value-of select="@occurrence"/>
       </button>
       <xsl:variable name="previous-message" select="preceding::tr:message[@type eq $type][1]" as="element(tr:message)?"/>
-      <!--<xsl:message select="'ääääääää&#xa;', xs:string($previous-message/@xml:id), xs:string($previous-message/@type), '#&#xa;', 
-        xs:string(@xml:id), xs:string($type), '&#xa;####'"></xsl:message>-->
+      
       <xsl:if test="exists($previous-message)">
         <a class="BC_link" href="#{$previous-message/@xml:id}">
           <button class="btn btn-default btn-xs {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
@@ -1151,21 +847,6 @@
         </div>
       </div>
 
-
-      <!--<span class="BC_tooltip_description {@severity}_notoggle" title="{@type}">
-        <span class="label {@severity}">
-          <xsl:value-of select="@rendered-key"/>
-          <xsl:value-of select="@occurrence"/>
-        </span>
-        <br/>
-        <xsl:apply-templates select="(svrl:diagnostic-reference[@xml:lang eq $interface-language], *:text)[1]"
-          mode="#current"/>
-        <br/>
-        <xsl:if test="@adjusted-from">
-          <xsl:call-template name="l10n:adjusted-srcpath"/>
-        </xsl:if>
-        <xsl:call-template name="l10n:step-name"/>
-      </span>-->
     </span>
     <xsl:text>&#x200b;</xsl:text>
     <!-- allow line breaks -->
@@ -1187,11 +868,6 @@
       that did not retain its location information during conversion. The message might now be attached to the
       surrounding paragraph or even to another paragraph nearby.</p>
   </xsl:template>
-
-  <!-- unwrap rich text messages that are wrapped in a p. No, we won’t, although it’s illegal in inline context -->
-  <!--<xsl:template match="*:text/html:p" mode="create-template">
-    <xsl:apply-templates mode="render-message"/>
-  </xsl:template>-->
 
   <!-- Allow HTML markup in the XHTML namespace in messages: -->
   <xsl:template match="html:* | @*" mode="create-template render-message" xmlns="http://www.w3.org/1999/xhtml">
