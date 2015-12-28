@@ -14,6 +14,7 @@ main div.row {margin-right:0; margin-left:0}
  * header
  */
 header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
+#tr-logo{padding:0 1rem 0 0;margin:0}
 /*
  * footer
  */
