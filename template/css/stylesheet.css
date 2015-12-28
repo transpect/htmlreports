@@ -27,7 +27,6 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 #tr-minitoc-wrapper.affix{position:relative}
 
 .navbar-toggle .icon-bar {background-color:#ccc}
-#tr-logo{padding:0 1rem 0 0;margin:0}
 
 /*
  * minitoc
@@ -49,21 +48,24 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .BC_severity button {margin-right:5px}
 .BC_severity button {font-weight:bold}
 .BC_link button {min-width:30px}
-.BC_family-summary{ margin-bottom:0; }
+.BC_family-summary{ margin-bottom:0; border-style:none}
 #tr-report .well {margin-bottom:0}
-#tr-report .checkbox {margin-top:5px; margin-bottom:5px}
+#tr-report .checkbox {margin-top:2px; margin-bottom:2px}
 #tr-report .badge {background-color:#888}
 #tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold}
 /* report message */
 #tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0}
-#tr-report li.BC_tooltip{ padding: 5px 15px}
+#tr-report li.BC_tooltip{ padding: 5px 15px; border-style:none}
 #tr-report .BC_link{color:#337ab7 !important}
 .BC_message, .BC_tooltip{font-size:1.2rem !important}
 .BC_step-name{font-weight:normal; font-style:italic; font-size:10px; margin-top:0.6rem}
 .BC_error_count{font-size:1rem}
 
 
-#BC_orphans { margin:-1.05em -1.05em 1.05em; border-bottom:1px solid #bfd6e3; background-color:#FAFAFA; padding:1.25em 1em 1em 1em; border-top-left-radius:3px; border-top-right-radius:3px; }
+#BC_orphans { /* tbd */ }
+
+/* remove box shadow from buttons */
+.btn.active, .btn:active{ box-shadow:none; -webkit-box-shadow:none }
 
 @media (min-width: 1200px){
   #tr-minitoc, #tr-report{position:fixed;}
