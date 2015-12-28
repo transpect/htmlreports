@@ -53,7 +53,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .BC_severity button {margin-right:5px}
 .BC_severity button {font-weight:bold}
 .BC_link button {min-width:30px}
-.BC_family-summary{ margin-bottom:0; border-style:none}
+.BC_family-summary{ margin:0; border-style:none}
 #tr-report .well {margin-bottom:0}
 #tr-report .checkbox {margin: 3px 0}
 #tr-report .badge {background-color:#888}
