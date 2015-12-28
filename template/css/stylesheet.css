@@ -14,7 +14,7 @@ main div.row {margin-right:0; margin-left:0}
  * header
  */
 header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
-#tr-logo{padding:0 1rem 0 0;margin:0}
+#tr-logo{padding:0 1rem 0 0;margin:0; width:50px; height:50px; background:no-repeat url('../icons/logo-transpect.svg');}
 /*
  * footer
  */
@@ -35,7 +35,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 /*
  * minitoc
  */
- #tr-minitoc {max-width:23%; overflow-y:scroll; height:100%}
+ #tr-minitoc {max-width:23%; width:23%; overflow-y:scroll; height:100%}
 .BC_minitoc{margin-left:1%}
 .BC_minitoc-item {padding-left:1rem; font-size:1.2rem; border-left: 2px solid #777; }
 .BC_minitoc-item a{color: #777 !important; padding: 2px 0 !important}
