@@ -3,6 +3,9 @@
  */
 body { position:relative; padding:0; margin:0 !important; background-color: #f8f8f8 !important;  }
 main div.row {margin-right:0; margin-left:0}
+
+.btn.active, .btn:active, .btn:hover, .btn:focus, .btn, .list-group, .list-group-item, .list-group-item:first-child, .list-group-item:last-child, .well{ box-shadow:none; -webkit-box-shadow:none; border-radius:1px; border-style:none}
+ 
 /*
  * fonts
  */
@@ -44,18 +47,19 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
  * report
  */
 #tr-report {font-size:1.2rem; color:#777; overflow-y:scroll; height:100%; padding-bottom:100px;}
+.BC_family-label{padding: 10px 10px;}
 .BC_family-label-collapse {width:20px}
 .BC_severity button {margin-right:5px}
 .BC_severity button {font-weight:bold}
 .BC_link button {min-width:30px}
 .BC_family-summary{ margin-bottom:0; border-style:none}
 #tr-report .well {margin-bottom:0}
-#tr-report .checkbox {margin-top:2px; margin-bottom:2px}
+#tr-report .checkbox {margin: 3px 0}
 #tr-report .badge {background-color:#888}
 #tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold}
 /* report message */
 #tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0}
-#tr-report li.BC_tooltip{ padding: 5px 15px; border-style:none}
+#tr-report li.BC_tooltip{ padding: 5px 10px; border-style:none}
 #tr-report .BC_link{color:#337ab7 !important}
 .BC_message, .BC_tooltip{font-size:1.2rem !important}
 .BC_step-name{font-weight:normal; font-style:italic; font-size:10px; margin-top:0.6rem}
@@ -63,9 +67,6 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 
 
 #BC_orphans { /* tbd */ }
-
-/* remove box shadow from buttons */
-.btn.active, .btn:active{ box-shadow:none; -webkit-box-shadow:none }
 
 @media (min-width: 1200px){
   #tr-minitoc, #tr-report{position:fixed;}
