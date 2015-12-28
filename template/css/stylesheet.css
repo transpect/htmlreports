@@ -22,7 +22,7 @@ header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
 /*
  *  content
  */
-#tr-content{background-color:#fff; border-radius:4px; padding:15px; font-family: Georgia, Times, serif}
+#tr-content{background-color:#fff; padding:15px; font-family: Georgia, Times, serif}
 /* smooth transitions for minitoc and report */
 #tr-report.affix, #tr-minitoc-wrapper.affix {margin-top:-95px;
 -webkit-transition: background .5s ease-in-out,margin .5s ease-in-out;
