@@ -747,16 +747,6 @@
     </xslout:stylesheet>
   </xsl:template>
 
-  <xsl:template name="l10n:rules-heading" xmlns="http://www.w3.org/1999/xhtml">
-    <xsl:param name="display-note" as="xs:boolean"/>
-    <xsl:param name="max-errors" as="xs:string"/>
-    <h3>Rules</h3>
-    <xsl:if test="$display-note">
-      <p style="font-size:0.8em; margin: 0 0 0.8em 0">Please note that no more than <xsl:value-of
-          select="$max-errors-per-rule"/> messages will be displayed for each rule.</p>
-    </xsl:if>
-  </xsl:template>
-
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
     <li class="BC_no-messages list-group-item">✓<span class="sr-only">Error:</span></li>
   </xsl:template>

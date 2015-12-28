@@ -9,18 +9,6 @@
   <xsl:import href="svrl2xsl.xsl"/>
   
   <xsl:decimal-format decimal-separator="," grouping-separator="&#x2009;"/>
-
-  <xsl:template name="l10n:rules-heading">
-    <xsl:param name="display-note" as="xs:boolean"/>
-    <xsl:param name="max-errors" as="xs:string"/>
-    <h3>Prüfregeln 
-      <xsl:if test="$display-note">
-        <br/>
-        <span style="font-size:small; font-weight:normal">Es werden höchstens 
-          <xsl:value-of select="$max-errors-per-rule"/> Meldungen für jede Prüfregel angezeigt.</span>
-      </xsl:if>
-    </h3>
-  </xsl:template>
   
   <xsl:template name="l10n:fallback-for-removed-content">
     <span>Der Inhalt, auf den sich die Meldung bezieht, steht im aktuellen HTML-Rendering nicht zur Verfügung.
