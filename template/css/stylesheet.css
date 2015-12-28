@@ -3,7 +3,8 @@
  */
 body { position:relative; padding:0; margin:0 !important; background-color: #f8f8f8 !important;  }
 main div.row {margin-right:0; margin-left:0}
-.btn.active, .btn:active, .btn:hover, .btn:focus, .btn, .list-group, .list-group-item, .list-group-item:first-child, .list-group-item:last-child, .well{ box-shadow:none; -webkit-box-shadow:none; border-radius:1px; border-style:none}
+.btn.active, .btn.disabled, .btn:active, .btn:hover, .btn:focus, .btn, .btn-default.active, .btn-default:active,
+.list-group, .list-group-item, .list-group-item:first-child, .list-group-item:last-child, .well{ box-shadow:none !important; -webkit-box-shadow:none !important; border-radius:0 !important; border-style:none !important}
  
 /*
  * fonts
