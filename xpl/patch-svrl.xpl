@@ -106,6 +106,7 @@
     <p:with-option name="fail-on-error" select="'false'">
       <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
     </p:with-option>
+    <p:with-option name="debug" select="$debug"/>
   </tr:html-embed-resources>
 
   <p:delete name="filter-document" match="@xml:base">
@@ -176,6 +177,7 @@
     <p:with-option name="fail-on-error" select="'false'">
       <p:documentation>sometimes resources such as CSS overrides in the content repository don't exist</p:documentation>
     </p:with-option>
+    <p:with-option name="debug" select="$debug"/>
   </tr:html-embed-resources>
   
   <tr:store-debug pipeline-step="htmlreports/template-with-data-uris" extension="html">
