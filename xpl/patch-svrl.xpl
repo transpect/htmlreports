@@ -21,6 +21,10 @@
   <p:option name="report-title" required="false" select="''"/>
   <p:option name="show-adjusted-srcpath" select="'yes'"/>
   <p:option name="show-step-name" select="'yes'"/>
+  <p:option name="suppress-embedding" select="''">
+    <p:documentation>Space-separated list of tokens. Available tokens are: image video script style audio object #all.
+    The documentation in tr:html-embed-resources could be more up to date.</p:documentation>
+  </p:option>
 
   <p:input port="source" primary="true">
     <p:documentation>An XML document with srcpath attributes. Typically an XHTML rendering.</p:documentation>
@@ -103,6 +107,7 @@
     <p:input select="/html:html" port="source">
       <p:pipe port="source" step="patch-svrl"/>
     </p:input>
+    <p:with-option name="exclude" select="$suppress-embedding"/>
     <p:with-option name="fail-on-error" select="'false'">
       <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
     </p:with-option>
@@ -177,6 +182,7 @@
     <p:with-option name="fail-on-error" select="'false'">
       <p:documentation>sometimes resources such as CSS overrides in the content repository don't exist</p:documentation>
     </p:with-option>
+    <p:with-option name="exclude" select="$suppress-embedding"/>
     <p:with-option name="debug" select="$debug"/>
   </tr:html-embed-resources>
   
