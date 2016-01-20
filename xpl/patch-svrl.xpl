@@ -146,6 +146,8 @@
     <p:with-option name="base-uri" select="$debug-dir-uri"/>
   </tr:store-debug>
   
+  <!-- insert content html into template -->
+  
   <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="inject-body">
     <p:input port="insertion" select="/html:html/html:body/*">
       <p:pipe port="result" step="filter-document"/>
@@ -162,7 +164,9 @@
     </p:input>
   </p:insert>
   
-  <p:insert match="/html:html/html:head" position="last-child" name="inject-head">
+  <!-- insert html head of content file into template -->
+  
+  <p:insert match="/html:html/html:head" position="first-child" name="inject-head">
     <p:input port="insertion" 
       select="/html:html/html:head/(html:link[@type eq 'text/css'] 
                                     | html:style
