@@ -504,13 +504,13 @@
               color:#fff;
             }
             button.error, button.error_notoggle, .BC_message.error, #BC_toggle_error.active{
-            background-color:#fc9a8d; 
-              color:#c44442;
+              background-color:#fc9a8d; 
+              color:#973433;
               border-color:#ebccd1;
               font-weight:bold
             }
             button.error:hover, .error_notoggle:hover, #BC_toggle_error.active:hover{
-              background-color:#f2dede;
+              background-color:#fc9a8d;
               color:#fff;
             }
             button.warning, .warning_notoggle, .BC_message.warning, #BC_toggle_warning.active{
