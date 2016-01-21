@@ -34,7 +34,7 @@
   </xsl:template>
 
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
-    <li class="no-messages">OK</li>
+    <li class="BC_no-messages list-group-item">✓<span class="sr-only">Fehler:</span></li>
   </xsl:template>
 
   <xsl:function name="l10n:severity-role-label" as="xs:string">
