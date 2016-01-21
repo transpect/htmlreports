@@ -20,6 +20,9 @@
   <xsl:param name="show-adjusted-srcpath" select="'yes'" as="xs:string"/>
   <xsl:param name="show-step-name" select="'yes'" as="xs:string"/>
 
+  <xsl:param name="r-value" as="xs:string" select="'''ff'''"/>
+  <xsl:param name="b-value" as="xs:string" select="'''00'''"/>
+  
   <xsl:variable name="html-with-srcpaths" select="collection()[2]" as="document-node(element(html:html))"/>
 
   <xsl:variable name="severity-default-role" as="attribute(role)">
@@ -298,7 +301,10 @@
       </xslout:function>
 
       <xslout:variable name="src-dir-uri" select="/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content" as="xs:string?"/>
-
+      
+      <xslout:variable name="r-value" as="xs:string" select="{$r-value}"/>
+      <xslout:variable name="b-value" as="xs:string" select="{$b-value}"/>
+      
       <xslout:template match="*[@srcpath]" mode="create-fallback">
         <xslout:variable name="expanded" as="xs:string*">
           <xslout:for-each select="tokenize(@srcpath, '\s+')">
@@ -715,7 +721,7 @@
               <xslout:variable name="href" select="concat('#scroll-', generate-id(.))"/>
               <xslout:variable name="class" select="concat('BC_minitoc-item BC_minitoc-level-', local-name())"/>
               <li>
-                <xslout:attribute name="style" select="concat('border-left: 2px solid #ff', $fill-value, $color-value, '00')"/>
+                <xslout:attribute name="style" select="concat('border-left: 2px solid #', $r-value, $fill-value, $color-value, $b-value)"/>
                 <xslout:attribute name="class" select="$class"/>
                 <a class="page-scroll">
                   <xslout:attribute name="href" select="$href"/>
