@@ -504,8 +504,8 @@
               color:#fff;
             }
             button.error, button.error_notoggle, .BC_message.error, #BC_toggle_error.active{
-              background-color:#f2dede; 
-              color:#a94442;
+            background-color:#fc9a8d; 
+              color:#c44442;
               border-color:#ebccd1;
               font-weight:bold
             }
