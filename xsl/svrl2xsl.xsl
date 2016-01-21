@@ -809,15 +809,15 @@
       
       <xsl:if test="exists($previous-message)">
         <a class="BC_link" href="#{$previous-message/@xml:id}">
-          <button class="btn btn-default btn-xs {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
-            <span class="BC_arrow-up">&#x25b4;</span>
+          <button class="btn btn-default btn-xs BC_arrow-up {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
+            <span>&#x25b4;</span>
           </button>
         </a>
       </xsl:if>
       <xsl:if test="@href">
         <a class="BC_link" href="{@href}">
-          <button class="btn btn-default btn-xs {string-join((@type, @severity), '__')}">
-            <span class="BC_arrow-down">&#x25be;</span>
+          <button class="btn btn-default btn-xs BC_arrow-down {string-join((@type, @severity), '__')}">
+            <span>&#x25be;</span>
           </button>
         </a>
       </xsl:if>
