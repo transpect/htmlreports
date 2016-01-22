@@ -543,6 +543,12 @@
               color:#33691e 
               }
           </style>
+          <style type="text/css">
+            <xsl:call-template name="project-specific-css"/>
+          </style>
+          <script type="text/javascript">
+            <xsl:call-template name="project-specific-js"/>  
+          </script>
         </xslout:copy>
       </xslout:template>
 
