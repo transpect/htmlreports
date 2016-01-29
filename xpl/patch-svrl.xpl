@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc" 
   xmlns:c="http://www.w3.org/ns/xproc-step"  
+  xmlns:cx="http://xmlcalabash.com/ns/extensions"
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:tr="http://transpect.io"
   exclude-inline-prefixes="#all" 
@@ -132,7 +133,7 @@
         * the div with the id 'tr-content' 
         * -->
     
-  <tr:load-cascaded name="load-template" filename="htmlreports/template/template.html">
+  <tr:load-cascaded name="load-template" filename="htmlreports/template/template.html" cx:depends-on="html-embed-resources-before-delete">
     <p:with-option name="fallback" select="resolve-uri('../template/template.html')"/>
     <p:input port="paths">
       <p:pipe port="params" step="patch-svrl"/>
@@ -140,15 +141,20 @@
     <p:with-option name="debug" select="$debug"/>
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
   </tr:load-cascaded>
-  
-  <tr:store-debug pipeline-step="htmlreports/template-loaded" extension="html">
+    
+  <p:sink/>
+    
+  <tr:store-debug pipeline-step="template-loaded" extension="html" name="debug-load-template" cx:depends-on="load-template">
+    <p:input port="source">
+      <p:pipe port="result" step="load-template"/>
+    </p:input>
     <p:with-option name="active" select="$debug"/>
     <p:with-option name="base-uri" select="$debug-dir-uri"/>
   </tr:store-debug>
   
   <!-- insert content html into template -->
   
-  <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="inject-body">
+  <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="inject-body" cx:depends-on="load-template">
     <p:input port="insertion" select="/html:html/html:body/*">
       <p:pipe port="result" step="filter-document"/>
     </p:input>
@@ -156,7 +162,7 @@
   
   <!-- later, messages without srcpath are patched into this section -->
   
-  <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="create-element-for-orphaned-messages">
+  <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="create-element-for-orphaned-messages" cx:depends-on="inject-body">
     <p:input port="insertion">
       <p:inline>
         <div xmlns="http://www.w3.org/1999/xhtml" id="BC_orphans"><p srcpath="BC_orphans"/><p srcpath=""/></div>
@@ -166,7 +172,7 @@
   
   <!-- insert html head of content file into template -->
   
-  <p:insert match="/html:html/html:head" position="first-child" name="inject-head">
+  <p:insert match="/html:html/html:head" position="first-child" name="inject-head" cx:depends-on="create-element-for-orphaned-messages">
     <p:input port="insertion" 
       select="/html:html/html:head/(html:link[@type eq 'text/css'] 
                                     | html:style
@@ -182,7 +188,7 @@
   
   <!-- and this is where the magic happens. all extenal resources are embedded via data uri -->
   
-  <tr:html-embed-resources name="html-embed-resources">
+  <tr:html-embed-resources name="html-embed-resources" cx:depends-on="inject-head">
     <p:with-option name="fail-on-error" select="'false'">
       <p:documentation>sometimes resources such as CSS overrides in the content repository don't exist</p:documentation>
     </p:with-option>
@@ -218,7 +224,7 @@
 
   <p:sink/>
 
-  <p:xslt name="create-patch-xsl">
+  <p:xslt name="create-patch-xsl" cx:depends-on="load-svrl2xsl">
     <p:input port="source">
       <p:pipe step="reorder-messages-by-category" port="result">
         <p:documentation>The SVRL report.</p:documentation>
