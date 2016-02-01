@@ -144,7 +144,7 @@
     
   <p:sink/>
     
-  <tr:store-debug pipeline-step="template-loaded" extension="html" name="debug-load-template" cx:depends-on="load-template">
+  <tr:store-debug pipeline-step="htmlreports/template-loaded" extension="html" name="debug-load-template" cx:depends-on="load-template">
     <p:input port="source">
       <p:pipe port="result" step="load-template"/>
     </p:input>
