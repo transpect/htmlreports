@@ -445,8 +445,9 @@
         </xslout:copy>
       </xslout:template>
 
-      <xslout:template mode="remove-fallback"
-        match="html:div[@class = 'BC_fallback']/html:p[not(descendant::html:span[contains(@class, 'BC_marker')])]"/>
+      <xslout:template match="html:div[@class = 'BC_fallback']/html:p[not(descendant::html:span[contains(@class, 'BC_marker')])]" mode="remove-fallback"/>
+      
+      <xslout:template match="html:div[@id = 'BC_orphans'][not(html:p/node())]" mode="remove-fallback"/>
 
       <xslout:key name="message-link-target-without-srcpath-position"
         match="html:span[matches(@id, '^BC_[de\d]+_\d+$')]" use="concat('#', replace(@id, '^(.+)_\d+$', '$1'))"/>
