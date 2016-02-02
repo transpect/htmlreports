@@ -40,25 +40,30 @@
   <!-- if it ends in 'ok', no message should be generated -->
   <xsl:template match="processing-instruction()[not(matches(., '^\S+\sok$'))]">
     <xsl:param name="id" as="xs:string"/>
-    <xsl:variable name="actual-severity" as="xs:string">
-      <xsl:choose>
-        <xsl:when test="matches(., 'NFO')"><xsl:sequence select="'info'"/></xsl:when>
-        <xsl:when test="matches(., 'ERR')"><xsl:sequence select="'error'"/></xsl:when>
-        <xsl:when test="matches(., 'WRN')"><xsl:sequence select="'warning'"/></xsl:when>
-        <xsl:when test="matches(., 'NRE')"><xsl:sequence select="'fatal-error'"/></xsl:when>
-        <xsl:otherwise><xsl:sequence select="$severity"/></xsl:otherwise>
-      </xsl:choose>
+    <!-- determine severity by abbreviation of error types -->
+    <xsl:variable name="actual-severity" select="if(matches(., 'NFO')) then 'info'
+                                            else if(matches(., 'ERR')) then 'error'
+                                            else if(matches(., 'WRN')) then 'warning'
+                                            else if(matches(., 'NRE')) then 'fatal-error'
+                                            else $severity" as="xs:string">
     </xsl:variable>
-    <svrl:successful-report test="(: unknown :)" id="{$id}" role="{$actual-severity}" location="/">
+    <!-- try to get any element including an srcpath attribute near the error location -->
+    <xsl:variable name="srcpath" select="(ancestor::*[@srcpath][1]/@srcpath,
+                                          following-sibling::*[1][@srcpath]/@srcpath,
+                                          (..//@srcpath)[1],
+                                          preceding::*[@srcpath][1]/@srcpath,
+                                          following::*[@srcpath][1]/@srcpath
+                                          )[1]" as="xs:string?"/>
+    
+    <!--  * currently, we are not able to group schema validation errors by their type. 
+          * -->
+    <xsl:variable name="error-name" select="if($srcpath) 
+                                            then replace(tokenize($srcpath, '/')[last()], '\[\d+\]$', '') 
+                                            else $id" as="xs:string"/>
+    <svrl:successful-report test="(: unknown :)" id="{$error-name}" role="{$actual-severity}" location="/">
       <svrl:text>
         <span xmlns="http://purl.oclc.org/dsdl/schematron" class="srcpath">
-          <xsl:variable name="srcpath" select="(
-                                                 ancestor::*[@srcpath][1]/@srcpath,
-                                                 following-sibling::*[1][@srcpath]/@srcpath,
-                                                 (..//@srcpath)[1],
-                                                 preceding::*[@srcpath][1]/@srcpath,
-                                                 following::*[@srcpath][1]/@srcpath
-                                               )[1]" as="xs:string?"/>
+          
           <xsl:if test="not($srcpath)">
             <xsl:message>errorPI2svrl: could not find srcpath for PI <xsl:value-of select="string-join((name(), .), ': ')"/></xsl:message>
           </xsl:if>
