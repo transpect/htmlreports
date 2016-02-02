@@ -10,21 +10,22 @@
   <p:option name="debug" required="false" select="'no'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
   <p:option name="status-dir-uri" select="'status'"/>
-  
   <p:option name="pi-names" required="false" select="'letex'">
     <p:documentation>Space-separated names of processing instructions in the source document 
     that carry error messages.
     The PI text may convey additional error classification information. Example:
     &lt;?letex w2d-101 This is some error message.?&gt;</p:documentation>
-  </p:option>
+  </p:option>  
   <p:option name="severity" required="false" select="'warning'">
     <p:documentation>message | warning | error | fatal-error</p:documentation>
   </p:option>
   
   <p:input port="source" primary="true" />
+  
   <p:output port="result" primary="true">
     <p:pipe step="errorPI2svrl" port="source"/>
   </p:output>
+  
   <p:output port="report" sequence="true">
     <p:documentation>The errors that were encoded as PIs, now as SVRL documents.
       They may carry a @tr:rule-family attribute on the top-level element. It could

@@ -69,8 +69,37 @@
     </p:input>
     <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
   </tr:simple-progress-msg>
+  
+  <!--  * 
+        * embed resources in the source HTML file.  
+        * -->
+  
+  <tr:html-embed-resources name="html-embed-resources-before-delete">
+    <p:input select="/html:html" port="source">
+      <p:pipe port="source" step="patch-svrl"/>
+    </p:input>
+    <p:with-option name="exclude" select="$suppress-embedding"/>
+    <p:with-option name="fail-on-error" select="'false'">
+      <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
+    </p:with-option>
+    <p:with-option name="debug" select="$debug"/>
+  </tr:html-embed-resources>
+  
+  <p:delete name="filter-document" match="@xml:base">
+    <p:documentation>Just in case that there are blank lines in front of the XHTML -- these
+      will constitute an empty document by themselves. In addition, @xml:base attributes 
+      will give a funny link click experience.</p:documentation>
+  </p:delete>
+  
+  <tr:store-debug pipeline-step="htmlreports/filtered">
+    <p:with-option name="active" select="$debug"/>
+    <p:with-option name="base-uri" select="$debug-dir-uri"/>
+  </tr:store-debug>
 
   <p:sink/>
+
+  <!--  * wrap and regroup reports.  
+        * -->
 
   <p:wrap-sequence name="reports" wrapper="c:reports">
     <p:input port="source">
@@ -78,17 +107,12 @@
     </p:input>
   </p:wrap-sequence>
   
-  <p:sink/>
-  
-  <p:xslt name="reorder-messages-by-category">
+  <p:xslt name="reorder-messages-by-category" cx:depends-on="reports">
     <p:documentation>This XSLT will regroup the messages using a span in the asserts/reports. 
       The span's class used to regroup can be defined as te content of param name 'rule-category-span-class' in the parameter set. (For example ina  project specific transpect-conf.xml)
       The span's content will appear as a heading in the html report.
       If it isn't defined or no such spans occur the reports document will be reproduced. 
       If not every assert/report has a span with that class the original rule-family is used.</p:documentation>
-    <p:input port="source">
-      <p:pipe port="result" step="reports"/>
-    </p:input>
     <p:input port="parameters">
       <p:pipe port="params" step="patch-svrl"/>
     </p:input>
@@ -104,36 +128,12 @@
   
   <p:sink/>
   
-  <tr:html-embed-resources name="html-embed-resources-before-delete">
-    <p:input select="/html:html" port="source">
-      <p:pipe port="source" step="patch-svrl"/>
-    </p:input>
-    <p:with-option name="exclude" select="$suppress-embedding"/>
-    <p:with-option name="fail-on-error" select="'false'">
-      <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
-    </p:with-option>
-    <p:with-option name="debug" select="$debug"/>
-  </tr:html-embed-resources>
-
-  <p:delete name="filter-document" match="@xml:base">
-    <p:documentation>Just in case that there are blank lines in front of the XHTML -- these
-    will constitute an empty document by themselves. In addition, @xml:base attributes 
-    will give a funny link click experience.</p:documentation>
-  </p:delete>
-
-  <tr:store-debug pipeline-step="htmlreports/filtered">
-    <p:with-option name="active" select="$debug"/>
-    <p:with-option name="base-uri" select="$debug-dir-uri"/>
-  </tr:store-debug>
-
-  <p:sink/>
-  
   <!--  * load HTML template. The template is the base of 
         * the HTML report and the content is injected into 
         * the div with the id 'tr-content' 
         * -->
     
-  <tr:load-cascaded name="load-template" filename="htmlreports/template/template.html" cx:depends-on="html-embed-resources-before-delete">
+  <tr:load-cascaded name="load-template" filename="htmlreports/template/template.html">
     <p:with-option name="fallback" select="resolve-uri('../template/template.html')"/>
     <p:input port="paths">
       <p:pipe port="params" step="patch-svrl"/>
@@ -342,4 +342,5 @@
   </tr:simple-progress-msg>
 
   <p:sink/>
+  
 </p:declare-step>
