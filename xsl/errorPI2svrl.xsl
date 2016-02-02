@@ -7,6 +7,14 @@
   xmlns="http://purl.oclc.org/dsdl/svrl"
   exclude-result-prefixes="xs"
   version="2.0">
+  
+  <!--  * This stylesheet generates a SVRL from an XML document which contains 
+        * error messages as processing instructions (PI). Naturally, these PIs come 
+        * from our Calabash extension step rng-validate-to-PI.xpl.
+        * => http://transpect.io/calabash-extensions/rng-extension/xpl/rng-validate-to-PI.xpl
+        * The SVRL acts as input for the patch-svrl.xpl step which generates an 
+        * HTML report from the SVRL and a HTML document with @srcpath attributes.
+        * -->
 
   <xsl:output indent="yes"/>
 
@@ -55,7 +63,10 @@
                                           following::*[@srcpath][1]/@srcpath
                                           )[1]" as="xs:string?"/>
     
-    <!--  * currently, we are not able to group schema validation errors by their type. 
+    <!--  * currently, we are unable to group schema validation errors by their type, hence this would
+          * mean to parse the error message with regular expressions. Therefore we follow the approach to 
+          * group the error message by the element name. If this is not applicable, we use simply the name 
+          * of the former processing instruction.
           * -->
     <xsl:variable name="error-name" select="if($srcpath) 
                                             then replace(tokenize($srcpath, '/')[last()], '\[\d+\]$', '') 
