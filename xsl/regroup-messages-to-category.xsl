@@ -26,6 +26,7 @@
   
   <xsl:param name="rule-category-span-class" as="xs:string?"/>
   <xsl:param name="interface-language" as="xs:string?"/>
+  <xsl:param name="discard-epub-schematron-svrl" as="xs:string?"/>
   
   <xsl:template match="/*">
     <xsl:copy>
@@ -38,16 +39,18 @@
                             group-by="if (./*/s:span[@class = $rule-category-span-class]) 
                                       then (svrl:text/s:span[@class = $rule-category-span-class], svrl:diagnostic-reference[@xml:lang eq $interface-language]/s:span[@class = $rule-category-span-class])[1] 
                                       else parent::svrl:schematron-output/@tr:rule-family">
-                <svrl:schematron-output xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                  xmlns:schold="http://www.ascc.net/xml/schematron"
-                  xmlns:iso="http://purl.oclc.org/dsdl/schematron"
-                  xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                  tr:rule-family="{if (current-group()[svrl:diagnostic-reference[@xml:lang eq $interface-language]
-                                                                                       [s:span[@class = $rule-category-span-class]]]) 
-                                          then (current-group()/svrl:diagnostic-reference[@xml:lang eq $interface-language][s:span[@class = $rule-category-span-class]])[1]/s:span[@class = $rule-category-span-class]//text() 
-                                          else current-grouping-key()}">
-                  <xsl:apply-templates select="current-group()"/>
-                </svrl:schematron-output>
+            <xsl:if test="not($discard-epub-schematron-svrl = ('yes', 'true') and (current-grouping-key() = 'epubtools'))">
+                  <svrl:schematron-output xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
+                    xmlns:schold="http://www.ascc.net/xml/schematron"
+                    xmlns:iso="http://purl.oclc.org/dsdl/schematron"
+                    xmlns:xhtml="http://www.w3.org/1999/xhtml"
+                    tr:rule-family="{if (current-group()[svrl:diagnostic-reference[@xml:lang eq $interface-language]
+                    [s:span[@class = $rule-category-span-class]]]) 
+                    then (current-group()/svrl:diagnostic-reference[@xml:lang eq $interface-language][s:span[@class = $rule-category-span-class]])[1]/s:span[@class = $rule-category-span-class]//text() 
+                    else current-grouping-key()}">
+                    <xsl:apply-templates select="current-group()"/>
+                  </svrl:schematron-output>
+            </xsl:if>
           </xsl:for-each-group>
         </xsl:when>
         <xsl:otherwise>
@@ -56,6 +59,12 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="svrl:schematron-output[@tr:rule-family = 'epubtools']">
+    <xsl:if test="$discard-epub-schematron-svrl = 'no'">
+      <xsl:next-match/>
+    </xsl:if>
   </xsl:template>
   
   <xsl:template match="/">

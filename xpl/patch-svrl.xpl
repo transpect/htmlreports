@@ -22,6 +22,7 @@
   <p:option name="report-title" required="false" select="''"/>
   <p:option name="show-adjusted-srcpath" select="'yes'"/>
   <p:option name="show-step-name" select="'yes'"/>
+  <p:option name="discard-epub-schematron-svrl" select="'no'" required="false"/>
   <p:option name="suppress-embedding" select="''">
     <p:documentation>Space-separated list of tokens. Available tokens are: image video script style audio object #all.
     The documentation in tr:html-embed-resources could be more up to date.</p:documentation>
@@ -119,6 +120,7 @@
     <p:input port="stylesheet">
       <p:document href="../xsl/regroup-messages-to-category.xsl"/>
     </p:input>
+    <p:with-param name="discard-epub-schematron-svrl" select="($discard-epub-schematron-svrl, 'no')[1]"/>
   </p:xslt>
   
   <tr:store-debug pipeline-step="htmlreports/reports-regrouped">
