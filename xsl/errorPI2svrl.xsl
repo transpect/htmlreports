@@ -24,6 +24,8 @@
   <!-- message | warning | error | fatal-error -->
   <xsl:param name="severity" as="xs:string"/>
 
+  <xsl:param name="group-by-srcpath" as="xs:string"/>
+
   <!-- e.g., "RNG_tei-cssa: message text" -->
   <xsl:variable name="msg-regex" select="'^((\w+)[-_]([-_\w]+)):?\s+(.+)$'" as="xs:string"/>
 
@@ -68,7 +70,7 @@
           * group the error message by the element name. If this is not applicable, we use simply the name 
           * of the former processing instruction.
           * -->
-    <xsl:variable name="error-name" select="if($srcpath) 
+    <xsl:variable name="error-name" select="if($srcpath and $group-by-srcpath='yes') 
                                             then replace(tokenize($srcpath, '/')[last()], '\[\d+\]$', '') 
                                             else $id" as="xs:string"/>
     <svrl:successful-report test="(: unknown :)" id="{$error-name}" role="{$actual-severity}" location="/">
