@@ -7,6 +7,7 @@
   type="tr:errorPI2svrl" 
   name="errorPI2svrl">
 
+  <p:option name="group-by-srcpath" required="false" select="'yes'"/>
   <p:option name="debug" required="false" select="'no'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
   <p:option name="status-dir-uri" select="'status'"/>
@@ -61,6 +62,7 @@
       <p:document href="../xsl/errorPI2svrl.xsl"/>
     </p:input>
     <p:input port="parameters"><p:empty/></p:input>
+    <p:with-param name="group-by-srcpath" select="($group-by-srcpath,'yes')[1]"/>
     <p:with-param name="pi-names" select="$pi-names"/>
     <p:with-param name="severity" select="$severity"/>
   </p:xslt>
