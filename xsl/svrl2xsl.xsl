@@ -18,7 +18,6 @@
 
   <xsl:param name="report-title" select="'Report'" as="xs:string"/>
   <xsl:param name="show-adjusted-srcpath" select="'yes'" as="xs:string"/>
-  <xsl:param name="show-step-name" select="'yes'" as="xs:string"/>
 
   <xsl:param name="r-value" as="xs:string" select="'''ff'''"/>
   <xsl:param name="b-value" as="xs:string" select="'''00'''"/>
@@ -33,11 +32,6 @@
                                                       then xs:integer($max-errors-per-rule)
                                                       else 0"/>
 
-
-  <!--  <xsl:variable name="doge" as="element(html:img)" select="collection()/html:img[@id = 'doge']"/>
-  <xsl:variable name="jquery" as="element(html:script)" select="collection()/html:script[@id = 'jquery']"/>
-  <xsl:variable name="keypress" as="element(html:script)" select="collection()/html:script[@id = 'keypress']"/>
-  <xsl:variable name="mathjax" as="element(html:script)" select="collection()/html:script[@id = 'mathjax']"/>-->
 
   <xsl:namespace-alias stylesheet-prefix="xslout" result-prefix="xsl"/>
 
@@ -110,26 +104,20 @@
 
   <xsl:template match="svrl:text[tr:ignored-in-html(*:span[@class eq 'srcpath'])]" mode="collect-messages"/>
 
-  <xsl:template
-    match="svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert]
-                                [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))]"
-    mode="collect-messages">
+  <xsl:template match="svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert]
+                                [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))]" mode="collect-messages">
     <xsl:variable name="role" as="xs:string" select="(../@role, $severity-default-role)[1]"/>
     <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath(s:span[@class eq 'srcpath'])"/>
-    <xsl:variable name="adjusted-srcpath" as="xs:string*"
-      select="tr:adjust-to-existing-srcpaths(
-                                                                    $normalized-srcpath,
-                                                                    $all-document-srcpaths
-                                                                  )"/>
-    <tr:message
-      srcpath="{if (
-                                      every $ap in $adjusted-srcpath 
-                                      satisfies (ends-with($ap, '?xpath='))
+    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths)"/>
+    
+    <tr:message xml:id="BC_{generate-id()}" 
+                severity="{$role}" 
+                type="{ancestor-or-self::svrl:schematron-output/@tr:rule-family} {$role} {../@id}" 
+                srcpath="{if (every $ap in $adjusted-srcpath 
+                              satisfies (ends-with($ap, '?xpath='))
                                     )
                                  then $normalized-srcpath
-                                 else $adjusted-srcpath}"
-      xml:id="BC_{generate-id()}" severity="{$role}"
-      type="{ancestor-or-self::svrl:schematron-output/@tr:rule-family} {$role} {../@id}">
+                                 else $adjusted-srcpath}">
       <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
       <xsl:if test="not($adjusted-srcpath = $normalized-srcpath)">
         <xsl:attribute name="adjusted-from" select="$normalized-srcpath"/>
@@ -844,7 +832,8 @@
           <xsl:if test="$show-adjusted-srcpath eq 'yes' and @adjusted-from">
               <xsl:call-template name="l10n:adjusted-srcpath"/>
           </xsl:if>
-          <xsl:if test="$show-step-name eq 'yes'">
+          <!-- if the @tr:step-name attribute was declared, we provide step name information -->
+          <xsl:if test="@tr:step-name eq 'yes'">
             <xsl:call-template name="l10n:step-name"/>
           </xsl:if>
         </div>

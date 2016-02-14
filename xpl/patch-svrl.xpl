@@ -21,7 +21,6 @@
   <p:option name="severity-default-name" required="false" select="'no-role'"/>
   <p:option name="report-title" required="false" select="''"/>
   <p:option name="show-adjusted-srcpath" select="'yes'"/>
-  <p:option name="show-step-name" select="'yes'"/>
   <p:option name="discard-epub-schematron-svrl" select="'no'" required="false"/>
   <p:option name="suppress-embedding" select="''">
     <p:documentation>Space-separated list of tokens. Available tokens are: image video script style audio object #all.
@@ -247,7 +246,6 @@
     <p:with-param name="severity-default-name" select="$severity-default-name"/>
     <p:with-param name="max-errors-per-rule" select="$max-errors-per-rule"/>
     <p:with-param name="show-adjusted-srcpath" select="$show-adjusted-srcpath"/>
-    <p:with-param name="show-step-name" select="$show-step-name"/>
   </p:xslt>
 
   <tr:store-debug pipeline-step="htmlreports/patch-svrl" extension="xsl">
