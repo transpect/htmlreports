@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xslout="bogo"
-  xmlns:svrl="http://purl.oclc.org/dsdl/svrl" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:s="http://purl.oclc.org/dsdl/schematron" xmlns:aid="http://ns.adobe.com/AdobeInDesign/4.0/"
-  xmlns:aid5="http://ns.adobe.com/AdobeInDesign/5.0/" xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging"
-  xmlns:idml2xml="http://transpect.io/idml2xml" xmlns:tr="http://transpect.io"
-  xmlns:c="http://www.w3.org/ns/xproc-step" xmlns:html="http://www.w3.org/1999/xhtml"
-  xmlns:l10n="http://transpect.io/l10n" xmlns:cx="http://xmlcalabash.com/ns/extensions" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns:xslout="bogo"
+  xmlns:svrl="http://purl.oclc.org/dsdl/svrl" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:s="http://purl.oclc.org/dsdl/schematron" 
+  xmlns:aid="http://ns.adobe.com/AdobeInDesign/4.0/"
+  xmlns:aid5="http://ns.adobe.com/AdobeInDesign/5.0/" 
+  xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging"
+  xmlns:idml2xml="http://transpect.io/idml2xml" 
+  xmlns:tr="http://transpect.io"
+  xmlns:c="http://www.w3.org/ns/xproc-step" 
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns:l10n="http://transpect.io/l10n" 
+  xmlns:cx="http://xmlcalabash.com/ns/extensions" 
+  xmlns:functx="http://www.functx.com"  
+  version="2.0">
+
+  <xsl:import href="http://transpect.io/xslt-util/functx/xsl/functx.xsl"/>
 
   <xsl:output method="xml" indent="yes"/>
 
@@ -66,24 +77,21 @@
   <xsl:variable name="base-srcpath" as="xs:string?"
     select="$html-with-srcpaths/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content"/>
 
-  <xsl:variable name="all-document-srcpaths"
-    select="for $s in $html-with-srcpaths//@srcpath 
+  <xsl:variable name="all-document-srcpaths" select="for $s in $html-with-srcpaths//@srcpath 
                                                      return tr:normalize-srcpath($s)"/>
-  <xsl:variable name="split-document-srcpaths" as="xs:string*"
-    select="distinct-values(
-                          for $sp in $all-document-srcpaths[matches(., ';n=\d+$')]
-                          return replace($sp, ';n=\d+$', '')
-                        )"/>
-
+  
+  <xsl:variable name="split-document-srcpaths" select="distinct-values(
+    for $sp in $all-document-srcpaths[matches(., ';n=\d+$')]
+    return replace($sp, ';n=\d+$', ''))" as="xs:string*"/>
   <xsl:function name="tr:normalize-srcpath" as="xs:string*">
     <xsl:param name="srcpath-att" as="xs:string?"/>
-    <xsl:sequence
-      select="for $s in $srcpath-att
+    <xsl:variable name="tokenize-srcpath" select="tokenize($srcpath-att, '/')" as="xs:string*"/>
+
+    <xsl:sequence select="for $s in $srcpath-att
                           return for $t in tokenize($s, '\s+')
                                  return if (contains($t, '?xpath=') and not(starts-with($t, 'file:/')))
                                         then string-join(($base-srcpath, $t), '')
-                                        else $t"
-    />
+                                        else $t"/>
   </xsl:function>
 
   <xsl:variable name="collected-messages" as="element(tr:message)*">
@@ -107,9 +115,9 @@
   <xsl:template match="svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert]
                                 [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))]" mode="collect-messages">
     <xsl:variable name="role" as="xs:string" select="(../@role, $severity-default-role)[1]"/>
-    <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath(s:span[@class eq 'srcpath'])"/>
+    <!-- if the schematron doesn't contain spans with srcpath, we use the location attribute as fallback -->
+    <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath((s:span[@class eq 'srcpath'], parent::*/@location)[1])"/>
     <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths)"/>
-    
     <tr:message xml:id="BC_{generate-id()}" 
                 severity="{$role}" 
                 type="{ancestor-or-self::svrl:schematron-output/@tr:rule-family} {$role} {../@id}" 
@@ -609,13 +617,19 @@
                   <xsl:choose>
                     <xsl:when test="exists($msgs)">
                       <xsl:variable name="svrl-text-without-srcpath" as="element(svrl:text)*"
-                        select=".//svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert][not(s:span[@class eq 'srcpath'] ne '')]"/>
+                        select=".//svrl:text[parent::svrl:successful-report|parent::svrl:failed-assert][not(s:span[@class eq 'srcpath'] ne '')]"/>
                       <xsl:if test="exists($svrl-text-without-srcpath)">
-                        <xsl:message>WARNING: You forgot to add srcpath-span elements to your error messages or the
+                        <xsl:message select="concat('[WARNING] Schematron rule family: ''',
+                          @tr:rule-family,
+                          ''', rule(s): ',
+                          string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return concat('''', $a/@id, '''')), ', '),
+                          '&#xa;No srcpath-span found. Using Schematron location @attribute as fallback.'
+                          )"/>
+                        <!--<xsl:message>WARNING: You forgot to add srcpath-span elements to your error messages or the
                           extraction went wrong. These Messages are not displayed correctly. <xsl:sequence
                             select="concat('Rule-family:', @tr:rule-family, ' ||| rule(s): ', string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return $a/@id), ' :: '))"/>
                           <xsl:sequence select="$svrl-text-without-srcpath"/>
-                        </xsl:message>
+                        </xsl:message>-->
                       </xsl:if>
                       <xsl:for-each-group select="$msgs"
                         group-by="string-join((
@@ -787,7 +801,14 @@
     </xsl:if>
     <!-- We ditched match="key('by-srcpath', …)" because of a possible Saxon bug, 
       http://saxon.markmail.org/message/freszzsbtuniw5o3 -->
-    <xslout:template match="html:s-p[. = '{$tokenized}']" priority="{position()}">
+    
+    <xslout:template match="html:s-p[{string-join(for $i in $tokenized 
+                                      return concat(
+                                                    'matches(.,''^', 
+                                                    replace(functx:escape-for-regex($i), '''', ''''''), 
+                                                    '$'')'),
+                                                    ' or ')}]" 
+                     priority="{position()}">
       <xslout:variable name="same-key-elements" as="element(*)*" select="key('by-srcpath', .)"/>
       <xslout:if test=".. is ($same-key-elements)[1]">
         <xsl:apply-templates mode="#current"/>
