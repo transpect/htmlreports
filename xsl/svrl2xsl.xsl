@@ -854,7 +854,7 @@
               <xsl:call-template name="l10n:adjusted-srcpath"/>
           </xsl:if>
           <!-- if the @tr:step-name attribute was declared, we provide step name information -->
-          <xsl:if test="@tr:step-name eq 'yes'">
+          <xsl:if test="@tr:step-name">
             <xsl:call-template name="l10n:step-name"/>
           </xsl:if>
         </div>
