@@ -187,7 +187,7 @@
     <p:with-option name="base-uri" select="$debug-dir-uri"/>
   </tr:store-debug>
   
-  <!-- and this is where the magic happens. all extenal resources are embedded via data uri -->
+  <!-- and this is where the magic happens. all external resources are embedded via data uri -->
   
   <tr:html-embed-resources name="html-embed-resources" cx:depends-on="inject-head">
     <p:with-option name="fail-on-error" select="'false'">

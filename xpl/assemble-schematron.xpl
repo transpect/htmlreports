@@ -17,8 +17,8 @@
   <p:output port="result" primary="true">
     <p:pipe port="result" step="xslt"/>
   </p:output>
-  <p:output port="report" primary="false">
-    <p:pipe port="report" step="validate-with-rng"/>
+  <p:output port="report" primary="false" sequence="true">
+    <p:pipe port="result" step="choose-debug"/>
   </p:output>
 
   <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
@@ -53,26 +53,45 @@
     <p:with-option name="base-uri" select="$debug-dir-uri" />
   </tr:store-debug>
   
-  <tr:validate-with-rng name="validate-with-rng">
-    <p:with-option name="debug" select="$debug"/>
-    <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
-    <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
-    <p:input port="schema">
-      <p:document href="../schema/iso-schematron/1.0/rng/iso-schematron.rng"/>
-    </p:input>
-  </tr:validate-with-rng>
-
-  <tr:store-debug>
-    <p:input port="source">
-      <p:pipe port="report" step="validate-with-rng"/>
-    </p:input>
-    <p:with-option name="pipeline-step" 
-      select="concat('schematron/', /c:param-set/c:param[@name eq 'family']/@value, '-sch-validation-errors')" >
-      <p:pipe step="cons" port="result"/>
-    </p:with-option>
-    <p:with-option name="active" select="$debug" />
-    <p:with-option name="base-uri" select="$debug-dir-uri" />
-  </tr:store-debug>
-
-  <p:sink/>
+  <p:choose name="choose-debug">
+    <p:when test="$debug eq 'yes'">
+      <p:output port="result" sequence="true">
+        <p:pipe port="report" step="validate-with-rng"/>
+      </p:output>
+      
+      <tr:validate-with-rng name="validate-with-rng">
+        <p:with-option name="debug" select="$debug"/>
+        <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
+        <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
+        <p:input port="schema">
+          <p:document href="../schema/iso-schematron/1.0/rng/iso-schematron.rng"/>
+        </p:input>
+      </tr:validate-with-rng>
+      
+      <tr:store-debug>
+        <p:input port="source">
+          <p:pipe port="report" step="validate-with-rng"/>
+        </p:input>
+        <p:with-option name="pipeline-step" 
+          select="concat('schematron/', /c:param-set/c:param[@name eq 'family']/@value, '-sch-validation-errors')" >
+          <p:pipe step="cons" port="result"/>
+        </p:with-option>
+        <p:with-option name="active" select="$debug" />
+        <p:with-option name="base-uri" select="$debug-dir-uri" />
+      </tr:store-debug>
+      
+      <p:sink/>
+      
+    </p:when>
+    <p:otherwise>
+      <p:output port="result" sequence="true">
+        <p:empty/>
+      </p:output>
+      
+      <p:sink/>    
+      
+    </p:otherwise>
+  </p:choose>
+  
+  
 </p:declare-step>
