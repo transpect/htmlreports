@@ -101,6 +101,7 @@
           </p:input>
           <p:with-option name="debug" select="$debug"/>
           <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
+          <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
         	<p:with-option name="schematron-rule-msg" select="$schematron-rule-msg"/>
         </tr:assemble-schematron>
         
