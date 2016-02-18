@@ -41,7 +41,8 @@
     <p:input port="parameters">
       <p:pipe port="result" step="cons"/>
     </p:input>
-  	<p:with-param name="schematron-rule-msg" select="$schematron-rule-msg"/>
+    <p:with-param name="debug" select="$debug"/>
+  	<p:with-param name="schematron-rule-msg" select="$schematron-rule-msg"/>    
   </p:xslt>
   
   <tr:store-debug>

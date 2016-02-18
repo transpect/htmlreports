@@ -32,8 +32,9 @@
   <xsl:variable name="paths" as="xs:string*" 
     select="($s9y1-path, $s9y2-path, $s9y3-path, $s9y4-path, $s9y5-path, $s9y6-path, $s9y7-path, $s9y8-path, $s9y9-path)"/>
   
-	<!-- prints a status message with the Id of the schematron report or assert -->
-	<xsl:param name="schematron-rule-msg"/>
+	<!-- prints a status message with the Id of the schematron report or assert when debug is set to yes -->
+	<xsl:param name="schematron-rule-msg" select="'no'"/>
+  <xsl:param name="debug" select="'no'"/>
 
   <xsl:function name="tr:family" as="xs:boolean">
     <xsl:param name="doc" as="document-node(element(s:schema))"/>
@@ -155,7 +156,7 @@
 	
 	<xsl:template match="s:assert | s:report" mode="tr:assemble-schematron">
 		<xsl:choose>
-			<xsl:when test="$schematron-rule-msg eq 'yes'">
+		  <xsl:when test="$schematron-rule-msg eq 'yes' and $debug eq 'yes'">
 				<xso:message select="{concat('''', local-name(), ' ', if(@id) then @id else 'no @id found', '''')}"/>		
 			</xsl:when>
 		</xsl:choose>
