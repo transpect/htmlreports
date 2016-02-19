@@ -71,7 +71,7 @@
           * of the former processing instruction.
           * -->
     <xsl:variable name="error-name" select="if($srcpath and $group-by-srcpath='yes') 
-                                            then replace(tokenize($srcpath, '/')[last()], '\[\d+\]$', '') 
+                                            then replace(tokenize($srcpath, '/')[last()], '\[\d+\](;[a-z]=\d+)?$', '') 
                                             else $id" as="xs:string"/>
     <svrl:successful-report test="(: unknown :)" id="{$error-name}" role="{$actual-severity}" location="/">
       <svrl:text>
