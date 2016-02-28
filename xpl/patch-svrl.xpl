@@ -78,6 +78,13 @@
     <p:input select="/html:html" port="source">
       <p:pipe port="source" step="patch-svrl"/>
     </p:input>
+    <p:input port="catalog">
+      <p:documentation>We need to pass the project’s catalog so that tr:html-embed-resources will be 
+      able to resolve canonical URIs to resources. The catalog’s location can be given in a canonical
+      URI since this will be resolved by the default XML catalog resolver.
+      Should we take precautions for when there is no catalog at that location?</p:documentation>
+      <p:document href="http://this.transpect.io/xmlcatalog/catalog.xml"/>
+    </p:input>
     <p:with-option name="exclude" select="$suppress-embedding"/>
     <p:with-option name="fail-on-error" select="'false'">
       <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
@@ -190,6 +197,10 @@
   <!-- and this is where the magic happens. all external resources are embedded via data uri -->
   
   <tr:html-embed-resources name="html-embed-resources" cx:depends-on="inject-head">
+    <p:input port="catalog">
+      <p:documentation>see above, at the other tr:html-embed-resources instance</p:documentation>
+      <p:document href="http://this.transpect.io/xmlcatalog/catalog.xml"/>
+    </p:input>
     <p:with-option name="fail-on-error" select="'false'">
       <p:documentation>sometimes resources such as CSS overrides in the content repository don't exist</p:documentation>
     </p:with-option>
