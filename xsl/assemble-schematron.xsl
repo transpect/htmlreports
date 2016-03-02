@@ -163,7 +163,7 @@
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="#current"/>
 		  <xsl:if test="not(exists(s:span[@class eq 'srcpath']))">
-		    <span class="srcpath"><xso:value-of select="@srcpath"/></span>
+		    <span class="srcpath"><xso:value-of select="ancestor-or-self::*[@srcpath][1]/@srcpath"/></span>
 		  </xsl:if>
 			<xsl:apply-templates mode="#current"/>
 		</xsl:copy>
