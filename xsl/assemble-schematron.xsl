@@ -162,6 +162,9 @@
 		</xsl:choose>
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="#current"/>
+		  <xsl:if test="not(exists(s:span[@class eq 'srcpath']))">
+		    <span class="srcpath"><xso:value-of select="@srcpath"/></span>
+		  </xsl:if>
 			<xsl:apply-templates mode="#current"/>
 		</xsl:copy>
 	</xsl:template>
