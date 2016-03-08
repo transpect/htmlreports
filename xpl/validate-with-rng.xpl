@@ -2,8 +2,8 @@
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc"
   xmlns:tr="http://transpect.io"
   version="1.0"
-  name="validate-with-rng"
-  type="tr:validate-with-rng">
+  name="validate-with-rng-svrl"
+  type="tr:validate-with-rng-svrl">
   
   <p:documentation>
     This step validates an XML document with a RelaxNG schema and 
@@ -56,13 +56,13 @@
     <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
     <p:with-option name="remove-srcpaths" select="$remove-srcpaths"/>
     <p:input port="schema">
-      <p:pipe port="schema" step="validate-with-rng"/>
+      <p:pipe port="schema" step="validate-with-rng-svrl"/>
     </p:input>
   </tr:validate-with-rng-PI>
   
   <tr:store-debug>
     <p:with-option name="pipeline-step" select="concat('rngvalid/', /*/local-name(), '/with-PIs_2')">
-      <p:pipe port="source" step="validate-with-rng"/>
+      <p:pipe port="source" step="validate-with-rng-svrl"/>
     </p:with-option>
     <p:with-option name="active" select="$debug"/>
     <p:with-option name="base-uri" select="$debug-dir-uri"/>

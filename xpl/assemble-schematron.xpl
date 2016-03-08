@@ -60,14 +60,14 @@
         <p:pipe port="report" step="validate-with-rng"/>
       </p:output>
       
-      <tr:validate-with-rng name="validate-with-rng">
+      <tr:validate-with-rng-svrl name="validate-with-rng">
         <p:with-option name="debug" select="$debug"/>
         <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
         <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
         <p:input port="schema">
           <p:document href="../schema/iso-schematron/1.0/rng/iso-schematron.rng"/>
         </p:input>
-      </tr:validate-with-rng>
+      </tr:validate-with-rng-svrl>
       
       <tr:store-debug>
         <p:input port="source">
