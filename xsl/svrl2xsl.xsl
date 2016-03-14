@@ -649,7 +649,7 @@
                           as="xs:string"/>
                         <xsl:variable name="href-id"
                           select="$messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/tr:message[1]/@xml:id"
-                          as="xs:string"/>
+                          as="xs:string?"/>
                         <li class="list-group-item BC_tooltip {$current-severity}">
                           <div class="checkbox">
                             <label class="checkbox-inline">
