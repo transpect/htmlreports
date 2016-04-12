@@ -34,7 +34,11 @@
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">
       <p>SVRL outputs that carry <code>@tr:rule-family</code> attributes on their top-level
         elements or <code>c:errors</code> elements with try/catch results. Only <code>c:errors/c:error[@code]</code>
-        errors will be visualized in the HTML report (i.e., they need a code attribute).</p></p:documentation>
+        errors will be visualized in the HTML report (i.e., they need a code attribute).</p>
+    <p>Other attributes are <code>tr:step-name</code> (conversion step name that will be rendered below a message) and 
+      <code>tr:include-location-in-msg</code>. The latter option will render the SVRL messages’ <code>@location</code> 
+      attributes below the rendered messages. This is useful if the user should be able to fix the issues in the
+      XML input and the exakt location is not obvious.</p></p:documentation>
   </p:input>
   <p:input port="params" kind="parameter" primary="true">
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">

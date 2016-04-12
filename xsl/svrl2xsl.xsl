@@ -13,7 +13,8 @@
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:l10n="http://transpect.io/l10n" 
   xmlns:cx="http://xmlcalabash.com/ns/extensions" 
-  xmlns:functx="http://www.functx.com"  
+  xmlns:functx="http://www.functx.com"
+  exclude-result-prefixes="functx"  
   version="2.0">
 
   <xsl:import href="http://transpect.io/xslt-util/functx/xsl/functx.xsl"/>
@@ -126,11 +127,15 @@
                                     )
                                  then $normalized-srcpath
                                  else $adjusted-srcpath}">
+      <xsl:if test="ancestor::svrl:schematron-output/@tr:include-location-in-msg = 'true'">
+        <xsl:attribute name="svrl:location" select="../@location"/>
+      </xsl:if>
       <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
       <xsl:if test="not($adjusted-srcpath = $normalized-srcpath)">
         <xsl:attribute name="adjusted-from" select="$normalized-srcpath"/>
       </xsl:if>
       <xsl:copy-of select="., ../svrl:diagnostic-reference"/>
+      
     </tr:message>
   </xsl:template>
 
@@ -854,6 +859,9 @@
               <xsl:call-template name="l10n:adjusted-srcpath"/>
           </xsl:if>
           <!-- if the @tr:step-name attribute was declared, we provide step name information -->
+          <xsl:if test="@svrl:location">
+            <xsl:call-template name="l10n:svrl-location"/>
+          </xsl:if>
           <xsl:if test="@tr:step-name">
             <xsl:call-template name="l10n:step-name"/>
           </xsl:if>
@@ -873,6 +881,12 @@
   <xsl:template name="l10n:step-name" xmlns="http://www.w3.org/1999/xhtml"> 
     <p class="BC_step-name">
       Conversion step: <xsl:value-of select="@tr:step-name"/>
+    </p>
+  </xsl:template>
+  
+  <xsl:template name="l10n:svrl-location" xmlns="http://www.w3.org/1999/xhtml"> 
+    <p class="BC_xpath">
+      XPath: <xsl:value-of select="@svrl:location"/>
     </p>
   </xsl:template>
 
