@@ -45,6 +45,9 @@
       This should be set to false for validation of Hub XML and other schemas in which @srcpath and /*/@source-dir-uri are legal.
     </p:documentation>
   </p:option>
+  <p:option name="group-by-srcpath" required="false" select="'no'">
+    <p:documentation>see tr:errorPI2svrl</p:documentation>
+  </p:option>
   
   <p:import href="errorPI2svrl.xpl"/>
   <p:import href="http://transpect.io/calabash-extensions/rng-extension/xpl/rng-validate-to-PI.xpl"/>
@@ -72,6 +75,7 @@
     <p:with-option name="debug" select="$debug"/>
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
     <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
+    <p:with-option name="group-by-srcpath" select="$group-by-srcpath"/>
   </tr:errorPI2svrl>
   
 </p:declare-step>
