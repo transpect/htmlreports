@@ -5,6 +5,12 @@
   version="1.0"
   type="tr:assemble-schematron"
   name="assemble-schematron">
+
+  <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+    This step takes a cascade path parameter file as input and looks for a directory entitled <code>schematron</code>
+    in each cascade level directory. The Schematron files within these directories are loaded and assembled. The most specific
+    Schematron patterns override ones from more general cascade levels.
+  </p:documentation>
   
   <p:option name="debug" required="false" select="'no'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
