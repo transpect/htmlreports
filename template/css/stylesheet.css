@@ -9,7 +9,7 @@ main div.row {margin-right:0; margin-left:0}
 /*
  * fonts
  */
-#tr-topnav a, #tr-minitoc a, #tr-report *, #tr-content .BC_tooltip, #tr-content .BC_message{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; }
+#tr-topnav a, #tr-minitoc a, #tr-report *, #tr-content .BC_tooltip, #tr-content .BC_message, #tr-timestamp{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; }
 /*
  * header
  */
