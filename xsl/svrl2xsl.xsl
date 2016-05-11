@@ -571,6 +571,19 @@
       </xslout:template>
       
       <!--  *
+            * report timestamp
+            * -->
+      
+      
+      <xslout:template match="html:*[@id eq 'tr-timestamp']">
+        <xslout:copy>
+          <xslout:apply-templates select="@*" mode="#current"/>
+          <xsl:variable name="time" select="current-dateTime()"/>
+          <xsl:value-of select="format-dateTime($time, '[D]. [M]. [Y0001], [H1]:[m01]')"/>         
+          </xslout:copy>
+      </xslout:template>
+      
+      <!--  *
             * report menu
             * -->
 
