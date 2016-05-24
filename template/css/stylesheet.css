@@ -83,3 +83,5 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 @media (max-width: 1200px){
   #tr-report.affix{ left:58.33333333% !important; /* fix wrong placement after affix */}
 }
+/* sections in which errors are ignored */
+div.bc_ignore {background-color:#faf1cd; border: 2px solid #fae282; padding:0.5em; margin:1em; border-radius:0.5em;}
