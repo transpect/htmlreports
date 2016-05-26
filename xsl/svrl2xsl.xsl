@@ -783,15 +783,23 @@
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
     <li class="BC_no-messages list-group-item">✓<span class="sr-only">Error:</span></li>
   </xsl:template>
-
-  <xsl:function name="tr:ignored-in-html" as="xs:boolean">
+	
+	<xsl:function name="tr:ignored-in-html" as="xs:boolean">
     <xsl:param name="report-srcpath" as="xs:string?"/>
     <xsl:choose>
       <xsl:when test="$report-srcpath">
-        <xsl:variable name="html-element" as="element(*)*"
-          select="key('html-element-by-srcpath', $report-srcpath, $html-with-srcpaths)"/>
-        <xsl:sequence
-          select="some $a in $html-element/ancestor-or-self::* satisfies (tr:contains-token($a/@class, 'bc_ignore'))"/>
+        <xsl:variable name="html-element" as="element(*)*">
+        	<xsl:choose>
+        		<xsl:when test="$report-srcpath = ('', 'BC_orphans')">
+        			<xsl:sequence select="()"/>
+        		</xsl:when>
+        		<xsl:otherwise>
+        			<xsl:sequence select="key('html-element-by-srcpath', if ($src-dir-uri) then tokenize(replace($report-srcpath, $src-dir-uri, ''), '\s+') else tokenize($report-srcpath, '\s+'), $html-with-srcpaths)[1]"/>
+        		</xsl:otherwise>
+        	</xsl:choose>
+        </xsl:variable>
+        <xsl:sequence select="some $a in $html-element/ancestor-or-self::* satisfies (tr:contains-token($a/@class, 'bc_ignore'))"/>
+<!--      	<xsl:message select="$report-srcpath, '-\-\-\-', $html-element,  '##############', some $a in $html-element/ancestor-or-self::* satisfies (tr:contains-token($a/@class, 'bc_ignore'))"/>-->
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="false()"/>
@@ -805,8 +813,16 @@
     <xsl:sequence select="$token = tokenize($space-separated-list, '\s+')"/>
   </xsl:function>
 
-  <xsl:key name="html-element-by-srcpath" match="*[@srcpath]"
-    use="string-join((/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content, @srcpath), '')"/>
+  <xsl:variable name="src-dir-uri" select="$html-with-srcpaths/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content" as="xs:string?"/>
+
+  <xsl:key name="html-element-by-srcpath" match="*[@srcpath]" 
+								use="for $s in
+																if ($src-dir-uri) 
+																then 
+																	for $s in tokenize(@srcpath, '\s+') 
+																		return $s 
+																else tokenize(@srcpath, '\s+')
+																	return ($s, replace($s, ';n=\d+$', ''))"/>
 
   <xsl:template match="tr:messages" mode="create-template">
     <xsl:variable name="tokenized" as="xs:string" select="(tokenize(@srcpath,'\s+'), '')[1]"/>
