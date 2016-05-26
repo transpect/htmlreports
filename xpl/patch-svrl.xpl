@@ -245,9 +245,9 @@
       <p:pipe step="reorder-messages-by-category" port="result">
         <p:documentation>The SVRL report.</p:documentation>
       </p:pipe>
-      <p:pipe step="html-embed-resources" port="result">
+    	<p:pipe step="html-embed-resources" port="result">
         <p:documentation>To be able to avoid some messages to be rendered in special sections of the XML 
-          (for example sections that will be discarded later) a HTML @class 'bc_ignore' can be added to 
+          (for example sections that will be discarded later) an HTML @class 'bc_ignore' can be added to 
           the content. Those elements and its children will not carry messages in the htmlreport.</p:documentation>
       </p:pipe>
     </p:input>
