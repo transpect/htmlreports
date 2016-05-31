@@ -51,6 +51,8 @@
   	<p:with-param name="schematron-rule-msg" select="$schematron-rule-msg"/>    
   </p:xslt>
   
+  <p:add-attribute attribute-name="queryBinding" attribute-value="xslt2" match="/*"/>
+  
   <tr:store-debug>
     <p:with-option name="pipeline-step" select="concat('schematron/', /c:param-set/c:param[@name eq 'family']/@value)" >
       <p:pipe step="cons" port="result"/>
