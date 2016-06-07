@@ -73,6 +73,9 @@
         The c:errors element is expected to contain one or more c:error elements. Only those c:error elements that have
         an attribute are considered real errors (plain xsl:message output will appear in a c:error element, too, but without
         any attribute).
+        
+        In svrl:schematron-output, span[@class='corrected-id'] will supersede the id of an assert or report.
+        See example in https://github.com/transpect/epubtools/blob/master/schematron/epub.sch.xml (report[@id='lang']).
         -->
 
   <xsl:variable name="base-srcpath" as="xs:string?"
@@ -121,7 +124,7 @@
     <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths)"/>
     <tr:message xml:id="BC_{generate-id()}" 
                 severity="{$role}" 
-                type="{ancestor-or-self::svrl:schematron-output/@tr:rule-family} {$role} {../@id}" 
+                type="{ancestor-or-self::svrl:schematron-output/@tr:rule-family} {$role} {(s:span[@class='corrected-id'], ../@id)[1]}" 
                 srcpath="{if (every $ap in $adjusted-srcpath 
                               satisfies (ends-with($ap, '?xpath='))
                                     )
@@ -135,7 +138,6 @@
         <xsl:attribute name="adjusted-from" select="$normalized-srcpath"/>
       </xsl:if>
       <xsl:copy-of select="., ../svrl:diagnostic-reference"/>
-      
     </tr:message>
   </xsl:template>
 
@@ -650,17 +652,20 @@
                         </xsl:message>-->
                       </xsl:if>
                       <xsl:for-each-group select="$msgs"
-                        group-by="string-join((
-                          if(self::svrl:text and not(../@id))
-                          then concat(
-                          'To the Schematron author: no &lt;span class=&quot;srcpath&quot;&gt; or id for this message in pattern: &quot;', ../preceding::svrl:active-pattern[1]/@id, 
-                          '&quot;, context: &quot;', ../preceding::svrl:fired-rule[1]/@context, '&quot;'
-                          )
-                          else ../@id
-                          | self::c:error/@code,
-                          (../@role, $severity-default-role)[1]
-                          ), '__')">
-                        <xsl:variable name="msgid" select="(../@id, @code, '')[1]" as="xs:string"/>
+                        group-by="string-join(
+                                              (
+                                                if(self::svrl:text and empty(s:span[@class='corrected-id'] | ../@id))
+                                                then concat(
+                                                'To the Schematron author: no &lt;span class=&quot;srcpath&quot;&gt; or id for this message in pattern: &quot;', ../preceding::svrl:active-pattern[1]/@id, 
+                                                '&quot;, context: &quot;', ../preceding::svrl:fired-rule[1]/@context, '&quot;'
+                                                )
+                                                else (s:span[@class='corrected-id'], ../@id)[1]
+                                                | self::c:error/@code,
+                                                (../@role, $severity-default-role)[1]
+                                              ), 
+                                              '__'
+                                             )">
+                        <xsl:variable name="msgid" select="(s:span[@class='corrected-id'], ../@id, @code, '')[1]" as="xs:string"/>
                         <xsl:variable name="current-severity" select="(@type, ../@role, $severity-default-role)[1]"
                           as="xs:string"/>
                         <xsl:variable name="span-title" select="string-join(($family, $current-severity, $msgid), ' ')"
@@ -902,6 +907,7 @@
     <!-- allow line breaks -->
   </xsl:template>
 
+  <xsl:template match="s:span[@class = 'corrected-id']" mode="create-template"/> 
 
   <!--  *
         * named templates for customization: import this stylesheet and overwrite the templates.
