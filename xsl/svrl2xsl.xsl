@@ -731,7 +731,7 @@
 
       <xslout:template match="html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]">
         <xslout:copy>
-          <xslout:apply-templates select="@*|node()[not(self::*:img)]" mode="#current"/>
+          <xslout:apply-templates select="@* except @style, node()[not(self::*:img)]" mode="#current"/>
           <span>
             <xslout:attribute name="id" select="concat('scroll-', generate-id(.))"/>
           </span>
