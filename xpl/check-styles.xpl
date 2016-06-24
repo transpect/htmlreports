@@ -49,6 +49,10 @@
   <p:output port="schema" sequence="true">
     <p:pipe port="schema" step="sch"/>
   </p:output>
+  <p:output port="styledoc" sequence="true">
+    <p:pipe port="result" step="styledoc"></p:pipe>
+  </p:output>
+  
   <p:output port="htmlreport" sequence="true">
     <p:documentation>Please note that the HTML report will not reflect the differentiated 
     styles. It will only do so if the report is rendered by a subsequent step. This is because 
@@ -111,6 +115,26 @@
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
     <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
   </tr:validate-with-schematron>
+
+  <p:sink/>
+    
+  <p:xslt name="styledoc">
+    <p:with-option name="template-name" select="'main'"/>
+    <p:input port="source">
+      <p:pipe port="result" step="template-styles"/>
+    </p:input>
+    <p:input port="stylesheet" >
+      <p:document href="http://transpect.io/htmlreports/xsl/styledoc.xsl"/>
+    </p:input>
+    <p:input port="parameters">
+      <p:empty/>
+    </p:input>
+  </p:xslt> 
+
+  <tr:store-debug pipeline-step="styles/styledoc">
+    <p:with-option name="active" select="$debug"/>
+    <p:with-option name="base-uri" select="$debug-dir-uri"/>
+  </tr:store-debug>
 
   <p:sink/>
 
