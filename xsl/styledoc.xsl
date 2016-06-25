@@ -18,21 +18,15 @@
     doctype-public="-//W3C//DTD XHTML 1.0//EN"
     doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
 
-  <!-- sample invocation:
-    saxon -xsl:converter/xsl/styledoc.xsl -it:main uri=file:/$(cygpath -ma adaptions) -o:doc/XML-Satzrichtlinien/styles.xhtml
-    On Unix systems, it should work with realpath instead of cygpath. Or use a URL relative to xsl (uri=../../adaptions).
-  -->
-
-<!--  <xsl:param name="uri" as="xs:string"/>-->
   <xsl:param name="use-local-js" as="xs:string" select="'yes'"/>
-  <!--
-  <xsl:variable name="all-style-docs" as="document-node(element(all-style-docs))">
-    <xsl:document>
-      <all-style-docs xmlns="">
-        <xsl:apply-templates select="collection(concat($uri, '?select=cssa.xml;recurse=yes'))" mode="add-base-uri"/>
-      </all-style-docs>
-    </xsl:document>
-  </xsl:variable>-->
+  <xsl:param name="function" as="xs:string" select="'descriptive'">
+    <!-- whether this stylesheet is used to describe the styles found in an actual document, including in a document that serves 
+      as a template for multiple documents (IDML or docx template docs), or whether this is a prescriptive CSSa document that
+      is used to check document styles against. Depending on the value of this parameter, 'descriptive' or 'prescriptive',
+      different boilerplate text will be included in the report. There may also be other differences that depend on these 
+      values, just search for $function in this stylesheet. -->
+  </xsl:param>
+  <xsl:param name="cssa" as="xs:string" select="'styles/cssa.xml'"/>
   
   <xsl:template match="/*" mode="add-base-uri">
     <xsl:copy>
@@ -176,29 +170,29 @@
           <xsl:apply-templates select="css:rules/css:rule" mode="serialize-css"/>
         </style>
         <script type="text/javascript" src="{if ($use-local-js = 'yes')
-                                            then '../js/jquery-1.10.0.js'
+                                            then 'http://transpect.io/htmlreports/template/js/jquery-2.1.4.min.js'
                                             else 'https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'}"></script>
       </head>
       <body>
-       <!-- <div class="folder">
+        <div class="folder">
           <span class="unfold-all" title="unfold all">&#8634;
           </span>
           <span class="fold-all" title="fold all">&#8635;
           </span>
-        </div>-->
-        <p class="general">This document contains lists of styles that are permitted for each series.
-          It will contain all styles that are available in the sample document, not just the styles that are actually used.<br/>
-          You may use style variants with the same base name, but with an additional name part after the character '~'. 
+        </div>
+        <p class="general">This document contains lists of <xsl:if test="$function = 'prescriptive'">permitted 
+        </xsl:if>styles<xsl:if test="$function = 'descriptive'"> found in the input document</xsl:if>.<br/>
+          You may use style variants with the same base name, but with an additional name part after the character '~' (a plain
+          tilde character, not a combining one – Mac users, if you don’t see a tilde on your keyboard, search for
+          "tilde mac" to find your localized keyboard’s key combination). 
           These variants will usually be converted in the same way as the basic style.<br/>
           <b>Example:</b><br/>
           p_list and p_list~margin will both be treated as a p_list when it comes to identifying list items.<br/>
-          Any styling that deviates from the basic p_list will be converted to local overrides.<br/>
+          Any styling that deviates from the basic p_list will be converted to local overrides
+          (depending on the actual transpect configuration).<br/>
           Local overrides will be converted to css:* attributes (e.g., 2&#xa0;mm extra space below will
           become css:margin-bottom="2mm"), and these overrides will typically be carried along throughout
-          the conversion steps. (A notable exception being list items, where spacing above the first or below 
-          the last list item will be interpreted as an indicator that the list isn’t included in the adjacent 
-          paragraphs, but rather is on the same level as the paragraphs, causing a larger vertical space
-          in further rendering stages.<br/>
+          the conversion steps.<br/>
           If you don’t feel like creating derivative, but semantically equivalent styles in the way described 
           above, but rather would like to use the basic style together with local overrides, you might as well 
           do so. Since tilde style deviations are converted to local overrides, they are equivalent.</p>
@@ -211,7 +205,7 @@
         </ol>
         <hr/>-->
         <div id="by-series">
-          <h1 class="no-frills heading">Styles by Series (individual style hierarchy for each template)</h1>
+<!--          <h1 class="no-frills heading">Styles by Series (individual style hierarchy for each template)</h1>-->
           <xsl:apply-templates select="css:rules" >
             <xsl:with-param name="type" select="'by-templates'" tunnel="yes"/>
           </xsl:apply-templates>  
@@ -226,8 +220,8 @@
         </div>-->
         <script type="text/javascript">
           
-          $(".nest").hide();
-          
+          <xsl:if test="$function = 'descriptive'">$(".nest").hide();
+          </xsl:if>
           $("h1").click(function () {
           $(this).next("div.nest").slideToggle();
           });
@@ -261,26 +255,26 @@
     </html>
   </xsl:template>
   
+  <xsl:variable name="cssa-regex" as="xs:string" select="concat('^.+/((a9s|content)/.+?/', $cssa, ')$')"/>
+  
   <xsl:function name="css:template-name" as="xs:string">
     <xsl:param name="uri" as="xs:string"/>
-    <!--<xsl:sequence select="if (matches($uri, '/(adaptions|content)/(.+?)/styles/cssa.xml$'))
-                          then replace($uri, '^.+/(adaptions|content)/(.+?)/styles/cssa.xml$', '$2')
-                          else replace($uri, '^.+/(.+?)/cssa.xml$', '$1')"/>-->
-    <xsl:sequence select="$uri"/>
+    <xsl:sequence select="if (matches($uri, $cssa-regex))
+                          then replace($uri, $cssa-regex, '$1')
+                          else replace($uri, '^.+/(.+?/[/]+)$', '$1')"/>
+<!--    <xsl:sequence select="$uri"/>-->
   </xsl:function>
   
   <xsl:template match="css:rules" >
     <xsl:param name="type" as="xs:string" tunnel="yes"/>
     <xsl:if test="$type eq 'by-templates'">
-      <h1>&#8681;&#160;
-        <xsl:value-of select="css:template-name(base-uri())"/>
+      <h1>⇩  <xsl:value-of select="css:template-name(base-uri())"/>
       </h1>  
     </xsl:if>
     <div class="nest">
-      <xsl:message select="., 'OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO'"></xsl:message>
       <!-- css:rule is for the 'by-series' case, css:rules/css:rule is for 'by-style' -->
       <xsl:for-each-group select="css:rule | css:rules/css:rule" group-by="@layout-type">
-        <h2>&#8681;&#160; <xsl:value-of select="current-grouping-key()"/>
+        <h2>⇩  <xsl:value-of select="current-grouping-key()"/>
         </h2>
         <xsl:sequence select="css:group-hierarchic-styles(current-group(), 1, $type)"/>
       </xsl:for-each-group>

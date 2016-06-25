@@ -49,8 +49,8 @@
   <p:output port="schema" sequence="true">
     <p:pipe port="schema" step="sch"/>
   </p:output>
-  <p:output port="styledoc" sequence="true">
-    <p:pipe port="result" step="styledoc"></p:pipe>
+  <p:output port="styledoc">
+    <p:pipe port="result" step="styledoc-embed-resources"/>
   </p:output>
   
   <p:output port="htmlreport" sequence="true">
@@ -65,6 +65,7 @@
   <p:import href="http://transpect.io/cascade/xpl/load-cascaded.xpl"/>
   <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl" />
   <p:import href="http://transpect.io/xproc-util/simple-progress-msg/xpl/simple-progress-msg.xpl"/>
+  <p:import href="http://transpect.io/xproc-util/html-embed-resources/xpl/html-embed-resources.xpl"/>
   
   <tr:simple-progress-msg name="start-msg" file="check-styles-start.txt">
     <p:input port="msgs">
@@ -118,23 +119,33 @@
 
   <p:sink/>
     
-  <p:xslt name="styledoc">
-    <p:with-option name="template-name" select="'main'"/>
+  <p:xslt name="styledoc" template-name="main">
     <p:input port="source">
       <p:pipe port="result" step="template-styles"/>
     </p:input>
     <p:input port="stylesheet" >
-      <p:document href="http://transpect.io/htmlreports/xsl/styledoc.xsl"/>
+      <p:document href="../xsl/styledoc.xsl"/>
     </p:input>
     <p:input port="parameters">
       <p:empty/>
     </p:input>
-  </p:xslt> 
+    <p:with-param name="function" select="'prescriptive'"/>
+    <p:with-param name="cssa" select="$cssa"/>
+  </p:xslt>
 
-  <tr:store-debug pipeline-step="styles/styledoc">
+  <tr:store-debug pipeline-step="styles/styledoc" extension="xhtml">
     <p:with-option name="active" select="$debug"/>
     <p:with-option name="base-uri" select="$debug-dir-uri"/>
   </tr:store-debug>
+  
+  <tr:html-embed-resources name="styledoc-embed-resources">
+    <p:input port="catalog">
+      <p:document href="http://this.transpect.io/xmlcatalog/catalog.xml"/>
+    </p:input>
+    <!--<p:with-option name="exclude" select="$suppress-embedding"/>-->
+    <p:with-option name="fail-on-error" select="'false'"/>
+    <p:with-option name="debug" select="$debug"/>
+  </tr:html-embed-resources>
 
   <p:sink/>
 
