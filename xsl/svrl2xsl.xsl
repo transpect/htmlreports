@@ -727,7 +727,7 @@
             * generate mini-toc and patch headlines
             * -->
       
-      <xslout:variable name="headlines" select="//html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]"/>
+      <xslout:variable name="headlines" select="//html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]" as="element()*"/>
 
       <xslout:template match="html:*[@id eq 'tr-content']//html:*[local-name() = ('h1', 'h2')]">
         <xslout:copy>
@@ -757,7 +757,14 @@
                 <xslout:attribute name="class" select="$class"/>
                 <a class="page-scroll">
                   <xslout:attribute name="href" select="$href"/>
-                  <xslout:apply-templates mode="#current"/>
+                  <xslout:choose>
+                    <xslout:when test="not(normalize-space(string-join(.//text()[not(parent::*:s-p)], ''))) and @title">    
+                      <xslout:value-of select="@title"/>
+                    </xslout:when>
+                    <xslout:otherwise>
+                      <xslout:apply-templates mode="#current"/>    
+                    </xslout:otherwise>
+                  </xslout:choose>
                 </a>
               </li>
             </xslout:for-each>
