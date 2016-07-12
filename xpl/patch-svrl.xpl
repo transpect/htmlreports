@@ -17,6 +17,7 @@
   <p:option name="debug" required="false" select="'no'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
   <p:option name="status-dir-uri" select="'status'"/>
+  <p:option name="fail-on-error" select="'false'"/>
   <p:option name="max-errors-per-rule" required="false" select="'200'"/>
   <p:option name="severity-default-name" required="false" select="'no-role'"/>
   <p:option name="report-title" required="false" select="''"/>
@@ -90,7 +91,7 @@
       <p:document href="http://this.transpect.io/xmlcatalog/catalog.xml"/>
     </p:input>
     <p:with-option name="exclude" select="$suppress-embedding"/>
-    <p:with-option name="fail-on-error" select="'false'">
+    <p:with-option name="fail-on-error" select="$fail-on-error">
       <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
     </p:with-option>
     <p:with-option name="debug" select="$debug"/>
@@ -205,7 +206,7 @@
       <p:documentation>see above, at the other tr:html-embed-resources instance</p:documentation>
       <p:document href="http://this.transpect.io/xmlcatalog/catalog.xml"/>
     </p:input>
-    <p:with-option name="fail-on-error" select="'false'">
+    <p:with-option name="fail-on-error" select="$fail-on-error">
       <p:documentation>sometimes resources such as CSS overrides in the content repository don't exist</p:documentation>
     </p:with-option>
     <p:with-option name="exclude" select="$suppress-embedding"/>
