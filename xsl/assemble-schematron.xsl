@@ -95,8 +95,8 @@
         <!-- Assumption: no two different prefixes for one uri. --> 
         <ns prefix="{@prefix}" uri="{current-grouping-key()}"/>
       </xsl:for-each-group>
-      <xsl:for-each-group select="$schematrons/s:schema/xsl:include[not(matches(@href, 'shared-variables.xsl'))]" group-by="@href">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+      <xsl:for-each-group select="$schematrons/s:schema/xsl:include[not(matches(@href, 'shared-variables.xsl'))]|$schematrons/s:schema/xsl:import" group-by="@href">
+        <xso:include href="{current-grouping-key()}"/>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:param" group-by="@name">
         <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
