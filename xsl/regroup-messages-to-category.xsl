@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:c="http://www.w3.org/ns/xproc-step"  
   xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:s="http://purl.oclc.org/dsdl/schematron"  
@@ -30,7 +31,7 @@
   
   <xsl:template match="/*">
     <xsl:copy>
-      <xsl:copy-of select="@*"/>
+      <xsl:copy-of select="@*, c:errors"/>
       <xsl:choose>
         <xsl:when test="$rule-category-span-class and //*[self::svrl:successful-report or self::svrl:failed-assert]
                                                           [*[self::svrl:text or self::svrl:diagnostic-reference[@xml:lang eq $interface-language]]
