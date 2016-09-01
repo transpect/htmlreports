@@ -31,7 +31,13 @@
   
   <xsl:template match="/*">
     <xsl:copy>
-      <xsl:copy-of select="@*, c:errors"/>
+      <xsl:copy-of select="@*, c:errors[not(@tr:rule-family)]"/>
+      <xsl:for-each-group select="c:errors[@tr:rule-family]" group-by="@tr:rule-family">
+        <c:errors xmlns:cx="http://xmlcalabash.com/ns/extensions" xmlns:tr="http://transpect.io"
+          tr:rule-family="{current-grouping-key()}">
+          <xsl:apply-templates select="current-group()/node()"/>
+        </c:errors>
+      </xsl:for-each-group>
       <xsl:choose>
         <xsl:when test="$rule-category-span-class and //*[self::svrl:successful-report or self::svrl:failed-assert]
                                                           [*[self::svrl:text or self::svrl:diagnostic-reference[@xml:lang eq $interface-language]]
