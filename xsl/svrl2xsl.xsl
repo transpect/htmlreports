@@ -505,7 +505,7 @@
           <style type="text/css">
             button.fatal-error, button.fatal-error_notoggle, .BC_message.fatal-error, #BC_toggle_fatal-error.active{
               color:#f2dede; 
-              background-color:#a94442;
+              background-color:#db3f14;
               border-color:#ebccd1;
               font-weight:bold
             }

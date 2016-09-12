@@ -72,7 +72,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .BC_step-name{font-weight:normal; font-style:italic; font-size:0.9rem; margin-top:0.6rem}
 .BC_xpath{font-weight:normal; font-style:normal; font-family: monospace; font-size:1.2rem; margin-top:0.6rem}
 .BC_error_count{font-size:1rem}
-
+.fatal-error div.BC_message-text {font-weight:bold; color:#fff ;}
 
 #BC_orphans { margin:-1.05em -1.05em 1.05em; border-bottom:1px solid #bfd6e3; background-color:#FAFAFA; padding:1.25em 1em 1em 1em; }
 
