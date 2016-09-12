@@ -13,6 +13,7 @@
   <p:option name="debug-dir-uri" select="'debug'"/>
   <p:option name="status-dir-uri" required="false" select="resolve-uri('status')"/>
   <p:option name="active" required="false" select="'true'"/>
+  <p:option name="step-name" required="false" select="'sch_idml2hub_styles'"/>
   <p:option name="cssa" select="'styles/simple-template.cssa.xml'">
     <p:documentation>Name of the CSSa file with the style definitions (for load-cascaded).</p:documentation>
   </p:option>
@@ -108,7 +109,7 @@
       <p:pipe port="parameters" step="check-styles"/>
     </p:input>
     <p:with-param name="family" select="'styles'"/>
-    <p:with-param name="step-name" select="'sch_idml2hub_styles'"/>
+    <p:with-param name="step-name" select="$step-name"/>
     <p:with-param name="fallback-uri" 
       select="'http://transpect.io/schematron-stdlib/styles/styles.sch.xml'"/>
     <p:with-option name="active" select="$active"/>
