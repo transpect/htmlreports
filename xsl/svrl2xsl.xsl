@@ -547,10 +547,10 @@
               color:#33691e 
               }
           </style>
-          <style type="text/css" id="project-specific-css">
+          <style type="text/css" id="project-specific-css">/*project specific css*/
             <xsl:call-template name="project-specific-css"/>
           </style>
-          <script type="text/javascript" id="project-specific-js">
+          <script type="text/javascript" id="project-specific-js">/*project specific js*/
             <xsl:call-template name="project-specific-js"/>  
           </script>
         </xslout:copy>
