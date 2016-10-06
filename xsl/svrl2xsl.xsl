@@ -422,7 +422,7 @@
               
               /* button: toggle elements with class BC_tooltip.NAME */
               
-              $("button.BC_toggle").click(function () {
+              $(".BC_toggle").click(function () {
                 if($(this).hasClass('active')){
                   $(".BC_tooltip." + this.id.replace(/BC_toggle_/, "")).hide();
                   $(this).removeClass('active')
@@ -503,43 +503,43 @@
         <xslout:copy copy-namespaces="no">
           <xslout:apply-templates mode="#current"/>
           <style type="text/css">
-            button.fatal-error, button.fatal-error_notoggle, .BC_message.fatal-error, #BC_toggle_fatal-error.active{
+            span.fatal-error, span.fatal-error_notoggle, .BC_message.fatal-error, #BC_toggle_fatal-error.active{
               color:#f2dede; 
               background-color:#db3f14;
               border-color:#ebccd1;
-              font-weight:bold
+              font-weight:bold;
             }
-            button.fatal-error:hover, .fatal-error_notoggle:hover, #BC_toggle_fatal-error.active:hover{
+            span.fatal-error:hover, .fatal-error_notoggle:hover, #BC_toggle_fatal-error.active:hover{
               background-color:#a94442;
               color:#fff;
             }
-            button.error, button.error_notoggle, .BC_message.error, #BC_toggle_error.active{
+            span.error, span.error_notoggle, .BC_message.error, #BC_toggle_error.active{
               background-color:#fc9a8d; 
               color:#973433;
               border-color:#ebccd1;
-              font-weight:bold
+              font-weight:bold;
             }
-            button.error:hover, .error_notoggle:hover, #BC_toggle_error.active:hover{
+            span.error:hover, .error_notoggle:hover, #BC_toggle_error.active:hover{
               background-color:#fc9a8d;
               color:#fff;
             }
-            button.warning, .warning_notoggle, .BC_message.warning, #BC_toggle_warning.active{
+            span.warning, .warning_notoggle, .BC_message.warning, #BC_toggle_warning.active{
               background-color:#ffe082;
               color:#e67000;
               border-color:#ffe082;
-              font-weight:bold
+              font-weight:bold;
             }
-            button.warning:hover, .warning_notoggle:hover, #BC_toggle_warning.active:hover{
+            span.warning:hover, .warning_notoggle:hover, #BC_toggle_warning.active:hover{
               background-color:#ffe082;
               color:#fff;
             }
-            button.info, .info_notoggle, .BC_message.info, #BC_toggle_info.active{
+            span.info, .info_notoggle, .BC_message.info, #BC_toggle_info.active{
               background-color:#d9edf7;
               color:#31708f;
               border-color:#bce8f1;
-              font-weight:bold
+              font-weight:bold;
             }
-            button.info:hover, .info_notoggle:hover, #BC_toggle_info.active:hover{
+            span.info:hover, .info_notoggle:hover, #BC_toggle_info.active:hover{
               background-color:#d9edf7;
               color:#fff;
             }
@@ -630,7 +630,7 @@
               <div class="BC_family-label panel-heading">
                 <xsl:value-of select="$family"/>
                 <a class="pull-right btn btn-default btn-xs BC_family-label-collapse" role="button"
-                  data-toggle="collapse" href="#fam_{$family}" aria-expanded="false" aria-controls="{$family}">–</a>
+                  data-toggle="collapse" href="#fam_{$family}" aria-expanded="false" aria-controls="fam_{$family}">–</a>
               </div>
               <div class="collapse in" id="fam_{$family}">
                 <ul class="list-group BC_family-summary">
@@ -684,7 +684,7 @@
                               <span class="BC_whitespace">
                                 <xslout:text>&#xa0;</xslout:text>
                               </span>
-                              <span class="BC_error_count badge {$current-severity}">
+                              <span class="BC_error_count badge">
                                 <xsl:value-of
                                   select="count($messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/*)"
                                 />
@@ -692,10 +692,10 @@
                             </a>
                             <div class="pull-right">
                               <a class="BC_link" href="#{$href-id}">
-                                <button type="button" class="btn btn-default btn-xs {$current-severity}">
+                                <span type="button" class="btn btn-default btn-xs {$current-severity}">
                                   <xsl:number value="index-of($message-types, $span-title)" format="A"/>
                                   <span class="BC_arrow-down">&#x25be;</span>
-                                </button>
+                                </span>
                               </a>
                               <span title="{$span-title}" class="BC_marker {$span-title}"/>
                             </div>
@@ -868,25 +868,25 @@
   <xsl:template match="tr:message" mode="create-template" xmlns="http://www.w3.org/1999/xhtml">
     <xsl:variable name="type" select="@type" as="attribute(type)"/>
     <span class="BC_tooltip {string-join(($type, @severity), '__')}">
-      <button class="btn btn-default btn-xs {string-join(($type, @severity), '__')}" type="button"
+      <span class="btn btn-default btn-xs {string-join(($type, @severity), '__')}" type="button"
         data-toggle="collapse" data-target="#msg_{@xml:id}" aria-expanded="false" aria-controls="msg_{@xml:id}">
         <xsl:value-of select="@rendered-key"/>
         <xsl:value-of select="@occurrence"/>
-      </button>
+      </span>
       <xsl:variable name="previous-message" select="preceding::tr:message[@type eq $type][1]" as="element(tr:message)?"/>
       
       <xsl:if test="exists($previous-message)">
         <a class="BC_link" href="#{$previous-message/@xml:id}">
-          <button class="btn btn-default btn-xs BC_arrow-up {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
+          <span class="btn btn-default btn-xs BC_arrow-up {string-join(($previous-message/@type, $previous-message/@severity), '__')}">
             <span>&#x25b4;</span>
-          </button>
+          </span>
         </a>
       </xsl:if>
       <xsl:if test="@href">
         <a class="BC_link" href="{@href}">
-          <button class="btn btn-default btn-xs BC_arrow-down {string-join((@type, @severity), '__')}">
+          <span class="btn btn-default btn-xs BC_arrow-down {string-join((@type, @severity), '__')}">
             <span>&#x25be;</span>
-          </button>
+          </span>
         </a>
       </xsl:if>
       <span title="{@type}" class="BC_marker {@type}" id="{@xml:id}"/>

@@ -53,18 +53,18 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .BC_family-label{padding: 10px 10px;}
 .BC_family-label-collapse {width:20px; text-decoration:none}
 /* buttons to filter by severity */
-.BC_severity button {margin-right:5px}
-.BC_severity button {font-weight:bold}
+.BC_severity span {margin-right:5px}
+.BC_severity span {font-weight:bold}
 /* warning buttons */
-.BC_link button {min-width:30px}
-.BC_link button.BC_arrow-down, .BC_link button.BC_arrow-up {min-width:10px}
+.BC_link span {min-width:30px}
+.BC_link span.BC_arrow-down, .BC_link span.BC_arrow-up {min-width:10px}
 .BC_family-summary{ margin:0 !important; border-style:none}
 #tr-report .well {margin-bottom:0}
 #tr-report .checkbox {margin: 3px 0}
-#tr-report .badge {background-color:#888}
+#tr-report .badge {background-color:#888; color:#fff}
 #tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold; padding: 7px 15px}
 /* report message */
-#tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0}
+#tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0; text-align:left}
 #tr-report li.BC_tooltip{ padding: 5px 10px; border-style:none}
 #tr-report .BC_link{color:#337ab7 !important; text-decoration:none}
 #BC_msg_container{margin-top:15px}
