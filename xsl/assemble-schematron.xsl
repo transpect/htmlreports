@@ -78,7 +78,10 @@
   </xsl:variable>
 
   <xsl:template match="s:include" mode="tr:expand-includes">
-    <xsl:apply-templates select="doc(@href)/s:schema/*" mode="#current"/>
+    <xsl:apply-templates select="doc(@href)/s:schema/*" mode="#current">
+      <xsl:with-param name="is-included" select="true()" tunnel="yes"/>
+      <xsl:with-param name="include-href" select="@href" tunnel="yes"/>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="/">
@@ -99,7 +102,7 @@
         <xso:include href="{current-grouping-key()}"/>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:param" group-by="@name">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:apply-templates select="($schematrons/s:schema/xsl:include[matches(@href, 'shared-variables.xsl')])[1]"  mode="tr:assemble-schematron"/>
       <xsl:for-each-group select="$schematrons/s:schema/s:phase" group-by="@id">
@@ -110,14 +113,14 @@
         </phase>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/s:let" group-by="@name">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/s:pattern" group-by="@id">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:variable name="diagnostics">
         <xsl:for-each-group select="$schematrons/s:schema/s:diagnostics/s:diagnostic" group-by="@id">
-          <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+          <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
         </xsl:for-each-group>
       </xsl:variable>
       <xsl:if test="$diagnostics[descendant-or-self::*]">
@@ -126,20 +129,29 @@
         </diagnostics>
       </xsl:if>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:function" group-by="@name">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:variable" group-by="@name">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:key" group-by="@name">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:template[@name]" group-by="@name">
-        <xsl:apply-templates select="current-group()[1]" mode="tr:assemble-schematron"/>
+        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:apply-templates select="$schematrons/s:schema/xsl:template[@match]" mode="tr:assemble-schematron"/>
     </schema> 
   </xsl:template>
+  
+  <xsl:function name="tr:most-important-element" as="element()?">
+    <xsl:param name="current-group" as="element()*"/>
+    <xsl:sequence select="
+      if($current-group[@is-included] and $current-group[not(@is-included)]) 
+      then $current-group[not(@is-included)][1] 
+      else $current-group[1]
+      "/>
+  </xsl:function>
   
   <xsl:template match="s:pattern | s:let" mode="tr:assemble-schematron">
     <xsl:text>&#xa;&#xa;   </xsl:text>
@@ -148,7 +160,7 @@
       <xsl:apply-templates select="@*" mode="#current"/>
       <!-- The origin of the element, formerly as comment -->
       <xsl:processing-instruction name="origin">
-        <xsl:value-of select="base-uri(.)"/>
+        <xsl:value-of select="(@include-href, base-uri(.))[1]"/>
       </xsl:processing-instruction>
       <xsl:apply-templates mode="#current"/>
     </xsl:copy>
@@ -179,8 +191,23 @@
   </xsl:template>
 
 
-  <xsl:template match="@* | *" mode="tr:assemble-schematron tr:expand-includes">
+  <xsl:template match="@* | *" mode="tr:assemble-schematron">
     <xsl:copy copy-namespaces="no">
+      <xsl:apply-templates select="@*, node()" mode="#current"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="@is-included" mode="tr:assemble-schematron"/>
+  <xsl:template match="@include-href" mode="tr:assemble-schematron"/>
+  
+  <xsl:template match="@* | *" mode="tr:expand-includes">
+    <xsl:param name="is-included" select="false()" tunnel="yes"/>
+    <xsl:param name="include-href" tunnel="yes"/>
+    <xsl:copy copy-namespaces="no">
+      <xsl:if test="$is-included">
+        <xsl:attribute name="is-included" select="'true'"/>
+        <xsl:attribute name="include-href" select="$include-href"/>
+      </xsl:if>
       <xsl:apply-templates select="@*, node()" mode="#current"/>
     </xsl:copy>
   </xsl:template>
