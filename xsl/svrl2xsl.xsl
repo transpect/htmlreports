@@ -772,7 +772,7 @@
         </xslout:copy>
       </xslout:template>
 
-
+    <xslout:template match="html:span[ancestor::html:h1]/@style| html:span[ancestor::html:h2]/@style"/>
 
       <!--  *
             * process main content
