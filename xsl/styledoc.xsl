@@ -4,6 +4,7 @@
   xmlns:css="http://www.w3.org/1996/css" 
   xmlns:dbk="http://docbook.org/ns/docbook"
   xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tr="http://transpect.io"
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:hub2htm="http://transpect.io/hub2htm" 
   exclude-result-prefixes="xs css dbk"
@@ -26,15 +27,9 @@
       different boilerplate text will be included in the report. There may also be other differences that depend on these 
       values, just search for $function in this stylesheet. -->
   </xsl:param>
+  
   <xsl:param name="cssa" as="xs:string" select="'styles/cssa.xml'"/>
   
-  <xsl:template match="/*" mode="add-base-uri">
-    <xsl:copy>
-      <xsl:copy-of select="@*"/>
-      <xsl:attribute name="xml:base" select="base-uri()"/>
-      <xsl:sequence select="node()"/>
-    </xsl:copy>
-  </xsl:template>
   
   <xsl:template name="main">
     <html>
@@ -167,7 +162,7 @@
             color:#fff;
             background-color:#00539f;
           }          
-          <xsl:apply-templates select="css:rules/css:rule" mode="serialize-css"/>
+          <xsl:apply-templates select="tr:doc-and-template-styles//css:rules/css:rule" mode="serialize-css"/>
         </style>
         <script type="text/javascript" src="{if ($use-local-js = 'yes')
                                             then 'http://transpect.io/htmlreports/template/js/jquery-2.1.4.min.js'
@@ -206,8 +201,8 @@
         <hr/>-->
         <div id="by-series">
 <!--          <h1 class="no-frills heading">Styles by Series (individual style hierarchy for each template)</h1>-->
-          <xsl:apply-templates select="css:rules" >
-            <xsl:with-param name="type" select="'by-templates'" tunnel="yes"/>
+          <xsl:apply-templates select="tr:doc-and-template-styles//css:rules" >
+            <xsl:with-param name="type" select="'by-templates'" as="xs:string" tunnel="yes"/>
           </xsl:apply-templates>  
         </div>
         <hr/>
@@ -268,6 +263,7 @@
   <xsl:template match="css:rules" >
     <xsl:param name="type" as="xs:string" tunnel="yes"/>
     <xsl:if test="$type eq 'by-templates'">
+      <xsl:message select="'base-uri() from styledoc.xsl: ', base-uri(), css:template-name(base-uri())"></xsl:message>
       <h1>⇩  <xsl:value-of select="css:template-name(base-uri())"/>
       </h1>  
     </xsl:if>
@@ -319,7 +315,7 @@
   <xsl:template match="css:rule">
     <xsl:param name="type" as="xs:string" tunnel="yes"/>
     <p class="{generate-id()}">
-      <xsl:value-of select="tokenize(@native-name, ':')[last()]"/>
+      <xsl:value-of select="tokenize(@name, ':')[last()]"/>
       <xsl:if test="$type eq 'by-templates'">
         <xsl:if test="exists(@status)">
           <span class="status">
