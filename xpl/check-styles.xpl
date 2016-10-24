@@ -31,6 +31,9 @@
         '&lt;value-of select="string-join(tokenize(base-uri($template-styles[1]), '/')[position() ge last() - 4],'/')"/>'.&lt;/assert>
     &lt;/rule></code></pre>
     </p:documentation>
+  </p:option> 
+   <p:option name="load-cssa-cascade" required="false" select="false()">
+    <p:documentation>If this option is set true() the whole cssa cascade will be loaded</p:documentation>
   </p:option>
   
   <p:input port="source" primary="true"/>
@@ -79,15 +82,30 @@
     </p:input>
     <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
   </tr:simple-progress-msg>
-  
-  <tr:load-cascaded name="template-styles">
-    <p:with-option name="filename" select="$cssa"/>
-    <p:input port="paths">
-      <p:pipe port="parameters" step="check-styles"/>
-    </p:input>
-    <p:with-option name="debug" select="$debug"/>
-    <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
-  </tr:load-cascaded>
+
+  <p:group name="template-styles">
+    <p:output port="result" primary="true" sequence="true"/>
+  <p:choose >
+    <p:when test="$load-cssa-cascade">
+      <tr:load-whole-cascade>
+        <p:with-option name="filename" select="$cssa"/>
+        <p:input port="paths">
+          <p:pipe port="parameters" step="check-styles"/>
+        </p:input>
+      </tr:load-whole-cascade>
+    </p:when>
+    <p:otherwise>
+      <tr:load-cascaded>
+        <p:with-option name="filename" select="$cssa"/>
+        <p:input port="paths">
+          <p:pipe port="parameters" step="check-styles"/>
+        </p:input>
+        <p:with-option name="debug" select="$debug"/>
+        <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
+      </tr:load-cascaded>
+    </p:otherwise>
+  </p:choose>
+  </p:group> 
   
   <p:wrap-sequence name="doc-and-template-styles" wrapper="tr:doc-and-template-styles">
     <p:input port="source">
@@ -122,7 +140,7 @@
     
   <p:xslt name="styledoc" template-name="main">
     <p:input port="source">
-      <p:pipe port="result" step="template-styles"/>
+      <p:pipe port="result" step="doc-and-template-styles"/>
     </p:input>
     <p:input port="stylesheet" >
       <p:document href="../xsl/styledoc.xsl"/>
@@ -143,7 +161,7 @@
     <p:input port="catalog">
       <p:document href="http://this.transpect.io/xmlcatalog/catalog.xml"/>
     </p:input>
-    <!--<p:with-option name="exclude" select="$suppress-embedding"/>-->
+<!--    <p:with-option name="exclude" select="$suppress-embedding"/>-->
     <p:with-option name="fail-on-error" select="'false'"/>
     <p:with-option name="debug" select="$debug"/>
   </tr:html-embed-resources>
