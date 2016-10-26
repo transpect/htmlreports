@@ -22,7 +22,12 @@
   <p:option name="severity-default-name" required="false" select="'no-role'"/>
   <p:option name="report-title" required="false" select="''"/>
   <p:option name="show-adjusted-srcpath" select="'yes'"/>
-  <p:option name="discard-epub-schematron-svrl" select="'no'" required="false"/>
+  <p:option name="discard-empty-schematron-outputs" select="'no'" required="false">
+  	<p:documentation>If whole schematron outputs are empty their name is by default displayed. 
+  		(Normally with an OK or ✓ message. To override that message you can overwrite the 
+  		template named »l10n:message-empty« in your project's specific htmlreport svrl2xsl.xsl)
+  		To avoid displaying those outputs at all you can set this option to »true« or »yes«.</p:documentation>
+  </p:option>
   <p:option name="suppress-embedding" select="''">
     <p:documentation>Space-separated list of tokens. Available tokens are: image video script style audio object #all.
     The documentation in tr:html-embed-resources could be more up to date.</p:documentation>
@@ -121,7 +126,7 @@
   
   <p:xslt name="reorder-messages-by-category" cx:depends-on="reports">
     <p:documentation>This XSLT will regroup the messages using a span in the asserts/reports. 
-      The span's class used to regroup can be defined as te content of param name 'rule-category-span-class' in the parameter set. (For example ina  project specific transpect-conf.xml)
+      The span's class used to regroup can be defined as te content of param name 'rule-category-span-class' in the parameter set. (For example in a  project specific transpect-conf.xml)
       The span's content will appear as a heading in the html report.
       If it isn't defined or no such spans occur the reports document will be reproduced. 
       If not every assert/report has a span with that class the original rule-family is used.</p:documentation>
@@ -131,7 +136,7 @@
     <p:input port="stylesheet">
       <p:document href="../xsl/regroup-messages-to-category.xsl"/>
     </p:input>
-    <p:with-param name="discard-epub-schematron-svrl" select="($discard-epub-schematron-svrl, 'no')[1]"/>
+    <p:with-param name="discard-empty-schematron-outputs" select="($discard-empty-schematron-outputs, 'no')[1]"/>
   </p:xslt>
   
   <tr:store-debug pipeline-step="htmlreports/reports-regrouped">
