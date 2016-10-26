@@ -76,7 +76,7 @@
       <p:inline>
         <c:messages>
           <c:message xml:lang="en">Starting Schematron check of used styles against list of permissible styles (look for 'styles' messages in the report)</c:message>
-          <c:message xml:lang="de">Beginne Schematron-Prüfung der verwendeten Formatvorlagen gegen Positivliste (entspr. Meldungen tauchen unter der Rubrik 'styles' auf)</c:message>
+          <c:message xml:lang="de">Beginne Schematron-Prüfung der verwendeten Formatvorlagen gegen Positivliste (entspr. Meldungen tauchen unter der Kategorie 'styles' auf)</c:message>
         </c:messages>
       </p:inline>
     </p:input>

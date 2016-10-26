@@ -77,7 +77,7 @@
             <p:inline>
               <c:messages>
                 <c:message xml:lang="en">Starting '<c:family>family</c:family>' Schematron checks</c:message>
-                <c:message xml:lang="de">Beginne Schematron-Prüfungen der Rubrik '<c:family>family</c:family>'</c:message>
+                <c:message xml:lang="de">Beginne Schematron-Prüfungen der Kategorie '<c:family>family</c:family>'</c:message>
               </c:messages>
             </p:inline>
           </p:input>
@@ -146,7 +146,7 @@
             <p:inline>
               <c:messages>
                 <c:message xml:lang="en">Successfully finished '<c:family>family</c:family>' Schematron checks</c:message>
-                <c:message xml:lang="de">Schematron-Prüfungen der Rubrik '<c:family>family</c:family>' erfolgreich abgeschlossen</c:message>
+                <c:message xml:lang="de">Schematron-Prüfungen der Kategorie '<c:family>family</c:family>' erfolgreich abgeschlossen</c:message>
               </c:messages>
             </p:inline>
           </p:input>
