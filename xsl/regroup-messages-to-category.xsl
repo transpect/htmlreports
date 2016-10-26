@@ -27,7 +27,7 @@
   
   <xsl:param name="rule-category-span-class" as="xs:string?"/>
   <xsl:param name="interface-language" as="xs:string?"/>
-  <xsl:param name="discard-epub-schematron-svrl" as="xs:string?"/>
+  <xsl:param name="discard-empty-schematron-outputs" as="xs:string?"/>
   
   <xsl:template match="/*">
     <xsl:copy>
@@ -46,7 +46,6 @@
                             group-by="if (./*/s:span[@class = $rule-category-span-class]) 
                                       then (svrl:text/s:span[@class = $rule-category-span-class], svrl:diagnostic-reference[@xml:lang eq $interface-language]/s:span[@class = $rule-category-span-class])[1] 
                                       else parent::svrl:schematron-output/@tr:rule-family">
-            <xsl:if test="not($discard-epub-schematron-svrl = ('yes', 'true') and (current-grouping-key() = 'epubtools'))">
                   <svrl:schematron-output xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
                     xmlns:schold="http://www.ascc.net/xml/schematron"
                     xmlns:iso="http://purl.oclc.org/dsdl/schematron"
@@ -57,23 +56,33 @@
                     else current-grouping-key()}">
                     <xsl:apply-templates select="current-group()"/>
                   </svrl:schematron-output>
-            </xsl:if>
           </xsl:for-each-group>
+        	<xsl:if test="$discard-empty-schematron-outputs = ('no', 'false')">
+        		<xsl:apply-templates select="svrl:schematron-output[not(*[self::svrl:successful-report or self::svrl:failed-assert])]">
+          		<xsl:with-param name="discard" as="xs:boolean" select="false()" tunnel="yes"/>
+          </xsl:apply-templates>
+        	</xsl:if>
         </xsl:when>
         <xsl:otherwise>
           <!-- reproduce document if neither param is filled or span with classes appear in c:reports document -->
-          <xsl:apply-templates select="node()"/>
+          <xsl:apply-templates select="node()">
+          	<xsl:with-param name="discard" as="xs:boolean" select="if ($discard-empty-schematron-outputs = ('yes', 'true')) then true() else false()" tunnel="yes"/>
+          </xsl:apply-templates>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="svrl:schematron-output[@tr:rule-family = 'epubtools']">
-    <xsl:if test="$discard-epub-schematron-svrl = 'no'">
-      <xsl:next-match/>
-    </xsl:if>
-  </xsl:template>
   
+  <xsl:template match="svrl:schematron-output">
+  	<xsl:param name="discard" tunnel="yes" as="xs:boolean?"/>
+  	<xsl:if test="not($discard)">
+  	 <xsl:copy copy-namespaces="no">
+      <xsl:apply-templates select="@*, node()"/>
+    </xsl:copy>
+  	</xsl:if>
+  </xsl:template>
+	
   <xsl:template match="/">
     <xsl:copy>
       <xsl:apply-templates select="*"/>
