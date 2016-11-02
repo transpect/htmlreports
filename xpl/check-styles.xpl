@@ -84,28 +84,40 @@
   </tr:simple-progress-msg>
 
   <p:group name="template-styles">
-    <p:output port="result" primary="true" sequence="true"/>
-  <p:choose >
-    <p:when test="$load-cssa-cascade">
-      <tr:load-whole-cascade>
-        <p:with-option name="filename" select="$cssa"/>
-        <p:input port="paths">
-          <p:pipe port="parameters" step="check-styles"/>
-        </p:input>
-      </tr:load-whole-cascade>
-    </p:when>
-    <p:otherwise>
-      <tr:load-cascaded>
-        <p:with-option name="filename" select="$cssa"/>
-        <p:input port="paths">
-          <p:pipe port="parameters" step="check-styles"/>
-        </p:input>
-        <p:with-option name="debug" select="$debug"/>
-        <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
-      </tr:load-cascaded>
-    </p:otherwise>
-  </p:choose>
+   <p:output port="result" primary="true" sequence="true">
+     <p:pipe port="result" step="load-cssa"/>
+   </p:output>
+     <p:choose name="load-cssa">
+       <p:when test="$load-cssa-cascade = true()">
+         <p:output port="result" primary="true" sequence="true">
+           <p:pipe port="result" step="load-whole-cssa-cascade"/>
+          </p:output>
+         <tr:load-whole-cascade name="load-whole-cssa-cascade">
+           <p:with-option name="filename" select="$cssa"/>
+           <p:input port="paths">
+             <p:pipe port="parameters" step="check-styles"/>
+           </p:input>
+         </tr:load-whole-cascade>
+         <p:sink/>
+       </p:when>
+       <p:otherwise>
+          <p:output port="result" primary="true">
+           <p:pipe port="result" step="load-cssa-cascade"/>
+         </p:output>
+         <tr:load-cascaded name="load-cssa-cascade">
+           <p:with-option name="filename" select="$cssa"/>
+           <p:input port="paths">
+             <p:pipe port="parameters" step="check-styles"/>
+           </p:input>
+           <p:with-option name="debug" select="$debug"/>
+           <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
+         </tr:load-cascaded>
+         <p:sink/>
+       </p:otherwise>
+     </p:choose>
   </p:group> 
+  
+  <p:sink/>
   
   <p:wrap-sequence name="doc-and-template-styles" wrapper="tr:doc-and-template-styles">
     <p:input port="source">
