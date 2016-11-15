@@ -190,7 +190,7 @@
   
   <!-- insert html head of content file into template -->
   
-  <p:insert match="/html:html/html:head" position="first-child" name="inject-head" cx:depends-on="create-element-for-orphaned-messages">
+  <p:insert match="/html:html/html:head" position="last-child" name="inject-head" cx:depends-on="create-element-for-orphaned-messages">
     <p:input port="insertion" 
       select="/html:html/html:head/(html:link[@type eq 'text/css'] 
                                     | html:style
