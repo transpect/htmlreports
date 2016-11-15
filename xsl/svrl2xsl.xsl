@@ -580,9 +580,10 @@
       <xslout:template match="html:*[@id eq 'tr-timestamp']">
         <xslout:copy>
           <xslout:apply-templates select="@*" mode="#current"/>
-          <xsl:variable name="time" select="current-dateTime()"/>
-          <xsl:value-of select="format-dateTime($time, '[D]. [M]. [Y0001], [H1]:[m01]')"/>         
-          </xslout:copy>
+          <xsl:call-template name="l10n:timestamp">
+            <xsl:with-param name="time" select="current-dateTime()" as="xs:dateTime"/>
+          </xsl:call-template>
+        </xslout:copy>
       </xslout:template>
       
       <!--  *
@@ -794,6 +795,11 @@
 
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
     <li class="BC_no-messages list-group-item">✓<span class="sr-only">Error:</span></li>
+  </xsl:template>
+  
+  <xsl:template name="l10n:timestamp" xmlns="http://www.w3.org/1999/xhtml">
+    <xsl:param name="time" as="xs:dateTime"/>
+    <xsl:value-of select="format-dateTime($time, '[Y0001]-[M01]-[D01], [H01]:[m01]')"/>
   </xsl:template>
 	
 	<xsl:function name="tr:ignored-in-html" as="xs:boolean">

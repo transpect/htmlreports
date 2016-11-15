@@ -36,6 +36,11 @@
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
     <li class="BC_no-messages list-group-item">✓<span class="sr-only">Fehler:</span></li>
   </xsl:template>
+  
+  <xsl:template name="l10n:timestamp" xmlns="http://www.w3.org/1999/xhtml">
+    <xsl:param name="time" as="xs:dateTime"/>
+    <xsl:value-of select="format-dateTime($time, '[D].[M].[Y0001], [H1]:[m01]')"/>
+  </xsl:template>
 
   <xsl:function name="l10n:severity-role-label" as="xs:string">
     <xsl:param name="role" as="xs:string"/>
