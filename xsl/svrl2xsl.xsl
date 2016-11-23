@@ -569,7 +569,9 @@
       </xslout:template>
       
       <xslout:template match="html:title">
-        <xsl:value-of select="$report-title"/>
+        <xslout:copy>
+          <xsl:value-of select="$report-title"/>
+        </xslout:copy>
       </xslout:template>
       
       <!--  *
