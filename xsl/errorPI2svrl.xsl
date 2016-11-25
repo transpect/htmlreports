@@ -41,7 +41,7 @@
             <xsl:apply-templates select="current-group()">
               <xsl:with-param name="id" select="current-grouping-key()"/>
             </xsl:apply-templates>
-          </xsl:for-each-group>          
+          </xsl:for-each-group>
         </svrl:schematron-output>
       </xsl:result-document>
     </xsl:for-each-group>
@@ -70,13 +70,10 @@
           * group the error message by the element name. If this is not applicable, we use simply the name 
           * of the former processing instruction.
           * -->
-    <xsl:variable name="error-name" 
-      select="if($srcpath and $group-by-srcpath='yes') 
-              then replace(tokenize($srcpath, '/')[last()], '\[\d+\](;[a-z]=\d+)?$', '') 
-              else $id" as="xs:string"/>
-    <xsl:variable name="error-name-by-keyword" as="xs:string?"
-      select="if(matches(., '^.+REPORTMSGID=[-_\p{L}\d]+\s.*$')) then replace(., '^.+REPORTMSGID=([-_\p{L}\d]+)\s.*$', '$1') else ''"/>
-    <svrl:successful-report test="(: unknown :)" id="{($error-name-by-keyword, $error-name)[.!=''][1]}" role="{$actual-severity}" location="/">
+    <xsl:variable name="error-name" select="if($srcpath and $group-by-srcpath='yes') 
+                                            then replace(tokenize($srcpath, '/')[last()], '\[\d+\](;[a-z]=\d+)?$', '') 
+                                            else $id" as="xs:string"/>
+    <svrl:successful-report test="(: unknown :)" id="{$error-name}" role="{$actual-severity}" location="/">
       <svrl:text>
         <span xmlns="http://purl.oclc.org/dsdl/schematron" class="srcpath">
           <xsl:if test="not($srcpath)">
@@ -84,7 +81,7 @@
           </xsl:if>
           <xsl:value-of select="string-join(($source-dir-uri, if (not($srcpath)) then 'BC_orphans' else $srcpath), '')"/>
         </span>
-        <xsl:value-of select="replace(., '^.+?( (NFO|ERR|WRN|NRE))?\s+|REPORTMSGID=[-_\p{L}\d]+\s', '')"/></svrl:text>
+        <xsl:value-of select="replace(., '^.+?( (NFO|ERR|WRN|NRE))?\s+', '')"/></svrl:text>
     </svrl:successful-report>
   </xsl:template>
   
