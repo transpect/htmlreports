@@ -64,7 +64,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 #tr-report .badge {background-color:#888; color:#fff}
 #tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold; padding: 7px 15px}
 /* report message */
-#tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0; text-align:left}
+#tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0; text-align:left; text-indent:0;}
 #tr-report li.BC_tooltip{ padding: 5px 10px; border-style:none}
 #tr-report .BC_link{color:#337ab7 !important; text-decoration:none}
 #BC_msg_container{margin-top:15px}
