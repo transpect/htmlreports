@@ -36,7 +36,7 @@
     <xsl:for-each-group select="//processing-instruction()[name() = tokenize($pi-names, '\s+')]" group-by="replace(., $msg-regex, '$2')">
       <xsl:result-document href="{resolve-uri(concat(current-grouping-key(), '.svrl.xml'))}">
         <svrl:schematron-output tr:rule-family="{current-grouping-key()}">
-          <xsl:for-each-group select="current-group()" group-by="replace(., $msg-regex, '$1')">
+          <xsl:for-each-group select="current-group()" group-by="replace(., $msg-regex, if($group-by-srcpath='yes') then '$1' else '$3')">
             <svrl:active-pattern document="{base-uri()}" id="{current-grouping-key()}" name="{current-grouping-key()}"/>
             <xsl:apply-templates select="current-group()">
               <xsl:with-param name="id" select="current-grouping-key()"/>
