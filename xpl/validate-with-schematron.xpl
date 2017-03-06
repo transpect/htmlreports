@@ -278,6 +278,7 @@
         </p:input>
         <p:with-option name="debug" select="$debug"/>
         <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
+        <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
         <p:input port="params">
           <p:pipe port="parameters" step="validate-with-schematron2"/>
         </p:input>
