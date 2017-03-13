@@ -80,6 +80,8 @@
   <xsl:template match="s:include" mode="tr:expand-includes">
     <xsl:apply-templates select="doc(@href)/s:schema/*" mode="#current">
       <xsl:with-param name="is-included" select="true()" tunnel="yes"/>
+      <xsl:with-param name="is-included-non-a9s" 
+        select="if(matches(@href, 'http://this.transpect.io/a9s/')) then false() else true()" tunnel="yes"/>
       <xsl:with-param name="include-href" select="@href" tunnel="yes"/>
     </xsl:apply-templates>
   </xsl:template>
@@ -147,8 +149,8 @@
   <xsl:function name="tr:most-important-element" as="element()?">
     <xsl:param name="current-group" as="element()*"/>
     <xsl:sequence select="
-      if($current-group[@is-included] and $current-group[not(@is-included)]) 
-      then $current-group[not(@is-included)][1] 
+      if($current-group[@is-included-non-a9s] and $current-group[not(@is-included-non-a9s)]) 
+      then $current-group[not(@is-included-non-a9s)][1] 
       else $current-group[1]
       "/>
   </xsl:function>
@@ -198,14 +200,19 @@
   </xsl:template>
   
   <xsl:template match="@is-included" mode="tr:assemble-schematron"/>
+  <xsl:template match="@is-included-non-a9s" mode="tr:assemble-schematron"/>
   <xsl:template match="@include-href" mode="tr:assemble-schematron"/>
   
   <xsl:template match="@* | *" mode="tr:expand-includes">
     <xsl:param name="is-included" select="false()" tunnel="yes"/>
+    <xsl:param name="is-included-non-a9s" select="false()" tunnel="yes"/>
     <xsl:param name="include-href" tunnel="yes"/>
     <xsl:copy copy-namespaces="no">
       <xsl:if test="$is-included">
         <xsl:attribute name="is-included" select="'true'"/>
+        <xsl:if test="$is-included-non-a9s">
+          <xsl:attribute name="is-included-non-a9s" select="'true'"/>
+        </xsl:if>
         <xsl:attribute name="include-href" select="$include-href"/>
       </xsl:if>
       <xsl:apply-templates select="@*, node()" mode="#current"/>
