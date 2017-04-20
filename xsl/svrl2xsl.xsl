@@ -765,7 +765,9 @@
                       <xslout:value-of select="@title"/>
                     </xslout:when>
                     <xslout:otherwise>
-                      <xslout:apply-templates mode="#current"/>    
+                      <xslout:apply-templates mode="#current">
+                        <xslout:with-param name="clean-heading" as="xs:boolean" select="true()" tunnel="yes"/>
+                      </xslout:apply-templates>    
                     </xslout:otherwise>
                   </xslout:choose>
                 </a>
@@ -776,6 +778,13 @@
       </xslout:template>
 
     <xslout:template match="html:span[ancestor::html:h1]/@style| html:span[ancestor::html:h2]/@style"/>
+
+      <xslout:template match="html:h1//html:img | html:h2//html:img">
+        <xslout:param name="clean-heading" as="xs:boolean?" tunnel="yes"/>
+        <xslout:if test="not($clean-heading)">
+          <xslout:next-match/>
+        </xslout:if>
+      </xslout:template>
 
       <!--  *
             * process main content
