@@ -1,6 +1,7 @@
 /*
  * general
  */
+html{-ms-overflow-style: scrollbar;} /* fix overlapping scrollbars in IE11 */
 body { position:relative; padding:0; margin:0 !important; background-color: #f8f8f8 !important;  }
 main div.row {margin-right:0; margin-left:0}
 .btn.active, .btn.disabled, .btn:active, .btn:hover, .btn:focus, .btn, .btn-default.active, .btn-default:active,
