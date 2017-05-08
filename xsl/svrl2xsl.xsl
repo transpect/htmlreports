@@ -623,96 +623,103 @@
                   * report: individual reports grouped by family 
                   * -->
 
-            <xsl:for-each select="/c:reports/*[not(self::c:not-applicable)]">
-              <xsl:variable name="family" as="xs:string" select="(@tr:rule-family, 'unknown')[1]"/>
-              <!-- c:errors without attributes are only informational (an xsl:message terminate="no" will create such a c:error) -->
-              <xsl:variable name="msgs" as="element(*)*"
-                select=".//svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert]
-                [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))] 
-                | .//c:error[@*]"/>
-              <div class="BC_family-label panel-heading">
-                <xsl:value-of select="$family"/>
-                <a class="pull-right btn btn-default btn-xs BC_family-label-collapse" role="button"
-                  data-toggle="collapse" href="#fam_{$family}" aria-expanded="false" aria-controls="fam_{$family}">–</a>
-              </div>
-              <div class="collapse in" id="fam_{$family}">
-                <ul class="list-group BC_family-summary">
-                  <xsl:choose>
-                    <xsl:when test="exists($msgs)">
-                      <xsl:variable name="svrl-text-without-srcpath" as="element(svrl:text)*"
-                        select=".//svrl:text[parent::svrl:successful-report|parent::svrl:failed-assert][not(s:span[@class eq 'srcpath'] ne '')]"/>
-                      <xsl:if test="exists($svrl-text-without-srcpath)">
-                        <xsl:message select="concat('[WARNING] Schematron rule family: ''',
-                          @tr:rule-family,
-                          ''', rule(s): ',
-                          string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return concat('''', $a/@id, '''')), ', '),
-                          '&#xa;No srcpath-span found. Using Schematron location @attribute as fallback.'
-                          )"/>
-                        <!--<xsl:message>WARNING: You forgot to add srcpath-span elements to your error messages or the
-                          extraction went wrong. These Messages are not displayed correctly. <xsl:sequence
-                            select="concat('Rule-family:', @tr:rule-family, ' ||| rule(s): ', string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return $a/@id), ' :: '))"/>
-                          <xsl:sequence select="$svrl-text-without-srcpath"/>
-                        </xsl:message>-->
-                      </xsl:if>
-                      <xsl:for-each-group select="$msgs"
-                        group-by="string-join(
-                                              (
-                                                if(self::svrl:text and empty(s:span[@class='corrected-id'] | ../@id))
-                                                then concat(
-                                                'To the Schematron author: no &lt;span class=&quot;srcpath&quot;&gt; or id for this message in pattern: &quot;', ../preceding::svrl:active-pattern[1]/@id, 
-                                                '&quot;, context: &quot;', ../preceding::svrl:fired-rule[1]/@context, '&quot;'
-                                                )
-                                                else (s:span[@class='corrected-id'], ../@id)[1]
-                                                | self::c:error/@code,
-                                                (../@role, $severity-default-role)[1]
-                                              ), 
-                                              '__'
-                                             )">
-                        <xsl:variable name="msgid" select="(s:span[@class='corrected-id'], ../@id, @code, '')[1]" as="xs:string"/>
-                        <xsl:variable name="current-severity" select="(@type, ../@role, $severity-default-role)[1]"
-                          as="xs:string"/>
-                        <xsl:variable name="span-title" select="string-join(($family, $current-severity, $msgid), ' ')"
-                          as="xs:string"/>
-                        <xsl:variable name="href-id"
-                          select="$messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/tr:message[1]/@xml:id"
-                          as="xs:string?"/>
-                        <li class="list-group-item BC_tooltip {$current-severity}">
-                          <div class="checkbox">
-                            <label class="checkbox-inline">
-                              <input type="checkbox" checked="checked" class="BC_toggle {$current-severity}"
-                                id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}"/>
-                            </label>
-                            <a class="BC_link" href="#{$href-id}">
-                              <xsl:value-of select="$msgid"/>
-                              <span class="BC_whitespace">
-                                <xslout:text>&#xa0;</xslout:text>
-                              </span>
-                              <span class="BC_error_count badge">
-                                <xsl:value-of
-                                  select="count($messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/*)"
-                                />
-                              </span>
-                            </a>
-                            <div class="pull-right">
-                              <a class="BC_link" href="#{$href-id}">
-                                <span type="button" class="btn btn-default btn-xs {$current-severity}">
-                                  <xsl:number value="index-of($message-types, $span-title)" format="A"/>
-                                  <span class="BC_arrow-down">&#x25be;</span>
-                                </span>
-                              </a>
-                              <span title="{$span-title}" class="BC_marker {$span-title}"/>
+                  <xsl:for-each select="/c:reports/*[not(self::c:not-applicable)]">
+                    <xsl:variable name="family" as="xs:string" select="(@tr:rule-family, 'unknown')[1]"/>
+                    <!-- c:errors without attributes are only informational (an xsl:message terminate="no" will create such a c:error) -->
+                    <xsl:variable name="msgs" as="element(*)*"
+                      select=".//svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert]
+                      [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))] 
+                      | .//c:error[@*]"/>
+                    <xsl:choose>
+                      <xsl:when test="exists($msgs)">
+                        <div class="BC_family-label panel-heading">
+                          <xsl:value-of select="$family"/>
+                          <a class="pull-right btn btn-default btn-xs BC_family-label-collapse" role="button"
+                             data-toggle="collapse" href="#fam_{$family}" aria-expanded="false" aria-controls="fam_{$family}">–</a>
+                        </div>
+                          <div class="collapse in" id="fam_{$family}">
+                            <ul class="list-group BC_family-summary">
+                              <xsl:variable name="svrl-text-without-srcpath" as="element(svrl:text)*"
+                                            select=".//svrl:text[parent::svrl:successful-report|parent::svrl:failed-assert][not(s:span[@class eq 'srcpath'] ne '')]"/>
+                                <xsl:if test="exists($svrl-text-without-srcpath)">
+                                  <xsl:message select="concat('[WARNING] Schematron rule family: ''',
+                                    @tr:rule-family,
+                                    ''', rule(s): ',
+                                    string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return concat('''', $a/@id, '''')), ', '),
+                                    '&#xa;No srcpath-span found. Using Schematron location @attribute as fallback.'
+                                    )"/>
+                                  <!--<xsl:message>WARNING: You forgot to add srcpath-span elements to your error messages or the
+                                    extraction went wrong. These Messages are not displayed correctly. <xsl:sequence
+                                      select="concat('Rule-family:', @tr:rule-family, ' ||| rule(s): ', string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return $a/@id), ' :: '))"/>
+                                    <xsl:sequence select="$svrl-text-without-srcpath"/>
+                                  </xsl:message>-->
+                                </xsl:if>
+                                <xsl:for-each-group select="$msgs"
+                                  group-by="string-join(
+                                                        (
+                                                          if(self::svrl:text and empty(s:span[@class='corrected-id'] | ../@id))
+                                                          then concat(
+                                                          'To the Schematron author: no &lt;span class=&quot;srcpath&quot;&gt; or id for this message in pattern: &quot;', ../preceding::svrl:active-pattern[1]/@id, 
+                                                          '&quot;, context: &quot;', ../preceding::svrl:fired-rule[1]/@context, '&quot;'
+                                                          )
+                                                          else (s:span[@class='corrected-id'], ../@id)[1]
+                                                          | self::c:error/@code,
+                                                          (../@role, $severity-default-role)[1]
+                                                        ), 
+                                                        '__'
+                                                       )">
+                                  <xsl:variable name="msgid" select="(s:span[@class='corrected-id'], ../@id, @code, '')[1]" as="xs:string"/>
+                                  <xsl:variable name="current-severity" select="(@type, ../@role, $severity-default-role)[1]"
+                                    as="xs:string"/>
+                                  <xsl:variable name="span-title" select="string-join(($family, $current-severity, $msgid), ' ')"
+                                    as="xs:string"/>
+                                  <xsl:variable name="href-id"
+                                    select="$messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/tr:message[1]/@xml:id"
+                                    as="xs:string?"/>
+                                  <li class="list-group-item BC_tooltip {$current-severity}">
+                                    <div class="checkbox">
+                                      <label class="checkbox-inline">
+                                        <input type="checkbox" checked="checked" class="BC_toggle {$current-severity}"
+                                          id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}"/>
+                                      </label>
+                                      <a class="BC_link" href="#{$href-id}">
+                                        <xsl:value-of select="$msgid"/>
+                                        <span class="BC_whitespace">
+                                          <xslout:text>&#xa0;</xslout:text>
+                                        </span>
+                                        <span class="BC_error_count badge">
+                                          <xsl:value-of
+                                            select="count($messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/*)"
+                                          />
+                                        </span>
+                                      </a>
+                                      <div class="pull-right">
+                                        <a class="BC_link" href="#{$href-id}">
+                                          <span type="button" class="btn btn-default btn-xs {$current-severity}">
+                                            <xsl:number value="index-of($message-types, $span-title)" format="A"/>
+                                            <span class="BC_arrow-down">&#x25be;</span>
+                                          </span>
+                                        </a>
+                                        <span title="{$span-title}" class="BC_marker {$span-title}"/>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </xsl:for-each-group>
+                              </ul>
                             </div>
-                          </div>
-                        </li>
-                      </xsl:for-each-group>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:call-template name="l10n:message-empty"/>
-                    </xsl:otherwise>
-                  </xsl:choose>
-                </ul>
-              </div>
-            </xsl:for-each>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <div class="BC_family-label panel-heading BC_no-messages">
+                              <xsl:call-template name="l10n:message-empty">
+                                <xsl:with-param name="family" select="$family"/>
+                              </xsl:call-template>
+                              <span class="pull-right BC_no-messages_mark">
+                                <xsl:call-template name="l10n:checkmark"/>
+                              </span>
+                            </div>
+                          </xsl:otherwise>
+                        </xsl:choose>
+                  </xsl:for-each>
 
             <!--  *
                   * report: message panel
@@ -805,7 +812,12 @@
   </xsl:template>
 
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
-    <li class="BC_no-messages list-group-item">✓<span class="sr-only">Error:</span></li>
+    <xsl:param name="family" select="'general rules'"/>
+    <xsl:value-of select="$family"/>
+  </xsl:template>
+  
+  <xsl:template name="l10n:checkmark">
+    <xsl:text>&#x2713;</xsl:text>
   </xsl:template>
   
   <xsl:template name="l10n:timestamp" xmlns="http://www.w3.org/1999/xhtml">
