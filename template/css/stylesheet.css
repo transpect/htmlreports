@@ -63,7 +63,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 #tr-report .well {margin-bottom:0}
 #tr-report .checkbox {margin: 3px 0}
 #tr-report .badge {background-color:#888; color:#fff}
-#tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold; margin-top:5px; border-radius:0;}
+#tr-report .BC_no-messages{ background-color:#c5e1a5; color:#33691e; font-weight:bold; margin-top:5px; border-radius:0; padding: 5px 10px;}
 #tr-report .BC_no-messages_mark{padding: 1px 5px}
 #tr-content .BC_tooltip{display:inline-block; margin:5px 5px 5px 0; text-align:left; text-indent:0;}
 #tr-report li.BC_tooltip{ padding: 5px 10px; border-style:none}
