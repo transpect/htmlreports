@@ -34,9 +34,10 @@
   </xsl:template>
 
   <xsl:template name="l10n:message-empty" xmlns="http://www.w3.org/1999/xhtml">
-    <li class="BC_no-messages list-group-item">✓<span class="sr-only">Fehler:</span></li>
+    <xsl:param name="family" select="'Allgemeine Regeln'"/>
+    <xsl:value-of select="$family"/>
   </xsl:template>
-  
+
   <xsl:template name="l10n:timestamp" xmlns="http://www.w3.org/1999/xhtml">
     <xsl:param name="time" as="xs:dateTime"/>
     <xsl:value-of select="format-dateTime($time, '[D].[M].[Y0001], [H1]:[m01]')"/>
