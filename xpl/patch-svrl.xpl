@@ -126,10 +126,17 @@
   
   <p:xslt name="reorder-messages-by-category" cx:depends-on="reports">
     <p:documentation>This XSLT will regroup the messages using a span in the asserts/reports. 
-      The span's class used to regroup can be defined as te content of param name 'rule-category-span-class' in the parameter set. (For example in a  project specific transpect-conf.xml)
+      The span's class used to regroup can be defined as te content of param name 'rule-category-span-class' 
+      in the parameter set. (For example in a project-specific transpect-conf.xml)
       The span's content will appear as a heading in the html report.
       If it isn't defined or no such spans occur the reports document will be reproduced. 
-      If not every assert/report has a span with that class the original rule-family is used.</p:documentation>
+      If not every assert/report has a span with that class the original rule-family is used.
+      If there is no assert/report but the SVRL contains one or more title elements (in any namespace),
+      then the tr:rule-family of this SVRL will be set to the title element content that matches the
+      interface language. (We did not use the SVRL title attribute since the interface language is
+      not known in certain steps that perform Schematron validation and the default XSLT Schematron
+      will always fill the title attribute from the title element that comes last in document order.)  
+    </p:documentation>
     <p:input port="parameters">
       <p:pipe port="params" step="patch-svrl"/>
     </p:input>

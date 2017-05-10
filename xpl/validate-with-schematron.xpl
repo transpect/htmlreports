@@ -207,7 +207,7 @@
         <p:pipe port="source" step="validate-with-schematron2"/>
       </p:iteration-source>
       <p:output port="partial-reports">
-        <p:pipe port="result" step="add-family-attribute"/>
+        <p:pipe port="result" step="copy-titles-to-svrl"/>
       </p:output>
       <tr:oxy-validate-with-schematron name="sch" assert-valid="false">
         <p:input port="schema">
@@ -244,6 +244,17 @@
           <p:pipe port="result" step="consolidate-params"/>
         </p:with-option>
       </p:add-attribute>
+      
+      <p:insert name="copy-titles-to-svrl" match="/*" position="first-child">
+        <p:documentation>We will use the (potentially localized) title elements for grouping the messages according
+        to their categories, where categories can be assigned to individual assert/report and diagnostic messages 
+        either by span.category or by the schema’s title element that best matches the user interface language.
+        We cannot use the SVRL’s title attribute since it only contains the contents of the last title element
+        (in document order) of the underlying schema.</p:documentation>
+        <p:input port="insertion" select="/*/*:title">
+          <p:pipe port="schema" step="validate-with-schematron2"/>
+        </p:input>
+      </p:insert>
 
       <tr:store-debug extension="svrl.xml">
         <p:with-option name="pipeline-step" 

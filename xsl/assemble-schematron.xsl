@@ -28,6 +28,7 @@
   <xsl:param name="s9y9-path" as="xs:string?"/>
   <xsl:param name="basename" />
   <xsl:param name="fallback-uri" />
+  <xsl:param name="rule-category-span-class"/>
 
   <xsl:variable name="paths" as="xs:string*" 
     select="($s9y1-path, $s9y2-path, $s9y3-path, $s9y4-path, $s9y5-path, $s9y6-path, $s9y7-path, $s9y8-path, $s9y9-path)"/>
@@ -96,10 +97,22 @@
       select="if($fallback-schematrons) then 'fallback-uri' else 'URIs'"/>: <xsl:value-of 
       select="$schematrons/s:schema/base-uri()"/></xsl:message>
     <schema tr:rule-family="{$family}">
+      <xsl:variable name="_lang" select="($schematrons/s:schema/@xml:lang)[1]" as="attribute(xml:lang)?"/>
+      <xsl:sequence select="$_lang"/>
       <xsl:for-each-group select="$schematrons/s:schema/s:ns" group-by="@uri">
         <!-- Assumption: no two different prefixes for one uri. --> 
         <ns prefix="{@prefix}" uri="{current-grouping-key()}"/>
       </xsl:for-each-group>
+      <xsl:variable name="titles" as="element(s:title)*">
+        <xsl:for-each-group select="$schematrons/s:schema/s:title" group-by="(@xml:lang, '')[1]">
+          <title>
+            <xsl:copy-of select="@xml:lang, node()"/>
+          </title>
+        </xsl:for-each-group>
+      </xsl:variable>
+      <xsl:variable name="_title" as="element(s:title)?" 
+        select="($titles[@xml:lang = $_lang], $titles[not(@xml:lang)], $titles)[1]"/>
+      <xsl:sequence select="$_title"/>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:include[not(matches(@href, 'shared-variables.xsl'))]|$schematrons/s:schema/xsl:import" group-by="@href">
         <xso:include href="{current-grouping-key()}"/>
       </xsl:for-each-group>
@@ -118,16 +131,20 @@
         <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/s:pattern" group-by="@id">
-        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
+        <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron">
+          <xsl:with-param name="title" select="$_title" tunnel="yes"/>
+        </xsl:apply-templates>
       </xsl:for-each-group>
-      <xsl:variable name="diagnostics">
+      <xsl:variable name="_diagnostics">
         <xsl:for-each-group select="$schematrons/s:schema/s:diagnostics/s:diagnostic" group-by="@id">
-          <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
+          <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron">
+            <xsl:with-param name="title" select="$_title" tunnel="yes"/>
+          </xsl:apply-templates>
         </xsl:for-each-group>
       </xsl:variable>
-      <xsl:if test="$diagnostics[descendant-or-self::*]">
+      <xsl:if test="$_diagnostics[descendant-or-self::*]">
         <diagnostics>
-          <xsl:sequence select="$diagnostics"/>
+          <xsl:sequence select="$_diagnostics"/>
         </diagnostics>
       </xsl:if>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:function" group-by="@name">
@@ -179,9 +196,27 @@
 		  <xsl:if test="not(exists(s:span[@class eq 'srcpath']))">
 		    <span class="srcpath"><xso:value-of select="ancestor-or-self::*[@srcpath][1]/@srcpath"/></span>
 		  </xsl:if>
+		  <xsl:call-template name="default-category"/>
 			<xsl:apply-templates mode="#current"/>
 		</xsl:copy>
 	</xsl:template>
+  
+  <xsl:template match="s:diagnostic" mode="tr:assemble-schematron">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="#current"/>
+		  <xsl:call-template name="default-category"/>
+			<xsl:apply-templates mode="#current"/>
+		</xsl:copy>
+	</xsl:template>
+  
+  <xsl:template name="default-category">
+	  <xsl:param name="title" as="element(s:title)?" tunnel="yes"/>
+    <xsl:if test="$rule-category-span-class and not(exists(s:span[@class = $rule-category-span-class]))">
+      <span class="{$rule-category-span-class}">
+        <xsl:copy-of select="$title/node()"/>
+      </span>
+    </xsl:if>
+  </xsl:template>
   
   <xsl:template match="@role[. = 'warn']" mode="tr:assemble-schematron">
     <xsl:attribute name="{name()}" select="'warning'"/>

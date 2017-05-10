@@ -58,9 +58,9 @@
                   </svrl:schematron-output>
           </xsl:for-each-group>
         	<xsl:if test="$discard-empty-schematron-outputs = ('no', 'false')">
-        		<xsl:apply-templates select="svrl:schematron-output[not(*[self::svrl:successful-report or self::svrl:failed-assert])] | c:ok">
-          		<xsl:with-param name="discard" as="xs:boolean" select="false()" tunnel="yes"/>
-          </xsl:apply-templates>
+            <xsl:apply-templates select="svrl:schematron-output[not(*[self::svrl:successful-report or self::svrl:failed-assert])] | c:ok">
+              <xsl:with-param name="discard" as="xs:boolean" select="false()" tunnel="yes"/>
+            </xsl:apply-templates>
         	</xsl:if>
         </xsl:when>
         <xsl:otherwise>
@@ -76,16 +76,23 @@
   <xsl:template match="svrl:schematron-output" priority="2">
   	<xsl:param name="discard" tunnel="yes" as="xs:boolean?"/>
   	<xsl:choose>
-  		<xsl:when test="$discard and not(*[self::svrl:successful-report or self::svrl:failed-assert])">
-  		</xsl:when>
-  		<xsl:otherwise>
-  			<xsl:copy copy-namespaces="no">
-     		 <xsl:apply-templates select="@*, node()"/>
-   		 </xsl:copy>
-  		</xsl:otherwise>
+  		<xsl:when test="$discard and not(*[self::svrl:successful-report or self::svrl:failed-assert])"/>
+      <xsl:otherwise>
+        <xsl:copy copy-namespaces="no">
+          <xsl:apply-templates select="@*"/>
+          <xsl:variable name="title-from-schema" as="element(s:title)?"
+            select="(s:title[@xml:lang = $interface-language], s:title[not(@xml:lang)], s:title)[1]"/>
+          <xsl:if test="normalize-space($title-from-schema)">
+            <xsl:attribute name="tr:rule-family" select="$title-from-schema"/>
+          </xsl:if>
+          <xsl:apply-templates/>
+        </xsl:copy>
+      </xsl:otherwise>
   	</xsl:choose>
   </xsl:template>
-	
+
+  <xsl:template match="svrl:schematron-output/*:title"/>
+
 	<xsl:template match="c:ok" priority="2">
   	<xsl:param name="discard" tunnel="yes" as="xs:boolean?"/>
   		<xsl:if test="not($discard)">

@@ -623,13 +623,13 @@
                   * report: individual reports grouped by family 
                   * -->
 
-                  <xsl:for-each select="/c:reports/*[not(self::c:not-applicable)]">
-                    <xsl:variable name="family" as="xs:string" select="(@tr:rule-family, 'unknown')[1]"/>
-                    <!-- c:errors without attributes are only informational (an xsl:message terminate="no" will create such a c:error) -->
+                  <xsl:for-each-group select="/c:reports/*[not(self::c:not-applicable)]" group-by="(@tr:rule-family, 'unknown')[1]">
                     <xsl:variable name="msgs" as="element(*)*"
-                      select=".//svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert]
-                      [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))] 
-                      | .//c:error[@*]"/>
+                      select="  current-group()//svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert]
+                                            [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))] 
+                              | current-group()//c:error[@*]"/>
+                      <!-- c:errors without attributes are only informational (an xsl:message terminate="no" will create such a c:error) -->
+                    <xsl:variable name="family" as="xs:string" select="current-grouping-key()"/>
                     <xsl:choose>
                       <xsl:when test="exists($msgs)">
                         <div class="BC_family-label panel-heading">
@@ -719,7 +719,7 @@
                             </div>
                           </xsl:otherwise>
                         </xsl:choose>
-                  </xsl:for-each>
+                  </xsl:for-each-group>
 
             <!--  *
                   * report: message panel
