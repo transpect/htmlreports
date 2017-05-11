@@ -21,6 +21,10 @@ header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
  * footer
  */
  #tr-footer{padding:15px 0;}
+ /*
+ *  images
+ */
+ img {max-width: 100%;}
 /*
  *  content
  */
