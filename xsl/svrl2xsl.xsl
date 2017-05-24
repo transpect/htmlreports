@@ -23,7 +23,7 @@
 
   <xsl:param name="remove-srcpath" select="'yes'"/>
   <xsl:param name="max-errors-per-rule" as="xs:string?"/>
-  <xsl:param name="severity-default-name" select="'no-role'" as="xs:string"/>
+  <xsl:param name="severity-default-name" select="'error'" as="xs:string"/>
 
   <xsl:param name="interface-language" select="'en'" as="xs:string"/>
   <xsl:param name="file" as="xs:string?"/>
@@ -105,8 +105,16 @@
   </xsl:variable>
 
   <xsl:template match="c:error[@*]" mode="collect-messages">
-    <tr:message srcpath="BC_orphans" xml:id="BC_{generate-id()}" severity="{@type}"
-      type="{parent::c:errors/@tr:rule-family} {@type} {@code}">
+    <xsl:variable name="severity" as="xs:string" select="(@role, $severity-default-name)[1]"/>
+    <xsl:variable name="srcpath" as="xs:string" select="(@srcpath, 'BC_orphans')[1]"/>
+    <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath($srcpath)"/>
+    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths)"/>
+    <tr:message srcpath="{if (every $ap in $adjusted-srcpath 
+                              satisfies (ends-with($ap, '?xpath='))
+                                    )
+                                 then $normalized-srcpath
+                                 else $adjusted-srcpath}" xml:id="BC_{generate-id()}" severity="{$severity}"
+      type="{parent::c:errors/@tr:rule-family} {$severity} {@code}">
       <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
       <tr:text>
         <xsl:copy-of select="node()"/>
@@ -161,7 +169,7 @@
             <xsl:sequence select="$without-xpath[. = $message-srcpaths]"/>
           </xsl:when>
           <xsl:when test="exists($with-xpath)">
-            <!-- Backtrack – cut away XPath steps from the end and see whether the more comprehensive path
+            <!-- Backtrack – cut away XPath steps from the end and see whether the less comprehensive path
               exists in the document. Scenario: a phrase was dissolved after its srcpath found its way to 
               a report. 
             -->
@@ -641,70 +649,70 @@
                             <ul class="list-group BC_family-summary">
                               <xsl:variable name="svrl-text-without-srcpath" as="element(svrl:text)*"
                                             select=".//svrl:text[parent::svrl:successful-report|parent::svrl:failed-assert][not(s:span[@class eq 'srcpath'] ne '')]"/>
-                                <xsl:if test="exists($svrl-text-without-srcpath)">
-                                  <xsl:message select="concat('[WARNING] Schematron rule family: ''',
-                                    @tr:rule-family,
-                                    ''', rule(s): ',
-                                    string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return concat('''', $a/@id, '''')), ', '),
-                                    '&#xa;No srcpath-span found. Using Schematron location @attribute as fallback.'
-                                    )"/>
-                                  <!--<xsl:message>WARNING: You forgot to add srcpath-span elements to your error messages or the
-                                    extraction went wrong. These Messages are not displayed correctly. <xsl:sequence
-                                      select="concat('Rule-family:', @tr:rule-family, ' ||| rule(s): ', string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return $a/@id), ' :: '))"/>
-                                    <xsl:sequence select="$svrl-text-without-srcpath"/>
-                                  </xsl:message>-->
-                                </xsl:if>
-                                <xsl:for-each-group select="$msgs"
-                                  group-by="string-join(
-                                                        (
-                                                          if(self::svrl:text and empty(s:span[@class='corrected-id'] | ../@id))
-                                                          then concat(
-                                                          'To the Schematron author: no &lt;span class=&quot;srcpath&quot;&gt; or id for this message in pattern: &quot;', ../preceding::svrl:active-pattern[1]/@id, 
-                                                          '&quot;, context: &quot;', ../preceding::svrl:fired-rule[1]/@context, '&quot;'
-                                                          )
-                                                          else (s:span[@class='corrected-id'], ../@id)[1]
-                                                          | self::c:error/@code,
-                                                          (../@role, $severity-default-role)[1]
-                                                        ), 
-                                                        '__'
-                                                       )">
-                                  <xsl:variable name="msgid" select="(s:span[@class='corrected-id'], ../@id, @code, '')[1]" as="xs:string"/>
-                                  <xsl:variable name="current-severity" select="(@type, ../@role, $severity-default-role)[1]"
-                                    as="xs:string"/>
-                                  <xsl:variable name="span-title" select="string-join(($family, $current-severity, $msgid), ' ')"
-                                    as="xs:string"/>
-                                  <xsl:variable name="href-id"
-                                    select="$messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/tr:message[1]/@xml:id"
-                                    as="xs:string?"/>
-                                  <li class="list-group-item BC_tooltip {$current-severity}">
-                                    <div class="checkbox">
-                                      <label class="checkbox-inline">
-                                        <input type="checkbox" checked="checked" class="BC_toggle {$current-severity}"
-                                          id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}"/>
-                                      </label>
+                              <xsl:if test="exists($svrl-text-without-srcpath)">
+                                <xsl:message select="concat('[WARNING] Schematron rule family: ''',
+                                  @tr:rule-family,
+                                  ''', rule(s): ',
+                                  string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return concat('''', $a/@id, '''')), ', '),
+                                  '&#xa;No srcpath-span found. Using Schematron location @attribute as fallback.'
+                                  )"/>
+                                <!--<xsl:message>WARNING: You forgot to add srcpath-span elements to your error messages or the
+                                  extraction went wrong. These Messages are not displayed correctly. <xsl:sequence
+                                    select="concat('Rule-family:', @tr:rule-family, ' ||| rule(s): ', string-join(distinct-values(for $a in *[local-name() = ('successful-report', 'failed-assert')][svrl:text[not(s:span[@class eq 'srcpath'] ne '')]] return $a/@id), ' :: '))"/>
+                                  <xsl:sequence select="$svrl-text-without-srcpath"/>
+                                </xsl:message>-->
+                              </xsl:if>
+                              <xsl:for-each-group select="$msgs"
+                                group-by="string-join(
+                                                      (
+                                                        if(self::svrl:text and empty(s:span[@class='corrected-id'] | ../@id))
+                                                        then concat(
+                                                        'To the Schematron author: no &lt;span class=&quot;srcpath&quot;&gt; or id for this message in pattern: &quot;', ../preceding::svrl:active-pattern[1]/@id, 
+                                                        '&quot;, context: &quot;', ../preceding::svrl:fired-rule[1]/@context, '&quot;'
+                                                        )
+                                                        else (s:span[@class='corrected-id'], ../@id)[1]
+                                                        | self::c:error/@code,
+                                                        (../@role, self::c:error/@role, $severity-default-role)[1]
+                                                      ), 
+                                                      '__'
+                                                     )">
+                                <xsl:variable name="msgid" select="(s:span[@class='corrected-id'], ../@id, @code, '')[1]" as="xs:string"/>
+                                <xsl:variable name="current-severity" select="(@type, ../@role, self::c:error/@role, $severity-default-role)[1]"
+                                  as="xs:string"/>
+                                <xsl:variable name="span-title" select="string-join(($family, $current-severity, $msgid), ' ')"
+                                  as="xs:string"/>
+                                <xsl:variable name="href-id"
+                                  select="$messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/tr:message[1]/@xml:id"
+                                  as="xs:string?"/>
+                                <li class="list-group-item BC_tooltip {$current-severity}">
+                                  <div class="checkbox">
+                                    <label class="checkbox-inline">
+                                      <input type="checkbox" checked="checked" class="BC_toggle {$current-severity}"
+                                        id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}"/>
+                                    </label>
+                                    <a class="BC_link" href="#{$href-id}">
+                                      <xsl:value-of select="$msgid"/>
+                                      <span class="BC_whitespace">
+                                        <xslout:text>&#xa0;</xslout:text>
+                                      </span>
+                                      <span class="BC_error_count badge">
+                                        <xsl:value-of
+                                          select="count($messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/*)"
+                                        />
+                                      </span>
+                                    </a>
+                                    <div class="pull-right">
                                       <a class="BC_link" href="#{$href-id}">
-                                        <xsl:value-of select="$msgid"/>
-                                        <span class="BC_whitespace">
-                                          <xslout:text>&#xa0;</xslout:text>
-                                        </span>
-                                        <span class="BC_error_count badge">
-                                          <xsl:value-of
-                                            select="count($messages-grouped-by-type/tr:document/tr:messages[@type eq $span-title]/*)"
-                                          />
+                                        <span type="button" class="btn btn-default btn-xs {$current-severity}">
+                                          <xsl:number value="index-of($message-types, $span-title)" format="A"/>
+                                          <span class="BC_arrow-down">&#x25be;</span>
                                         </span>
                                       </a>
-                                      <div class="pull-right">
-                                        <a class="BC_link" href="#{$href-id}">
-                                          <span type="button" class="btn btn-default btn-xs {$current-severity}">
-                                            <xsl:number value="index-of($message-types, $span-title)" format="A"/>
-                                            <span class="BC_arrow-down">&#x25be;</span>
-                                          </span>
-                                        </a>
-                                        <span title="{$span-title}" class="BC_marker {$span-title}"/>
-                                      </div>
+                                      <span title="{$span-title}" class="BC_marker {$span-title}"/>
                                     </div>
-                                  </li>
-                                </xsl:for-each-group>
+                                  </div>
+                                </li>
+                              </xsl:for-each-group>
                               </ul>
                             </div>
                           </xsl:when>
@@ -876,7 +884,6 @@
     </xsl:if>
     <!-- We ditched match="key('by-srcpath', …)" because of a possible Saxon bug, 
       http://saxon.markmail.org/message/freszzsbtuniw5o3 -->
-    
     <xslout:template match="html:s-p[{string-join(for $i in $tokenized 
                                       return concat(
                                                     'matches(.,''^', 
