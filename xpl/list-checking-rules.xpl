@@ -65,8 +65,8 @@
     <p:input port="msgs">
       <p:inline>
         <c:messages>
-          <c:message xml:lang="en">Patched messages into HTML rendering</c:message>
-          <c:message xml:lang="de">Meldungen in das HTML-Rendering einmontiert</c:message>
+          <c:message xml:lang="en">Messages have been inserted into the HTML report</c:message>
+          <c:message xml:lang="de">Meldungen wurden in den HTML-Prüfbericht eingefügt</c:message>
         </c:messages>
       </p:inline>
     </p:input>
