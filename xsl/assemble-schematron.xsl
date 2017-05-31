@@ -99,10 +99,6 @@
     <schema tr:rule-family="{$family}">
       <xsl:variable name="_lang" select="($schematrons/s:schema/@xml:lang)[1]" as="attribute(xml:lang)?"/>
       <xsl:sequence select="$_lang"/>
-      <xsl:for-each-group select="$schematrons/s:schema/s:ns" group-by="@uri">
-        <!-- Assumption: no two different prefixes for one uri. --> 
-        <ns prefix="{@prefix}" uri="{current-grouping-key()}"/>
-      </xsl:for-each-group>
       <xsl:variable name="titles" as="element(s:title)*">
         <xsl:for-each-group select="$schematrons/s:schema/s:title" group-by="(@xml:lang, '')[1]">
           <title>
@@ -113,6 +109,10 @@
       <xsl:variable name="_title" as="element(s:title)?" 
         select="($titles[@xml:lang = $_lang], $titles[not(@xml:lang)], $titles)[1]"/>
       <xsl:sequence select="$_title"/>
+      <xsl:for-each-group select="$schematrons/s:schema/s:ns" group-by="@uri">
+        <!-- Assumption: no two different prefixes for one uri. --> 
+        <ns prefix="{@prefix}" uri="{current-grouping-key()}"/>
+      </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/xsl:include[not(matches(@href, 'shared-variables.xsl'))]|$schematrons/s:schema/xsl:import" group-by="@href">
         <xso:include href="{current-grouping-key()}"/>
       </xsl:for-each-group>
