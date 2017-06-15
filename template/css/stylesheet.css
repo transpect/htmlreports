@@ -61,7 +61,7 @@ transition: background .5s ease-in-out,margin .5s ease-in-out;}
 .BC_severity span {margin-right:5px}
 .BC_severity span {font-weight:bold}
 /* warning buttons */
-.BC_link span {min-width:30px}
+.BC_link span.btn-xs {min-width:32px}
 .BC_link span.BC_arrow-down, .BC_link span.BC_arrow-up {min-width:10px}
 .BC_family-summary{ margin:0 !important; border-style:none}
 #tr-report .well {margin-bottom:0}
