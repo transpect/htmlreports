@@ -2,6 +2,7 @@
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:cat="urn:oasis:names:tc:entity:xmlns:xml:catalog"
   xmlns:tr="http://transpect.io" 
   xmlns:s="http://purl.oclc.org/dsdl/schematron"
   xmlns:xso="xsloutputnamespace"
@@ -9,6 +10,9 @@
   exclude-result-prefixes="xs"
   version="2.0">
 
+  <xsl:import href="http://transpect.io/xslt-util/xslt-based-catalog-resolver/xsl/resolve-uri-by-catalog.xsl"/>
+  <xsl:param name="cat:missing-next-catalogs-warning" as="xs:string" select="'no'"/>
+  
   <xsl:output indent="yes"/>
 	
 	<xsl:namespace-alias stylesheet-prefix="xso" result-prefix="xsl"/>
@@ -30,6 +34,8 @@
   <xsl:param name="fallback-uri" />
   <xsl:param name="rule-category-span-class"/>
 
+  <xsl:variable name="catalog" as="document-node(element(cat:catalog))?" select="collection()[cat:catalog]"/>
+  
   <xsl:variable name="paths" as="xs:string*" 
     select="($s9y1-path, $s9y2-path, $s9y3-path, $s9y4-path, $s9y5-path, $s9y6-path, $s9y7-path, $s9y8-path, $s9y9-path)"/>
   
@@ -56,7 +62,7 @@
     <xsl:param name="paths" as="xs:string*"/>
     <xsl:param name="fam" as="xs:string"/>
     <xsl:for-each select="$paths">
-      <xsl:variable name="url" select="concat(., 'schematron/', $fam)" as="xs:string"/>
+      <xsl:variable name="url" select="concat(tr:resolve-uri-by-catalog(., $catalog), 'schematron/', $fam)" as="xs:string"/>
       <xsl:sequence select="if (tr:file-exists($url))
                             then collection(concat($url, '?select=*.sch.xml')) 
                             else ()"/>
@@ -73,8 +79,8 @@
                   and
                   not($fallback-uri = '') 
                   and
-                  doc-available(resolve-uri($fallback-uri))">
-      <xsl:apply-templates select="doc(resolve-uri($fallback-uri))" mode="tr:expand-includes"/>  
+                  doc-available(tr:resolve-uri-by-catalog($fallback-uri, $catalog))">
+      <xsl:apply-templates select="doc(tr:resolve-uri-by-catalog($fallback-uri, $catalog))" mode="tr:expand-includes"/>  
     </xsl:if>
   </xsl:variable>
 

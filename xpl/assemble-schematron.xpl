@@ -40,6 +40,7 @@
   <p:xslt name="xslt">
     <p:input port="source">
       <p:pipe step="cons" port="result"/>
+      <p:document href="http://this.transpect.io/xmlcatalog/catalog.xml"/>
     </p:input>
     <p:input port="stylesheet">
       <p:document href="../xsl/assemble-schematron.xsl"/>
