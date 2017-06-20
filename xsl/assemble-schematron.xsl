@@ -7,7 +7,7 @@
   xmlns:s="http://purl.oclc.org/dsdl/schematron"
   xmlns:xso="xsloutputnamespace"
   xmlns="http://purl.oclc.org/dsdl/schematron"
-  exclude-result-prefixes="xs"
+  exclude-result-prefixes="xs cat"
   version="2.0">
 
   <xsl:import href="http://transpect.io/xslt-util/xslt-based-catalog-resolver/xsl/resolve-uri-by-catalog.xsl"/>
