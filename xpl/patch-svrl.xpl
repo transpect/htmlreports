@@ -61,6 +61,11 @@
     for further processing (e.g., list of all message types)</p:documentation>
     <p:pipe step="create-patch-xsl" port="secondary"/>
   </p:output>
+  <p:output port="msgs" primary="false">
+    <p:pipe port="result" step="create-success-messages"/>
+    <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+      <p>Receives a total of all kinds of messages. (<code>c:messages/c:message</code>)</p></p:documentation>
+  </p:output>
 
   <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
   <p:import href="http://transpect.io/cascade/xpl/load-cascaded.xpl"/>
