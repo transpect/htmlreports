@@ -21,8 +21,8 @@
       <loc xml:lang="en">Warnings/distinct</loc>
     </string>
     <string xml:id="s1">
-      <loc xml:lang="de">Meldungen wurden in den HTML-Prüfbericht eingefügt.</loc>
-      <loc xml:lang="en">Messages have been inserted into the HTML report.</loc>
+      <loc xml:lang="de">Meldungen wurden in den HTML-Prüfbericht eingefügt. </loc>
+      <loc xml:lang="en">Messages have been inserted into the HTML report. </loc>
     </string>
   </xsl:variable>
   
