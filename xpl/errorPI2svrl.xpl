@@ -20,7 +20,8 @@
   <p:option name="severity" required="false" select="'warning'">
     <p:documentation>message | warning | error | fatal-error</p:documentation>
   </p:option>
-  
+  <p:option name="step-name" select="''"/>
+
   <p:input port="source" primary="true" />
   
   <p:output port="result" primary="true">
@@ -65,6 +66,7 @@
     <p:with-param name="group-by-srcpath" select="($group-by-srcpath,'yes')[1]"/>
     <p:with-param name="pi-names" select="$pi-names"/>
     <p:with-param name="severity" select="$severity"/>
+    <p:with-param name="step-name" select="$step-name"/>
   </p:xslt>
 
   <p:sink/>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc"
+  xmlns:cx="http://xmlcalabash.com/ns/extensions" 
   xmlns:tr="http://transpect.io"
   version="1.0"
   name="validate-with-rng-svrl"
@@ -48,6 +49,7 @@
   <p:option name="group-by-srcpath" required="false" select="'no'">
     <p:documentation>see tr:errorPI2svrl</p:documentation>
   </p:option>
+  <p:option name="step-name" select="''"/>
   
   <p:import href="errorPI2svrl.xpl"/>
   <p:import href="http://transpect.io/calabash-extensions/rng-extension/xpl/rng-validate-to-PI.xpl"/>
@@ -76,6 +78,7 @@
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
     <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
     <p:with-option name="group-by-srcpath" select="$group-by-srcpath"/>
+    <p:with-option name="step-name" select="$step-name"/>
   </tr:errorPI2svrl>
   
 </p:declare-step>
