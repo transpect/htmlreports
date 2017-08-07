@@ -78,6 +78,19 @@
     <xsl:variable name="error-name" select="if($srcpath and $group-by-srcpath='yes') 
                                             then replace(tokenize($srcpath, '/')[last()], '\[\d+\](;[a-z]=\d+)?$', '') 
                                             else $id" as="xs:string"/>
+    <xsl:call-template name="svrl:successful-report">
+      <xsl:with-param name="actual-severity" select="$actual-severity"/>
+      <xsl:with-param name="srcpath" select="$srcpath"/>
+      <xsl:with-param name="error-name" select="$error-name"/>
+    </xsl:call-template>
+    
+  </xsl:template>
+  
+  <xsl:template name="svrl:successful-report" as="element(svrl:successful-report)">
+    <!-- context: processing instruction with validation error message -->
+    <xsl:param name="error-name" as="xs:string"/>
+    <xsl:param name="actual-severity" as="xs:string"/>
+    <xsl:param name="srcpath" as="xs:string?"/>
     <svrl:successful-report test="(: unknown :)" id="{$error-name}" role="{$actual-severity}" location="/">
       <svrl:text>
         <span xmlns="http://purl.oclc.org/dsdl/schematron" class="srcpath">
@@ -86,8 +99,14 @@
           </xsl:if>
           <xsl:value-of select="string-join(($source-dir-uri, if (not($srcpath)) then 'BC_orphans' else $srcpath), '')"/>
         </span>
-        <xsl:value-of select="replace(., '^.+?( (NFO|ERR|WRN|NRE))?\s+', '')"/></svrl:text>
+        <xsl:call-template name="svrl:error-text"/>
+      </svrl:text>
     </svrl:successful-report>
+  </xsl:template>
+  
+  <xsl:template name="svrl:error-text">
+    <!-- context: processing instruction with validation error message -->
+    <xsl:value-of select="replace(., '^.+?( (NFO|ERR|WRN|NRE))?\s+', '')"/>
   </xsl:template>
   
 </xsl:stylesheet>

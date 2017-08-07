@@ -23,7 +23,10 @@
   <p:option name="step-name" select="''"/>
 
   <p:input port="source" primary="true" />
-  
+  <p:input port="errorPI2svrl-xsl">
+    <p:document href="../xsl/errorPI2svrl.xsl"/>
+  </p:input>
+
   <p:output port="result" primary="true">
     <p:pipe step="errorPI2svrl" port="source"/>
   </p:output>
@@ -60,7 +63,7 @@
       <p:pipe step="errorPI2svrl" port="source"/>
     </p:input>
     <p:input port="stylesheet">
-      <p:document href="../xsl/errorPI2svrl.xsl"/>
+      <p:pipe port="errorPI2svrl-xsl" step="errorPI2svrl"/>
     </p:input>
     <p:input port="parameters"><p:empty/></p:input>
     <p:with-param name="group-by-srcpath" select="($group-by-srcpath,'yes')[1]"/>

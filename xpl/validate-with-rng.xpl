@@ -23,6 +23,9 @@
       A RelaxNG-XML-schema is expected to arrive at the schema port.
     </p:documentation>
   </p:input>
+  <p:input port="errorPI2svrl-xsl">
+    <p:document href="../xsl/errorPI2svrl.xsl"/>
+  </p:input>
   
   <p:output port="report" sequence="true">
     <p:documentation>
@@ -79,6 +82,9 @@
     <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
     <p:with-option name="group-by-srcpath" select="$group-by-srcpath"/>
     <p:with-option name="step-name" select="$step-name"/>
+    <p:input port="errorPI2svrl-xsl">
+      <p:pipe port="errorPI2svrl-xsl" step="validate-with-rng-svrl"/>
+    </p:input>
   </tr:errorPI2svrl>
   
 </p:declare-step>
