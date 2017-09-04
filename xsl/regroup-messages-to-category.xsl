@@ -65,7 +65,7 @@
         </xsl:when>
         <xsl:otherwise>
           <!-- reproduce document if neither param is filled or span with classes appear in c:reports document -->
-          <xsl:apply-templates select="node()">
+          <xsl:apply-templates select="node() except c:errors">
           	<xsl:with-param name="discard" as="xs:boolean" select="if ($discard-empty-schematron-outputs = ('yes', 'true')) then true() else false()" tunnel="yes"/>
           </xsl:apply-templates>
         </xsl:otherwise>
