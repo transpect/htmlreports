@@ -614,11 +614,12 @@
                   * -->
 
             <div class="BC_severity">
-              <xsl:for-each-group
-                select="  //*:text[parent::svrl:successful-report | parent::svrl:failed-assert]
-                [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))] 
-                | //*:error"
-                group-by="(@type, ../@role, $severity-default-role)[1]">
+              <xsl:for-each-group select="  //*:text[parent::svrl:successful-report | parent::svrl:failed-assert]
+                                                    [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))] 
+                                          | //*:error"
+                                  group-by="(self::c:error/@role, ../@role, 
+                                             @type (: legacy c:error att name for severity in tr:propagate-caught-error:), 
+                                             $severity-default-role)[1]">
                 
                 <button type="button" class="btn btn-sm active BC_toggle" id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}">
                   <xsl:value-of select="l10n:severity-role-label(current-grouping-key())"/>
@@ -677,7 +678,8 @@
                                                       '__'
                                                      )">
                                 <xsl:variable name="msgid" select="(s:span[@class='corrected-id'], ../@id, @code, '')[1]" as="xs:string"/>
-                                <xsl:variable name="current-severity" select="(@type, ../@role, self::c:error/@role, $severity-default-role)[1]"
+                                <xsl:variable name="current-severity" select="(../@role, self::c:error/@role, 
+                                                                               @type (: legacy, see above, BC_severity:), $severity-default-role)[1]"
                                   as="xs:string"/>
                                 <xsl:variable name="span-title" select="string-join(($family, $current-severity, $msgid), ' ')"
                                   as="xs:string"/>
