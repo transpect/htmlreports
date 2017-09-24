@@ -115,11 +115,16 @@
                                  then $normalized-srcpath
                                  else $adjusted-srcpath}" xml:id="BC_{generate-id()}" severity="{$severity}"
       type="{parent::c:errors/@tr:rule-family} {$severity} {@code}">
-      <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
+      <xsl:copy-of select="(@type, ancestor-or-self::*[@tr:step-name][1]/@tr:step-name)[1], @code"/>
+      <xsl:apply-templates select="parent::c:errors/@tr:rule-family" mode="#current"/>
       <tr:text>
         <xsl:copy-of select="node()"/>
       </tr:text>
     </tr:message>
+  </xsl:template>
+  
+  <xsl:template match="@tr:rule-family" mode="collect-messages">
+    <xsl:attribute name="{local-name()}" select="."/>
   </xsl:template>
 
   <xsl:template match="svrl:text[tr:ignored-in-html(*:span[@class eq 'srcpath'])]" mode="collect-messages"/>
@@ -130,9 +135,10 @@
     <!-- if the schematron doesn't contain spans with srcpath, we use the location attribute as fallback -->
     <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath((s:span[@class eq 'srcpath'], parent::*/@location)[1])"/>
     <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths)"/>
+    <xsl:variable name="fam" select="ancestor-or-self::svrl:schematron-output/@tr:rule-family" as="attribute(tr:rule-family)?"/>
     <tr:message xml:id="BC_{generate-id()}" 
                 severity="{$role}" 
-                type="{ancestor-or-self::svrl:schematron-output/@tr:rule-family} {$role} {(s:span[@class='corrected-id'], ../@id)[1]}" 
+                type="{$fam} {$role} {(s:span[@class='corrected-id'], ../@id)[1]}" 
                 srcpath="{if (every $ap in $adjusted-srcpath 
                               satisfies (ends-with($ap, '?xpath='))
                                     )
@@ -141,12 +147,19 @@
       <xsl:if test="ancestor::svrl:schematron-output/@tr:include-location-in-msg = 'true'">
         <xsl:attribute name="svrl:location" select="../@location"/>
       </xsl:if>
+      <xsl:apply-templates select="$fam" mode="#current"/>
+      <xsl:apply-templates select="s:span[@class = 'category']" mode="#current"/>
       <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
+      <xsl:attribute name="code" select="if (starts-with($fam, 'RNG')) then 'RNG' else 'Schematron'"/>
       <xsl:if test="not($adjusted-srcpath = $normalized-srcpath)">
         <xsl:attribute name="adjusted-from" select="$normalized-srcpath"/>
       </xsl:if>
       <xsl:copy-of select="., ../svrl:diagnostic-reference"/>
     </tr:message>
+  </xsl:template>
+  
+  <xsl:template match="s:span[@class = 'category']" mode="collect-messages">
+    <xsl:attribute name="{@class}" select="."/>
   </xsl:template>
 
   <xsl:function name="tr:adjust-to-existing-srcpaths" as="xs:string+">
@@ -904,14 +917,14 @@
     which appears in the content section of the HTML report -->
 
   <xsl:template match="tr:message" mode="create-template" xmlns="http://www.w3.org/1999/xhtml">
-    <xsl:variable name="type" select="@type" as="attribute(type)"/>
-    <span class="BC_tooltip {string-join(($type, @severity), '__')}">
-      <span class="btn btn-default btn-xs {string-join(($type, @severity), '__')}" type="button"
+    <xsl:variable name="_type" select="@type" as="attribute(type)"/>
+    <span class="BC_tooltip {string-join(($_type, @severity), '__')}">
+      <span class="btn btn-default btn-xs {string-join(($_type, @severity), '__')}" type="button"
         data-toggle="collapse" data-target="#msg_{@xml:id}" aria-expanded="false" aria-controls="msg_{@xml:id}">
         <xsl:value-of select="@rendered-key"/>
         <xsl:value-of select="@occurrence"/>
       </span>
-      <xsl:variable name="previous-message" select="preceding::tr:message[@type eq $type][1]" as="element(tr:message)?"/>
+      <xsl:variable name="previous-message" select="preceding::tr:message[@type eq $_type][1]" as="element(tr:message)?"/>
       
       <xsl:if test="exists($previous-message)">
         <a class="BC_link" href="#{$previous-message/@xml:id}">
