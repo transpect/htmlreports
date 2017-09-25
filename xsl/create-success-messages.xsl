@@ -126,7 +126,7 @@
           </xsl:for-each-group>
         </rule-family-totals>
       </xsl:if>
-      <xsl:for-each select="$severity-vocabulary">
+      <xsl:for-each select="$severity-vocabulary[. = $selected-summary-components]">
         <xsl:element name="{.}">
           <xsl:apply-templates select="$root/document/messages/message[@severity = current()]"/>
         </xsl:element>
