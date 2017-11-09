@@ -9,6 +9,7 @@
 
   <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
   <p:import href="patch-svrl.xpl"/>
+  <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl" />
   <p:import href="http://transpect.io/schematron/xpl/oxy-schematron.xpl"/>
   
   <p:declare-step name="validate-with-schematron" type="tr:validate-with-schematron">
@@ -42,7 +43,6 @@
     </p:output>
 
     <p:import href="assemble-schematron.xpl"/>
-    <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl" />
     <p:import href="http://transpect.io/xproc-util/simple-progress-msg/xpl/simple-progress-msg.xpl"/>
     
     <p:choose name="actually-do-something">
