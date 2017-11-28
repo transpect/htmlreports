@@ -24,6 +24,7 @@
   <xsl:param name="remove-srcpath" select="'yes'"/>
   <xsl:param name="max-errors-per-rule" as="xs:string?"/>
   <xsl:param name="severity-default-name" select="'error'" as="xs:string"/>
+  <xsl:param name="rule-category-span-class" as="xs:string" select="'category'"/>
 
   <xsl:param name="interface-language" select="'en'" as="xs:string"/>
   <xsl:param name="file" as="xs:string?"/>
@@ -148,7 +149,7 @@
         <xsl:attribute name="svrl:location" select="../@location"/>
       </xsl:if>
       <xsl:apply-templates select="$fam" mode="#current"/>
-      <xsl:apply-templates select="s:span[@class = 'category']" mode="#current"/>
+      <xsl:apply-templates select="s:span[@class = $rule-category-span-class]" mode="#current"/>
       <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
       <xsl:attribute name="code" select="if (starts-with($fam, 'RNG')) then 'RNG' else 'Schematron'"/>
       <xsl:if test="not($adjusted-srcpath = $normalized-srcpath)">
@@ -158,7 +159,7 @@
     </tr:message>
   </xsl:template>
   
-  <xsl:template match="s:span[@class = 'category']" mode="collect-messages">
+  <xsl:template match="s:span[@class = $rule-category-span-class]" mode="collect-messages">
     <xsl:attribute name="{@class}" select="."/>
   </xsl:template>
 
