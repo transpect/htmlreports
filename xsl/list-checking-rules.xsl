@@ -73,9 +73,21 @@
           <div class="role-name"><xsl:value-of select="tr:get-l10n-severity(@role)"/></div>
           <div class="message-count"><xsl:value-of select="count(current-group())"/></div>
         </div>
-        <!--<div class="collapse">
-            <a class="label plus" onclick="this.blur();for (i = 0; i &lt; document.getElementsByClassName('switch-info').length; i++) {{document.getElementsByClassName('switch-info')[i].classList.toggle('active-message-info')}}; return false">[&#9632;]</a>
-            </div>-->
+        <div class="collapse">
+            <a class="label plus" 
+               onclick="this.blur();
+                        switches = this.parentNode.parentNode.getElementsByClassName('switch-info');
+                        for (i = 0; i &lt; switches.length; i++)
+                        {{
+                          if(this.classList.contains('expanded')){{
+                            switches[i].classList.add('active-message-info');
+                            switches[i].classList.remove('active-message-info')
+                          }}else{{
+                            switches[i].classList.remove('active-message-info');
+                            switches[i].classList.add('active-message-info')}}
+                        }};
+                        this.classList.toggle('expanded'); return false">&#9632;</a>
+            </div>
         <ul>
           <xsl:for-each-group select="collection()//s:schema//(s:report union s:assert)[@role = current-grouping-key()]" group-by="normalize-space(string-join(.//text(), ''))">
             <!-- no xsl:sort - input order is output order -->
@@ -154,7 +166,7 @@ body {margin-bottom:2em}
 
 div.role-group {border:3px solid #ddd; margin:1em 0; padding:.25em; border-radius:10px}
 div.role-group * {color:#000}
-div.role-group > div.heading {display:inline-block; width:95%}
+div.role-group > div.heading {display:inline-block; width:97%}
 div.role-group.fatal-error {border:3px solid #444}
 div.role-group.fatal-error > div.heading > *, .tr-message.fatal-error b {color:#444}
 div.role-group.error {border:3px solid #fc9a8d}
