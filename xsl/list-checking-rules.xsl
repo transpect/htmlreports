@@ -86,7 +86,7 @@
                             switches[i].classList.remove('active-message-info');
                             switches[i].classList.add('active-message-info')}}
                         }};
-                        this.classList.toggle('expanded'); return false">&#9632;</a>
+                        this.classList.toggle('expanded'); return false">&#9660;</a>
             </div>
         <ul>
           <xsl:for-each-group select="collection()//s:schema//(s:report union s:assert)[@role = current-grouping-key()]" group-by="normalize-space(string-join(.//text(), ''))">
