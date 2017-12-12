@@ -617,6 +617,8 @@
             * report menu
             * -->
 
+      <xslout:variable name="msg-container-position" select="'bottom'" as="xs:string"/><!-- 'top' or 'bottom' -->
+
       <xslout:template match="html:*[@id eq 'tr-report']">
         <xslout:copy copy-namespaces="no">
           <xslout:apply-templates select="@*"/>
@@ -644,7 +646,11 @@
                 
               </xsl:for-each-group>
             </div>
-
+            <xslout:if test="$msg-container-position = 'top'">
+              <div xml:id="BC_msg_container" id="BC_msg_container" class="BC_top">
+                <div xml:id="BC_msg" id="BC_msg"/>
+              </div>
+            </xslout:if>
             <!--  *
                   * report: individual reports grouped by family 
                   * -->
@@ -751,10 +757,11 @@
             <!--  *
                   * report: message panel
                   * -->
-
-            <div xml:id="BC_msg_container" id="BC_msg_container" class="BC_top">
-              <div xml:id="BC_msg" id="BC_msg"/>
-            </div>
+            <xslout:if test="$msg-container-position = 'bottom'">
+              <div xml:id="BC_msg_container" id="BC_msg_container" class="BC_top">
+                <div xml:id="BC_msg" id="BC_msg"/>
+              </div>
+            </xslout:if>
           </div>
 
         </xslout:copy>
