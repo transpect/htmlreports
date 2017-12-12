@@ -116,10 +116,10 @@
                                  then $normalized-srcpath
                                  else $adjusted-srcpath}" xml:id="BC_{generate-id()}" severity="{$severity}"
       type="{parent::c:errors/@tr:rule-family} {$severity} {@code}">
-      <xsl:copy-of select="(@type, ancestor-or-self::*[@tr:step-name][1]/@tr:step-name)[1], @code"/>
+      <xsl:sequence select="(@type, ancestor-or-self::*[@tr:step-name][1]/@tr:step-name)[1], @code"/>
       <xsl:apply-templates select="parent::c:errors/@tr:rule-family" mode="#current"/>
       <tr:text>
-        <xsl:copy-of select="node()"/>
+        <xsl:sequence select="node()"/>
       </tr:text>
     </tr:message>
   </xsl:template>
@@ -150,12 +150,12 @@
       </xsl:if>
       <xsl:apply-templates select="$fam" mode="#current"/>
       <xsl:apply-templates select="s:span[@class = $rule-category-span-class]" mode="#current"/>
-      <xsl:copy-of select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
+      <xsl:sequence select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
       <xsl:attribute name="code" select="if (starts-with($fam, 'RNG')) then 'RNG' else 'Schematron'"/>
       <xsl:if test="not($adjusted-srcpath = $normalized-srcpath)">
         <xsl:attribute name="adjusted-from" select="$normalized-srcpath"/>
       </xsl:if>
-      <xsl:copy-of select="., ../svrl:diagnostic-reference"/>
+      <xsl:sequence select="., ../svrl:diagnostic-reference"/>
     </tr:message>
   </xsl:template>
   
@@ -263,7 +263,7 @@
     <xsl:variable name="id-plus-pos" as="xs:string"
       select="string-join((@xml:id, string((index-of(tokenize(@srcpath, '\s+'), current-grouping-key()))[1])), '_')"/>
     <xsl:copy>
-      <xsl:copy-of select="@*"/>
+      <xsl:sequence select="@*"/>
       <xsl:if test="$pos lt $maxerr and exists(following-sibling::tr:message)">
         <xsl:attribute name="href" select="concat('#', following-sibling::tr:message[1]/@xml:id)"/>
       </xsl:if>
@@ -272,7 +272,7 @@
       </xsl:attribute>
       <xsl:attribute name="xml:id" select="$id-plus-pos"/>
       <xsl:attribute name="occurrence" select="$pos"/>
-      <xsl:copy-of select="*"/>
+      <xsl:sequence select="*"/>
     </xsl:copy>
   </xsl:template>
 
@@ -707,7 +707,7 @@
                                         id="BC_toggle_{current-grouping-key()}" name="{current-grouping-key()}"/>
                                     </label>
                                     <a class="BC_link" href="#{$href-id}">
-                                      <xsl:value-of select="$msgid"/>
+                                      <xsl:value-of select="(../svrl:diagnostic-reference[@xml:lang eq $interface-language]/s:span[@class = 'l10n-id'], $msgid)[1]"/>
                                       <span class="BC_whitespace">
                                         <xslout:text>&#xa0;</xslout:text>
                                       </span>
@@ -967,6 +967,7 @@
   </xsl:template>
 
   <xsl:template match="s:span[@class = 'corrected-id']" mode="create-template"/> 
+  <xsl:template match="s:span[@class = 'l10n-id']" mode="create-template"/> 
 
   <!--  *
         * named templates for customization: import this stylesheet and overwrite the templates.
