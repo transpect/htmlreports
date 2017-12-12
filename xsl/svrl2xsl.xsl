@@ -31,6 +31,7 @@
 
   <xsl:param name="report-title" select="'Report'" as="xs:string"/>
   <xsl:param name="show-adjusted-srcpath" select="'yes'" as="xs:string"/>
+  <xsl:param name="msg-container-position" select="'bottom'" as="xs:string"/>
 
   <xsl:param name="r-value" as="xs:string" select="'''ff'''"/>
   <xsl:param name="b-value" as="xs:string" select="'''00'''"/>
@@ -617,7 +618,7 @@
             * report menu
             * -->
 
-      <xslout:variable name="msg-container-position" select="'bottom'" as="xs:string"/><!-- 'top' or 'bottom' -->
+      <xslout:variable name="msg-container-position" as="xs:string"><xsl:value-of select="$msg-container-position"/></xslout:variable>
 
       <xslout:template match="html:*[@id eq 'tr-report']">
         <xslout:copy copy-namespaces="no">
