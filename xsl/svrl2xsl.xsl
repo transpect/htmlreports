@@ -77,6 +77,9 @@
         
         In svrl:schematron-output, span[@class='corrected-id'] will supersede the id of an assert or report.
         See example in https://github.com/transpect/epubtools/blob/master/schematron/epub.sch.xml (report[@id='lang']).
+
+        The value in the optional diagnostic children element span[@class="l10n-id"] will be used to output
+        an alternative title for the messages list. All characters are allowed, including WS, special chars, …
         -->
 
   <xsl:variable name="base-srcpath" as="xs:string?"
