@@ -126,8 +126,10 @@
         <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:apply-templates select="($schematrons/s:schema/xsl:include[matches(@href, 'shared-variables.xsl')])[1]"  mode="tr:assemble-schematron"/>
-      <xsl:for-each-group select="$schematrons/s:schema/s:phase" group-by="@id">
+      <xsl:variable name="phases" select="$schematrons[1]/s:schema/s:phase" as="element(s:phase)*"/>
+      <xsl:for-each-group select="$phases" group-by="@id">
         <phase id="{current-grouping-key()}">
+          <xsl:processing-instruction name="origin" select="$phases[1]/base-uri()"/>
           <xsl:for-each-group select="current-group()/s:active" group-by="@pattern">
             <active pattern="{current-grouping-key()}"/>
           </xsl:for-each-group>
@@ -184,9 +186,7 @@
     <xsl:copy copy-namespaces="no">
       <xsl:apply-templates select="@*" mode="#current"/>
       <!-- The origin of the element, formerly as comment -->
-      <xsl:processing-instruction name="origin">
-        <xsl:value-of select="(@include-href, base-uri(.))[1]"/>
-      </xsl:processing-instruction>
+      <xsl:processing-instruction name="origin" select="(@include-href, base-uri(.))[1]"/>
       <xsl:apply-templates mode="#current"/>
     </xsl:copy>
   </xsl:template>
