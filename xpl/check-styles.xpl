@@ -141,7 +141,7 @@
     <p:with-param name="family" select="'styles'"/>
     <p:with-param name="step-name" select="$step-name"/>
     <p:with-param name="fallback-uri" 
-      select="'http://transpect.io/schematron-stdlib/styles/styles.sch.xml'"/>
+      select="'http://transpect.io/htmlreports/sch/styles.sch.xml'"/>
     <p:with-option name="active" select="$active"/>
     <p:with-option name="debug" select="$debug"/>
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
