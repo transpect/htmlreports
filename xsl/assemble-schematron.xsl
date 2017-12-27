@@ -70,18 +70,9 @@
   </xsl:function>
 
   <xsl:variable name="schematrons" as="document-node(element(s:schema))*" >
-    <xsl:apply-templates select="tr:schematron-collection($paths, $family)" mode="tr:expand-includes"/>
-  </xsl:variable>
-  <xsl:variable name="fallback-schematrons" as="document-node(element(s:schema))*" >
-    <xsl:if test="not($schematrons)
-                  and
-                  exists($fallback-uri)
-                  and
-                  not($fallback-uri = '') 
-                  and
-                  doc-available(tr:resolve-uri-by-catalog($fallback-uri, $catalog))">
-      <xsl:apply-templates select="doc(tr:resolve-uri-by-catalog($fallback-uri, $catalog))" mode="tr:expand-includes"/>  
-    </xsl:if>
+    <xsl:apply-templates select="if(not(tr:schematron-collection($paths, $family))) 
+                                 then doc(tr:resolve-uri-by-catalog($fallback-uri, $catalog)) 
+                                 else tr:schematron-collection($paths, $family)" mode="tr:expand-includes"/>
   </xsl:variable>
 
   <xsl:template match="s:include" mode="tr:expand-includes">
@@ -94,18 +85,15 @@
   </xsl:template>
 
   <xsl:template match="/">
-    <xsl:message>Schematron family: <xsl:value-of select="$family"/>
-    <xsl:if test="not($schematrons/s:schema/self::s:schema) and not($fallback-schematrons/s:schema/self::s:schema)">
-      <xsl:value-of select="' - WARNING: No schematron file and no fallback found!'"/>
+    <xsl:message select="concat('[info] Schematron family: ', $family)"/>
+    <xsl:if test="not($schematrons/s:schema)">
+      <xsl:message select="'[WARNING] No Schematron file and no fallback found!'"/>
     </xsl:if>
-    </xsl:message>
-    <xsl:message>        from <xsl:value-of 
-      select="if($fallback-schematrons) then 'fallback-uri' else 'URIs'"/>: <xsl:value-of 
-      select="$schematrons/s:schema/base-uri()"/></xsl:message>
+    <xsl:message select="'[info] assembled from these URIs:', string-join($schematrons/s:schema/base-uri(), '&#xa;')"/>
     <schema tr:rule-family="{$family}">
       <xsl:variable name="_lang" select="($schematrons/s:schema/@xml:lang)[1]" as="attribute(xml:lang)?"/>
-      <xsl:sequence select="$_lang"/>
       <xsl:variable name="titles" as="element(s:title)*">
+      <xsl:sequence select="$_lang"/>
         <xsl:for-each-group select="$schematrons/s:schema/s:title" group-by="(@xml:lang, '')[1]">
           <title>
             <xsl:copy-of select="@xml:lang, node()"/>
@@ -181,8 +169,6 @@
   </xsl:function>
   
   <xsl:template match="s:pattern | s:let" mode="tr:assemble-schematron">
-    <xsl:text>&#xa;&#xa;   </xsl:text>
-    <xsl:text>&#xa;   </xsl:text>
     <xsl:copy copy-namespaces="no">
       <xsl:apply-templates select="@*" mode="#current"/>
       <!-- The origin of the element, formerly as comment -->
@@ -267,7 +253,6 @@
         <xsl:apply-templates select="@*, node()" mode="#current"/>
       </xsl:copy>  
     </xsl:document>
-    
   </xsl:template>
   
 </xsl:stylesheet>

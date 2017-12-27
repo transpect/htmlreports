@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc" 
-  xmlns:c="http://www.w3.org/ns/xproc-step"  
+  xmlns:c="http://www.w3.org/ns/xproc-step" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   xmlns:s="http://purl.oclc.org/dsdl/schematron"
   xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
@@ -140,8 +140,7 @@
     </p:input>
     <p:with-param name="family" select="'styles'"/>
     <p:with-param name="step-name" select="$step-name"/>
-    <p:with-param name="fallback-uri" 
-      select="'http://transpect.io/htmlreports/sch/styles.sch.xml'"/>
+    <p:with-param name="fallback-uri" select="'http://transpect.io/htmlreports/sch/styles.sch.xml'"/>
     <p:with-option name="active" select="$active"/>
     <p:with-option name="debug" select="$debug"/>
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
