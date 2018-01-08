@@ -75,7 +75,7 @@
                                  else tr:schematron-collection($paths, $family)" mode="tr:expand-includes"/>
   </xsl:variable>
 
-  <xsl:template match="s:include" mode="tr:expand-includes">
+  <xsl:template match="s:include | s:extends" mode="tr:expand-includes">
     <xsl:apply-templates select="doc(@href)/s:schema/*" mode="#current">
       <xsl:with-param name="is-included" select="true()" tunnel="yes"/>
       <xsl:with-param name="is-included-non-a9s" 
