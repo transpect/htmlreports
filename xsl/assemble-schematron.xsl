@@ -92,8 +92,8 @@
     <xsl:message select="'[info] assembled from these URIs:', string-join($schematrons/s:schema/base-uri(), '&#xa;')"/>
     <schema tr:rule-family="{$family}">
       <xsl:variable name="_lang" select="($schematrons/s:schema/@xml:lang)[1]" as="attribute(xml:lang)?"/>
-      <xsl:variable name="titles" as="element(s:title)*">
       <xsl:sequence select="$_lang"/>
+      <xsl:variable name="titles" as="element(s:title)*">
         <xsl:for-each-group select="$schematrons/s:schema/s:title" group-by="(@xml:lang, '')[1]">
           <title>
             <xsl:copy-of select="@xml:lang, node()"/>
