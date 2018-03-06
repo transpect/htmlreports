@@ -288,7 +288,7 @@
 
   <xsl:template match="tr:messages" mode="create-fallback" xmlns="http://www.w3.org/1999/xhtml">
     <xsl:for-each select="tokenize(@srcpath,'\s+')">
-      <p>
+      <p class="BC_fallback-messages">
         <s-p>
           <xsl:value-of select="."/>
         </s-p>
