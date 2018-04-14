@@ -401,15 +401,31 @@
     </p:input>
     <p:with-param name="report-summary-components" select="'severity-totals'"/>
   </p:xslt>
-  
-  <p:store name="store-msg-summary" omit-xml-declaration="false" indent="true">
-    <p:with-option name="href" 
-      select="concat(/c:param-set/c:param[@name eq 's9y1-path']/@value,
+
+  <cx:message>
+    <p:with-option name="message" select="'MMMMMMMMMMM ', concat(/c:param-set/c:param[@name eq 's9y1-path']/@value,
                      'report/',
                      /c:param-set/c:param[@name eq 'basename']/@value,
                      '.summary.xml')">
       <p:pipe port="result" step="paths"/>
     </p:with-option>
-  </p:store>
+  </cx:message>
+
+  <p:try name="try-store-msg-summary">
+    <p:group>
+      <p:store name="store-msg-summary" omit-xml-declaration="false" indent="true">
+        <p:with-option name="href"
+          select="concat(/c:param-set/c:param[@name eq 's9y1-path']/@value,
+                        'report/',
+                        /c:param-set/c:param[@name eq 'basename']/@value,
+                        '.summary.xml')">
+          <p:pipe port="result" step="paths"/>
+        </p:with-option>
+      </p:store>    
+    </p:group>
+    <p:catch>
+      <p:sink name="s11"/>
+    </p:catch>
+  </p:try>
 
 </p:declare-step>
