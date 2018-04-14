@@ -61,10 +61,20 @@
     for further processing (e.g., list of all message types)</p:documentation>
     <p:pipe step="create-patch-xsl" port="secondary"/>
   </p:output>
-  <p:output port="msgs" primary="false">
+  <p:output port="msgs">
     <p:pipe port="result" step="create-success-messages"/>
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-      <p>Receives a total of all kinds of messages. (<code>c:messages/c:message</code>)</p></p:documentation>
+      <p>Receives a total of all kinds of messages. (<code>c:messages/c:message</code>)</p>
+      <p>The format depends on the configuration parameter 'report-summary-components'.
+      See a list of possible values in ../xsl/create-success-messages.xsl (variable
+      $summary-component-vocabulary). The default should be 'prose' (human-readable)</p>
+    </p:documentation>
+  </p:output>
+  <p:output port="severity-totals">
+    <p:pipe port="result" step="severity-totals"/>
+    <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+      <p>A machine-readable error summary, like on the msgs port, but with report-summary-components 
+        set to 'severity-totals'.</p></p:documentation>
   </p:output>
 
   <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
@@ -72,6 +82,12 @@
   <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl" />
   <p:import href="http://transpect.io/xproc-util/simple-progress-msg/xpl/simple-progress-msg.xpl"/>
   <p:import href="http://transpect.io/xproc-util/html-embed-resources/xpl/html-embed-resources.xpl"/>
+
+  <p:parameters name="paths">
+    <p:input port="parameters">
+      <p:pipe port="params" step="patch-svrl"/>
+    </p:input>
+  </p:parameters>
 
   <tr:simple-progress-msg name="start-msg" file="patch-svrl-start.txt">
     <p:input port="msgs">
@@ -374,6 +390,26 @@
     <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
   </tr:simple-progress-msg>
 
-  <p:sink/>
+  <p:sink name="s10"/>
   
+  <p:xslt name="severity-totals">
+    <p:input port="source">
+      <p:pipe port="result" step="messages-grouped-by-type"/>
+    </p:input>
+    <p:input port="stylesheet">
+      <p:document href="../xsl/create-success-messages.xsl"/>
+    </p:input>
+    <p:with-param name="report-summary-components" select="'severity-totals'"/>
+  </p:xslt>
+  
+  <p:store name="store-msg-summary" omit-xml-declaration="false" indent="true">
+    <p:with-option name="href" 
+      select="concat(/c:param-set/c:param[@name eq 's9y1-path']/@value,
+                     'report/',
+                     /c:param-set/c:param[@name eq 'basename']/@value,
+                     '.summary.xml')">
+      <p:pipe port="result" step="paths"/>
+    </p:with-option>
+  </p:store>
+
 </p:declare-step>
