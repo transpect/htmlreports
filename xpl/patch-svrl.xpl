@@ -402,15 +402,6 @@
     <p:with-param name="report-summary-components" select="'severity-totals'"/>
   </p:xslt>
 
-  <cx:message>
-    <p:with-option name="message" select="'MMMMMMMMMMM ', concat(/c:param-set/c:param[@name eq 's9y1-path']/@value,
-                     'report/',
-                     /c:param-set/c:param[@name eq 'basename']/@value,
-                     '.summary.xml')">
-      <p:pipe port="result" step="paths"/>
-    </p:with-option>
-  </cx:message>
-
   <p:try name="try-store-msg-summary">
     <p:group>
       <p:store name="store-msg-summary" omit-xml-declaration="false" indent="true">
