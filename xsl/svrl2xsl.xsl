@@ -531,12 +531,12 @@
           <style type="text/css">
             span.fatal-error, span.fatal-error_notoggle, .BC_message.fatal-error, #BC_toggle_fatal-error.active{
               color:#f2dede; 
-              background-color:#db3f14;
+              background-color:#c1121c;
               border-color:#ebccd1;
               font-weight:bold;
             }
             span.fatal-error:hover, .fatal-error_notoggle:hover, #BC_toggle_fatal-error.active:hover{
-              background-color:#a94442;
+              background-color:#c1121c;
               color:#fff;
             }
             span.error, span.error_notoggle, .BC_message.error, #BC_toggle_error.active{
