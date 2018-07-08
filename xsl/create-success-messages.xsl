@@ -58,7 +58,7 @@
     <xsl:variable name="distinct-warning-count" as="xs:integer" select="count(/document/messages[message[@severity = 'warning']])"/>
     <xsl:variable name="distinct-fatal-error-count" as="xs:integer" select="count(/document/messages[message[@severity = 'fatal-error']])"/>
     <xsl:variable name="root" select="/" as="document-node(element(document))"/>
-    <c:messages>
+    <c:messages timestamp="{format-dateTime(current-dateTime(), '[Y]-[M02]-[D02] [H02]:[m02]:[s02][Z]')}">
       <xsl:if test="$selected-summary-components = 'prose'">
         <xsl:for-each select="('en', 'de')">
           <c:message xml:lang="{.}">
