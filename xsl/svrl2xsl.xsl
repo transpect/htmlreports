@@ -784,7 +784,10 @@
       </xslout:template>
 
       <xslout:template match="html:*[@id eq 'tr-minitoc']">
-        <xslout:variable name="factor" select="5" as="xs:integer"/>
+        <xslout:variable name="factor" as="xs:decimal"
+                         select="if(count($headlines) lt 20) 
+                                 then  10 
+                                 else 255 div count($headlines)"/>
         <xslout:copy>
           <xslout:apply-templates select="@*|node()"/>
           <ul class="BC_minitoc nav">
@@ -792,8 +795,8 @@
               <a class="page-scroll" href="#page-top"/>
             </li>
             <xslout:for-each select="$headlines">
-              <xslout:variable name="color-value" select="tr:dec-to-hex(position() * $factor)"/>
-              <xslout:variable name="fill-value" select="string-join(for $i in (string-length($color-value) to 1)  return '0', '')"/>
+              <xslout:variable name="color-value" select="tr:dec-to-hex(xs:integer(round-half-to-even(position() * $factor, 0)))" as="xs:string"/>
+              <xslout:variable name="fill-value" select="string-join(for $i in (string-length($color-value) to 1)  return '0', '')" as="xs:string"/>
               
               <xslout:variable name="href" select="concat('#scroll-', generate-id(.))"/>
               <xslout:variable name="class" select="concat('BC_minitoc-item BC_minitoc-level-', local-name())"/>
