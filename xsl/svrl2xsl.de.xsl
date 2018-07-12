@@ -12,7 +12,7 @@
   
   <xsl:template name="l10n:fallback-for-removed-content">
     <span>Der Inhalt, auf den sich die Meldung bezieht, steht im aktuellen HTML-Rendering nicht zur Verfügung.
-    	Es ist auch möglich, dass der Inhalt zwar vorhanden ist, aber zu wenig Informationen über seinen Ursprung miführt. 
+    	Es ist auch möglich, dass der Inhalt zwar vorhanden ist, aber zu wenig Informationen über seinen Ursprung mitführt. 
     	Es kann sich hierbei um ein Defizit des Konvertierungsprozesses handeln. 
     	Das tut uns leid. Hier ist der sogenannte <em>srcpath</em> für
       diagnostische Zwecke: </span>
