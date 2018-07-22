@@ -62,9 +62,9 @@
     <xsl:param name="paths" as="xs:string*"/>
     <xsl:param name="fam" as="xs:string"/>
     <xsl:for-each select="$paths">
-      <xsl:variable name="url" select="concat(tr:resolve-uri-by-catalog(., $catalog), 'schematron/', $fam)" as="xs:string"/>
-      <xsl:sequence select="if (tr:file-exists($url))
-                            then collection(concat($url, '?select=*.sch.xml')) 
+      <xsl:variable name="url" select="concat(tr:resolve-uri-by-catalog(., $catalog), 'schematron/', $fam, '/', $fam, '.sch.xml')" as="xs:string"/>
+      <xsl:sequence select="if (doc-available($url))
+                            then doc($url) 
                             else ()"/>
     </xsl:for-each>
   </xsl:function>
