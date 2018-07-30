@@ -149,7 +149,7 @@
                                     )
                                  then $normalized-srcpath
                                  else $adjusted-srcpath}">
-      <xsl:if test="ancestor::svrl:schematron-output/@tr:include-location-in-msg = 'true'">
+      <xsl:if test="ancestor::svrl:schematron-output/@tr:include-location-in-msg = 'true' or not(normalize-space($normalized-srcpath))">
         <xsl:attribute name="svrl:location" select="../@location"/>
       </xsl:if>
       <xsl:apply-templates select="$fam" mode="#current"/>
