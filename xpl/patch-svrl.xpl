@@ -32,6 +32,11 @@
     <p:documentation>Space-separated list of tokens. Available tokens are: image video script style audio object #all.
     The documentation in tr:html-embed-resources could be more up to date.</p:documentation>
   </p:option>
+  <p:option name="max-base64-encoded-size-kb" select="1000">
+    <p:documentation>
+      Limit (KB) for embedded base64 data URIs. 
+    </p:documentation>
+  </p:option>
 
   <p:input port="source" primary="true">
     <p:documentation>An XML document with srcpath attributes. Typically an XHTML rendering.</p:documentation>
@@ -116,6 +121,7 @@
       Should we take precautions for when there is no catalog at that location?</p:documentation>
       <p:document href="http://this.transpect.io/xmlcatalog/catalog.xml"/>
     </p:input>
+    <p:with-option name="max-base64-encoded-size-kb" select="$max-base64-encoded-size-kb"/>
     <p:with-option name="exclude" select="$suppress-embedding"/>
     <p:with-option name="fail-on-error" select="$fail-on-error">
       <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
