@@ -69,10 +69,33 @@
     </xsl:for-each>
   </xsl:function>
 
-  <xsl:variable name="schematrons" as="document-node(element(s:schema))*" >
+  <xsl:variable name="schematrons" as="document-node(element(s:schema))*">
     <xsl:apply-templates select="if(not(tr:schematron-collection($paths, $family))) 
                                  then doc(tr:resolve-uri-by-catalog($fallback-uri, $catalog)) 
                                  else tr:schematron-collection($paths, $family)" mode="tr:expand-includes"/>
+  </xsl:variable>
+
+  <xsl:variable name="fallback-schematrons" as="document-node(element(s:schema))*">
+    <xsl:if test="not($schematrons)
+                  and
+                  exists($fallback-uri)
+                  and
+                  not($fallback-uri = '') 
+                  and
+                  doc-available(resolve-uri($fallback-uri))">
+      <xsl:variable name="includes-expanded-doc">
+        <xsl:apply-templates select="doc(resolve-uri($fallback-uri))" mode="tr:expand-includes"/>
+      </xsl:variable>
+      <xsl:choose>
+        <!-- handle 404 html documents and other -->
+        <xsl:when test="not($includes-expanded-doc/*/self::s:schema)">
+          <xsl:message select="'&#xa;&#xa;&#xa;!!! ERROR: fallback-uri is not a valid schematron document:&#xa;', $fallback-uri, '&#xa;&#xa;'" terminate="no"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:sequence select="$includes-expanded-doc"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
   </xsl:variable>
 
   <xsl:template match="s:include | s:extends" mode="tr:expand-includes">
