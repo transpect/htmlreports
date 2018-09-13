@@ -42,7 +42,7 @@
 
   <p:option name="debug" select="'yes'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
-  <p:option name="status-dir-uri" select="'status'"/>
+  <p:option name="status-dir-uri" select="'status?enabled=false'"/>
   <p:option name="remove-srcpaths" select="'true'" required="false">
     <p:documentation>The effect of this option being true is: remove @srcpath and /*/@source-dir-uri from the source document 
       prior to validation, but use the unaltered source document for looking up the closest @srcpaths for each validation error.

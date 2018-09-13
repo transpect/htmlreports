@@ -16,7 +16,7 @@
 
   <p:option name="debug" required="false" select="'no'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
-  <p:option name="status-dir-uri" select="'status'"/>
+  <p:option name="status-dir-uri" select="'status?enabled=false'"/>
   <p:option name="fail-on-error" select="'false'"/>
   <p:option name="max-errors-per-rule" required="false" select="'200'"/>
   <p:option name="severity-default-name" required="false" select="'no-role'"/>

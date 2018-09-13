@@ -11,7 +11,7 @@
   
   <p:option name="debug" required="false" select="'no'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
-  <p:option name="status-dir-uri" required="false" select="resolve-uri('status')"/>
+  <p:option name="status-dir-uri" required="false" select="'status?enabled=false'"/>
   <p:option name="active" required="false" select="'true'"/>
   <p:option name="step-name" required="false" select="'sch_styles'"/>
   <p:option name="cssa" select="'styles/simple-template.cssa.xml'">

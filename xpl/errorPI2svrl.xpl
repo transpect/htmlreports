@@ -10,7 +10,7 @@
   <p:option name="group-by-srcpath" required="false" select="'yes'"/>
   <p:option name="debug" required="false" select="'no'"/>
   <p:option name="debug-dir-uri" select="'debug'"/>
-  <p:option name="status-dir-uri" select="'status'"/>
+  <p:option name="status-dir-uri" select="'status?enabled=false'"/>
   <p:option name="pi-names" required="false" select="'letex'">
     <p:documentation>Space-separated names of processing instructions in the source document 
     that carry error messages.

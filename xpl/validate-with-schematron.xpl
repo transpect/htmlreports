@@ -16,7 +16,7 @@
 
     <p:option name="debug" required="false" select="'no'"/>
     <p:option name="debug-dir-uri" select="'debug'"/>
-    <p:option name="status-dir-uri" select="'status'"/>
+    <p:option name="status-dir-uri" select="'status?enabled=false'"/>
     <p:option name="phase" required="false" select="'#ALL'"/>
     <p:option name="active" required="false" select="'true'"/>
   	<p:option name="schematron-rule-msg" select="'no'">
