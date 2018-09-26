@@ -408,7 +408,10 @@
     <p:with-param name="report-summary-components" select="'severity-totals'"/>
   </p:xslt>
 
-  <p:try name="try-store-msg-summary">
+  <p:sink name="s11"/>
+
+  <!-- should be stored via output port (otherwise it might interfere with svn.mk) -->
+  <!--<p:try name="try-store-msg-summary">
     <p:group>
       <p:store name="store-msg-summary" omit-xml-declaration="false" indent="true">
         <p:with-option name="href"
@@ -423,6 +426,6 @@
     <p:catch>
       <p:sink name="s11"/>
     </p:catch>
-  </p:try>
+  </p:try>-->
 
 </p:declare-step>
