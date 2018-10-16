@@ -53,7 +53,7 @@
   </xsl:template>
   
   <!-- if it ends in 'ok', no message should be generated -->
-  <xsl:template match="processing-instruction()[not(matches(., '^\S+\sok$'))]">
+  <xsl:template match="processing-instruction()[not(matches(., '\S+\sok$'))]">
     <xsl:param name="id" as="xs:string"/>
     <!-- determine severity by abbreviation of error types -->
     <xsl:variable name="actual-severity" select="if(matches(., 'NFO')) then 'info'
