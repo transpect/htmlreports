@@ -16,7 +16,7 @@
   <let name="base-dir" value="/tr:doc-and-template-styles/*[1]/dbk:info/dbk:keywordset/dbk:keyword[@role eq 'source-dir-uri']"/>
   <!-- all styles from cssa file -->
   <let name="template-styles" value="/tr:doc-and-template-styles/*[2]/self::css:rules/css:rule"/>
-	<let name="default-style-names" value="('NormalParagraphStyle', 'No_character_style', 'hub:page-number', 'hub:separator', 'hub:identifier', 'hub:foreign', 'frontispiz', 'frontispiz2', 'about-contrib', 'title-page', 'copyright-page', 'dedication', 'hub:caption-text', 'hub:caption-number', 'hub:lists', 'hub:embedded', 'start', 'end', 'hub:ooxml-symbol')"/>
+	<let name="default-style-names" value="('NormalParagraphStyle', 'No_character_style', 'hub:page-number', 'hub:separator', 'hub:identifier', 'hub:foreign', 'frontispiz', 'frontispiz2', 'about-contrib', 'title-page', 'copyright-page', 'dedication', 'hub:caption-text', 'hub:caption-number', 'hub:lists', 'hub:embedded', 'start', 'end', 'hub:ooxml-symbol','page','hub:toc')"/>
   <let name="template-style-names" value="(distinct-values(for $n in $template-styles/@name return replace($n, '(_-_|[~&#x2dc;]).+$', '')),
                                            $default-style-names)"/>
   <let name="template-style-regexes" value="(distinct-values(for $n in $template-styles/@regex return $n))"/>
