@@ -25,6 +25,7 @@
   <xsl:param name="max-errors-per-rule" as="xs:string?"/>
   <xsl:param name="severity-default-name" select="'error'" as="xs:string"/>
   <xsl:param name="rule-category-span-class" as="xs:string" select="'category'"/>
+  <xsl:param name="adjust-to-siblings" select="true()"/>
 
   <xsl:param name="interface-language" select="'en'" as="xs:string"/>
   <xsl:param name="file" as="xs:string?"/>
@@ -113,7 +114,7 @@
     <xsl:variable name="severity" as="xs:string" select="(@role, $severity-default-name)[1]"/>
     <xsl:variable name="srcpath" as="xs:string" select="(@srcpath, 'BC_orphans')[1]"/>
     <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath($srcpath)"/>
-    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths)"/>
+    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths, $adjust-to-siblings)"/>
     <tr:message srcpath="{if (every $ap in $adjusted-srcpath 
                               satisfies (ends-with($ap, '?xpath='))
                                     )
@@ -139,7 +140,7 @@
     <xsl:variable name="role" as="xs:string" select="(../@role, $severity-default-role)[1]"/>
     <!-- if the schematron doesn't contain spans with srcpath, we use the location attribute as fallback -->
     <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath((s:span[@class eq 'srcpath'], parent::*/@location)[1])"/>
-    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths)"/>
+    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths, $adjust-to-siblings)"/>
     <xsl:variable name="fam" select="ancestor-or-self::svrl:schematron-output/@tr:rule-family" as="attribute(tr:rule-family)?"/>
     <tr:message xml:id="BC_{generate-id()}" 
                 severity="{$role}" 
@@ -166,14 +167,27 @@
   <xsl:template match="s:span[@class = $rule-category-span-class]" mode="collect-messages">
     <xsl:attribute name="{@class}" select="."/>
   </xsl:template>
+  
+  <xsl:function name="tr:get-alternative-srcpath" as="xs:string*">
+    <xsl:param name="message-srcpaths" as="xs:string*"/>
+    <xsl:param name="document-srcpaths" as="xs:string*"/>
+    
+    <xsl:for-each select="$message-srcpaths">
+      <xsl:variable name="phrase" select="replace(if (matches(.,'\[[0-9]+\]$')) then replace(.,'^(.*)\[[0-9]+\]$','$1') else '0','([\[\]\?\.])','\\$1')"/>
+      <xsl:variable name="actual" select="if (matches(.,'\[[0-9]+\]$')) then number(replace(.,'^.*\[([0-9]+)\]$','$1')) else 0"/>
+      <xsl:sequence select="($document-srcpaths[matches(.,'\[[0-9]+\]$')][matches(.,concat('^',$phrase))][number(replace(.,concat('^',$phrase,'\[([0-9]+)\].*$'),'$1')) gt $actual][1],
+                             $document-srcpaths[matches(.,'\[[0-9]+\]$')][matches(.,concat('^',$phrase))][number(replace(.,concat('^',$phrase,'\[([0-9]+)\].*$'),'$1')) lt $actual][last()])[1]"/>
+    </xsl:for-each>
+  </xsl:function>
 
   <xsl:function name="tr:adjust-to-existing-srcpaths" as="xs:string+">
     <xsl:param name="message-srcpaths" as="xs:string*"/>
     <xsl:param name="document-srcpaths" as="xs:string*"/>
+    <xsl:param name="adjust2siblings" as="xs:boolean"/>
     <xsl:variable name="matching" as="xs:string*" select="$message-srcpaths[. = $document-srcpaths]"/>
     <xsl:variable name="with-xpath" select="$message-srcpaths[contains(., '?xpath=/')]" as="xs:string*"/>
     <xsl:variable name="without-xpath" select="$message-srcpaths[not(contains(., '?xpath=/'))]" as="xs:string*"/>
-    <!-- This is for srcpaths that are have been derived from generated IDs rather than xpath locations
+    <!-- This is for srcpaths that have been derived from generated IDs rather than xpath locations
       but have been prefixed with the document’s common source dir uri by a Schematron rule: -->
     <xsl:variable name="only-lastword" as="xs:string*"
       select="for $sp in $without-xpath return replace($sp, '^.+/', '')"/>
@@ -210,12 +224,22 @@
                             for $sp in $with-xpath 
                             return replace($sp, '/[^/]+$', '')
                           )[not(. = $message-srcpaths)]"/>
+                <xsl:variable name="alternatives" select="tr:get-alternative-srcpath($message-srcpaths,$document-srcpaths)"/>
+                <xsl:variable name="ancestors" select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths, false())"/>
                 <xsl:choose>
                   <xsl:when test="empty($remove-tails)">
                     <xsl:sequence select="'BC_orphans'"/>
                   </xsl:when>
+                  <xsl:when test="not(every $ap 
+                                      in $ancestors 
+                                      satisfies (ends-with($ap, '?xpath=')))">
+                    <xsl:sequence select="$ancestors"/>
+                  </xsl:when>
+                  <xsl:when test="not(empty($alternatives))">
+                    <xsl:sequence select="$alternatives"/>
+                  </xsl:when>
                   <xsl:otherwise>
-                    <xsl:sequence select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths)"/>
+                    <xsl:sequence select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths, $adjust2siblings)"/>
                   </xsl:otherwise>
                 </xsl:choose>
               </xsl:otherwise>
