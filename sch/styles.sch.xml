@@ -36,8 +36,8 @@
         id="sch_styles_undefined" diagnostics="sch_styles_undefined_de">
         <span class="category">Style names</span>
         <span class="issue" xmlns="http://www.w3.org/1999/xhtml">Stylename <xsl:value-of select="$user-friendly-stylename"/> unknown</span>
-        Style '<span class="style-name"><xsl:value-of select="$user-friendly-stylename"/></span>' of type '<value-of select="key('tr:rule-definition-in-document', current()/@role)/@layout-type"/>' not found in allowed templates catalog 
-        '<value-of select="string-join(tokenize(base-uri($template-styles[1]), '/')[position() ge last() - 4],'/')"/>'. This will probably lead to conversion errors.
+        Style '<span class="style-name"><xsl:value-of select="$user-friendly-stylename"/></span>' of type '<value-of select="key('tr:rule-definition-in-document', current()/@role)/@layout-type"/>' not found in the style catalog 
+        <span class="file-uri"><value-of select="string-join(tokenize(base-uri($template-styles[1]), '/')[position() ge last() - 4],'/')"/></span>. This may lead to conversion errors and rendering issues.
         <br xmlns="http://www.w3.org/1999/xhtml"/>
         <br xmlns="http://www.w3.org/1999/xhtml"/>
         Steps to analyse the problem:<br xmlns="http://www.w3.org/1999/xhtml"/>
