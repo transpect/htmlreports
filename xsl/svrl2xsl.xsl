@@ -25,7 +25,7 @@
   <xsl:param name="max-errors-per-rule" as="xs:string?"/>
   <xsl:param name="severity-default-name" select="'error'" as="xs:string"/>
   <xsl:param name="rule-category-span-class" as="xs:string" select="'category'"/>
-  <xsl:param name="adjust-srcpath-to-siblings" select="true()"/>
+  <xsl:param name="adjust-srcpath-to-siblings" as="xs:boolean" select="true()"/>
 
   <xsl:param name="interface-language" select="'en'" as="xs:string"/>
   <xsl:param name="file" as="xs:string?"/>
@@ -235,7 +235,7 @@
                                       satisfies (ends-with($ap, '?xpath=')))">
                     <xsl:sequence select="$ancestors"/>
                   </xsl:when>
-                  <xsl:when test="not(empty($alternatives)) and $adjust2siblings">
+                  <xsl:when test="$adjust2siblings and not(empty($alternatives))">
                     <xsl:sequence select="$alternatives"/>
                   </xsl:when>
                   <xsl:otherwise>
