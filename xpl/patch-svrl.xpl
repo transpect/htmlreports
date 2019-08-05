@@ -206,7 +206,7 @@
   
   <!-- insert content html into template -->
   
-  <p:insert match="//html:div[@id eq 'tr-content']" position="first-child" name="inject-body" cx:depends-on="load-template">
+  <p:insert match="//html:div[@id eq 'tr-content']" position="last-child" name="inject-body" cx:depends-on="load-template">
     <p:input port="insertion" select="/html:html/html:body/*">
       <p:pipe port="result" step="filter-document"/>
     </p:input>

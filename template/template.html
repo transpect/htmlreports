@@ -21,6 +21,7 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/scrolling-nav.css"/>
     <link rel="stylesheet" type="text/css" href="css/stylesheet.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="css/hanoi.css" media="screen"/>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -76,7 +77,6 @@
           * main section
           * -->
     <main>
-      
       <section>
         <div class="row">
           <!-- mini-toc is hidden at < 1400px -->
@@ -87,12 +87,12 @@
           </div>
         </div>
       </section>
-      
       <section>
         <div class="row">
           <div id="tr-minitoc-placeholder" class="visible-lg-block col-lg-3 col-rg-offset-3">
           </div>
-          <div id="tr-content" class="col-lg-6 col-md-7 col-sm-7">
+          <div id="tr-content" class="col-lg-6 col-md-7 col-sm-7"> 
+            <section id="hanoi"><div> <form> <div class="discs"> <input id="one" type="text" tabindex="-1" readonly="readonly"></input> <input name="one" type="radio" tabindex="-1" checked="checked"></input> <input name="one" type="radio" tabindex="-1"></input> <input name="one" type="radio" tabindex="-1"></input> <label for="one"></label> <div class="disc one"></div><input id="two" type="text" tabindex="-1" readonly="readonly"></input> <input name="two" type="radio" tabindex="-1" checked="checked"></input> <input name="two" type="radio" tabindex="-1"></input> <input name="two" type="radio" tabindex="-1"></input> <label for="two"></label> <div class="disc two"></div><input id="three" type="text" tabindex="-1" readonly="readonly"></input> <input name="three" type="radio" tabindex="-1" checked="checked"></input> <input name="three" type="radio" tabindex="-1"></input> <input name="three" type="radio" tabindex="-1"></input> <label for="three"></label> <div class="disc three"></div><input id="four" type="text" tabindex="-1" readonly="readonly"></input> <input name="four" type="radio" tabindex="-1" checked="checked"></input> <input name="four" type="radio" tabindex="-1"></input> <input name="four" type="radio" tabindex="-1"></input> <label for="four"></label> <div class="disc four"></div><input id="five" type="text" tabindex="-1" readonly="readonly"></input> <input name="five" type="radio" tabindex="-1" checked="checked"></input> <input name="five" type="radio" tabindex="-1"></input> <input name="five" type="radio" tabindex="-1"></input> <label for="five"></label> <div class="disc five"></div><input id="six" type="text" tabindex="-1" readonly="readonly"></input> <input name="six" type="radio" tabindex="-1" checked="checked"></input> <input name="six" type="radio" tabindex="-1"></input> <input name="six" type="radio" tabindex="-1"></input> <label for="six"></label> <div class="disc six"></div><input id="zero" type="text" tabindex="-1" readonly="readonly"></input> <div class="spacer a"></div><div class="separator ab"></div><div class="spacer b"></div><div class="separator bc"></div><div class="spacer c"></div><div class="tower a"></div><div class="tower b"></div><div class="tower c"></div><div class="win">You win! (:</div></div><div class="bottom"></div><button type="reset">New Game</button> </form> </div></section>
             <!-- the html rendering of the source file -->
             <div id="tr-msgfallback">
               <!-- messages without sourcepath are copied here -->
@@ -123,12 +123,19 @@
     <script src="js/jquery.easing.1.3.js"></script>
     <!-- initalize plugins -->
     <script src="js/scrolling-nav.js"></script>
-    
+    <!-- keypress -->
+    <script src="js/keypress-2.1.5.min.js"></script>
     <script>
+        // fun stuff
+        var listener = new window.keypress.Listener();
+        listener.sequence_combo("h a n o i", function(){
+          console.log("open sesame");  
+          $( "#hanoi").css( "display", "block" );
+        });
         // close mobile navbar menu on click
         $(document).ready(function () {
           $(".navbar-nav li a").click(function(event) {
-          
+            
             $(".navbar-collapse").collapse('hide');
           });
                     
@@ -141,6 +148,6 @@
           */
           
         });
-    </script>  
+    </script> 
   </body>
 </html>
