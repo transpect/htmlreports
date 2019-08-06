@@ -846,13 +846,26 @@
         </xslout:copy>
       </xslout:template>
 
-    <xslout:template match="html:span[ancestor::html:h1]/@style| html:span[ancestor::html:h2]/@style"/>
+      <xslout:template match="html:span[ancestor::html:h1]/@style| html:span[ancestor::html:h2]/@style"/>
 
       <xslout:template match="html:h1//html:img | html:h2//html:img">
         <xslout:param name="clean-heading" as="xs:boolean?" tunnel="yes"/>
         <xslout:if test="not($clean-heading)">
           <xslout:next-match/>
         </xslout:if>
+      </xslout:template>
+      
+      <!--  *
+            * project-specific links
+            * will be usually displayed in the navbar (depends on your html template)
+            * -->
+      
+      <xslout:template match="html:*[@id eq 'tr-project-links']">
+        <xsl:call-template name="tr:project-links"/>
+      </xslout:template>
+      
+      <xslout:template match="html:*[@id eq 'tr-logo']">
+        <xsl:call-template name="tr:logo"/>
       </xslout:template>
 
       <!--  *
@@ -1064,5 +1077,17 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  
+  <xsl:template name="tr:project-links">
+    <xslout:copy copy-namespaces="no">
+      <xslout:apply-templates select="@*, node()" mode="#current"/>
+    </xslout:copy>
+  </xsl:template>
+  
+  <xsl:template name="tr:logo">
+    <xslout:copy copy-namespaces="no">
+      <xslout:apply-templates select="@*, node()" mode="#current"/>
+    </xslout:copy>
+  </xsl:template>
 
 </xsl:stylesheet>
