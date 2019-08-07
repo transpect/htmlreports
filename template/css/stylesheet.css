@@ -10,13 +10,20 @@ main div.row {margin-right:0; margin-left:0}
 /*
  * fonts
  */
-#tr-topnav a, #tr-minitoc a, #tr-report *, #tr-content .BC_tooltip, #tr-content .BC_message, #tr-timestamp{font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; }
+#tr-topnav a, #tr-minitoc a, #tr-report *, #tr-content .BC_tooltip, #tr-content .BC_message, #tr-timestamp, #tr-topnav button
+  {font-family: 'Segoe UI', 'Calibri', Helvetica, Arial, sans-serif; }
 /*
  * header
  */
 header{background-color:#f8f8f8; font-weight:300; margin: auto; width: 100%;}
 #tr-logo{padding:0 1rem 0 0;margin:0; width:50px; height:50px; background:no-repeat url('../icons/logo-transpect.svg');}
 #tr-project-links a, #tr-project-links a:hover, #tr-project-links a:active, #tr-project-links a:focus {text-decoration:none}
+nav .navbar-right { margin-right:0 } 
+#tr-topnav .dropdown-toggle { margin-top: 10px; color:#777; font-size:0.9em; font-weight:bold }
+#tr-topnav .dropdown-toggle::after { content:"▾" } 
+#tr-topnav .dropdown-menu { padding:0; border-radius:0; }
+#tr-topnav .dropdown-item { display:block; color:#777; display:block; padding:7.5px 5px; color:#777; border-bottom:1px solid #eee; font-size:0.9em; }
+#tr-topnav .dropdown-item:hover{ background-color:#eee }
 /*
  * footer
  */
