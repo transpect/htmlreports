@@ -99,7 +99,7 @@
   </xsl:variable>
 
   <xsl:template match="s:include | s:extends" mode="tr:expand-includes">
-    <xsl:apply-templates select="doc(@href)/s:schema/*" mode="#current">
+    <xsl:apply-templates select="doc(tr:resolve-uri-by-catalog(@href, $catalog))/s:schema/*" mode="#current">
       <xsl:with-param name="is-included" select="true()" tunnel="yes"/>
       <xsl:with-param name="is-included-non-a9s" 
         select="if(matches(@href, 'http://this.transpect.io/a9s/')) then false() else true()" tunnel="yes"/>
