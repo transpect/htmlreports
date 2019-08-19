@@ -99,8 +99,6 @@
   </xsl:variable>
 
   <xsl:template match="s:include | s:extends" mode="tr:expand-includes">
-    <xsl:message select="'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ', name(), ' :: ', tr:resolve-uri-by-catalog(@href, $catalog),
-      ' :: ', @href"></xsl:message>
     <xsl:apply-templates select="doc(tr:resolve-uri-by-catalog(@href, $catalog))/s:schema/*" mode="#current">
       <xsl:with-param name="is-included" select="true()" tunnel="yes"/>
       <xsl:with-param name="is-included-non-a9s" 
