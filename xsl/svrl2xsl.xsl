@@ -121,7 +121,8 @@
                                  then $normalized-srcpath
                                  else $adjusted-srcpath}" xml:id="BC_{generate-id()}" severity="{$severity}"
       type="{parent::c:errors/@tr:rule-family} {$severity} {@code}">
-      <xsl:sequence select="(@type, ancestor-or-self::*[@tr:step-name][1]/@tr:step-name)[1], @code"/>
+      <xsl:sequence select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name, @code"/>
+      <xsl:apply-templates select="@type" mode="#current"/>
       <xsl:apply-templates select="parent::c:errors/@tr:rule-family" mode="#current"/>
       <tr:text>
         <xsl:sequence select="node()"/>
@@ -131,6 +132,10 @@
   
   <xsl:template match="@tr:rule-family" mode="collect-messages">
     <xsl:attribute name="{local-name()}" select="."/>
+  </xsl:template>
+  
+  <xsl:template match="@type" mode="collect-messages">
+    <xsl:attribute name="type-was" select="."/>
   </xsl:template>
 
   <xsl:template match="svrl:text[tr:ignored-in-html(*:span[@class eq 'srcpath'])]" mode="collect-messages"/>
