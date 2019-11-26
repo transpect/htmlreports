@@ -153,7 +153,7 @@
   
   <p:xslt name="reorder-messages-by-category" cx:depends-on="reports">
     <p:documentation>This XSLT will regroup the messages using a span in the asserts/reports. 
-      The span's class used to regroup can be defined as te content of param name 'rule-category-span-class' 
+      The span's class used to regroup can be defined as the content of param name 'rule-category-span-class' 
       in the parameter set. (For example in a project-specific transpect-conf.xml)
       The span's content will appear as a heading in the html report.
       If it isn't defined or no such spans occur the reports document will be reproduced. 
