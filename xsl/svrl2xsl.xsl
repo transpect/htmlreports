@@ -112,14 +112,7 @@
 
   <xsl:template match="c:error[@*]" mode="collect-messages">
     <xsl:variable name="severity" as="xs:string" select="(@role, $severity-default-name)[1]"/>
-    <xsl:variable name="srcpath" as="xs:string" select="(@srcpath, 'BC_orphans')[1]"/>
-    <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath($srcpath)"/>
-    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths, $adjust-srcpath-to-siblings)"/>
-    <tr:message srcpath="{if (every $ap in $adjusted-srcpath 
-                              satisfies (ends-with($ap, '?xpath='))
-                                    )
-                                 then $normalized-srcpath
-                                 else $adjusted-srcpath}" xml:id="BC_{generate-id()}" severity="{$severity}"
+    <tr:message srcpath0="{tr:normalize-srcpath((@srcpath, 'BC_orphans')[1])}" xml:id="BC_{generate-id()}" severity="{$severity}"
       type="{parent::c:errors/@tr:rule-family} {$severity} {@code}">
       <xsl:sequence select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name, @code"/>
       <xsl:apply-templates select="@type" mode="#current"/>
@@ -143,28 +136,20 @@
   <xsl:template match="svrl:text[parent::svrl:successful-report | parent::svrl:failed-assert]
                                 [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))]" mode="collect-messages">
     <xsl:variable name="role" as="xs:string" select="(../@role, $severity-default-role)[1]"/>
-    <!-- if the schematron doesn't contain spans with srcpath, we use the location attribute as fallback -->
-    <xsl:variable name="normalized-srcpath" as="xs:string*" select="tr:normalize-srcpath((s:span[@class eq 'srcpath'], parent::*/@location)[1])"/>
-    <xsl:variable name="adjusted-srcpath" as="xs:string*" select="tr:adjust-to-existing-srcpaths($normalized-srcpath, $all-document-srcpaths, $adjust-srcpath-to-siblings)"/>
     <xsl:variable name="fam" select="ancestor-or-self::svrl:schematron-output/@tr:rule-family" as="attribute(tr:rule-family)?"/>
+    <xsl:variable name="srcpath0" as="xs:string*"
+      select="tr:normalize-srcpath((s:span[@class eq 'srcpath'], parent::*/@location)[1])"/>
     <tr:message xml:id="BC_{generate-id()}" 
                 severity="{$role}" 
                 type="{$fam} {$role} {(s:span[@class='corrected-id'], ../@id)[1]}" 
-                srcpath="{if (every $ap in $adjusted-srcpath 
-                              satisfies (ends-with($ap, '?xpath='))
-                                    )
-                                 then $normalized-srcpath
-                                 else $adjusted-srcpath}">
-      <xsl:if test="ancestor::svrl:schematron-output/@tr:include-location-in-msg = 'true' or not(normalize-space(string-join($normalized-srcpath, '')))">
+                srcpath0="{$srcpath0}">
+      <xsl:if test="ancestor::svrl:schematron-output/@tr:include-location-in-msg = 'true' or not(normalize-space(string-join($srcpath0, '')))">
         <xsl:attribute name="svrl:location" select="../@location"/>
       </xsl:if>
       <xsl:apply-templates select="$fam" mode="#current"/>
       <xsl:apply-templates select="s:span[@class = $rule-category-span-class]" mode="#current"/>
       <xsl:sequence select="ancestor-or-self::*[@tr:step-name][1]/@tr:step-name"/>
       <xsl:attribute name="code" select="if (starts-with($fam, 'RNG')) then 'RNG' else 'Schematron'"/>
-      <xsl:if test="not($adjusted-srcpath = $normalized-srcpath)">
-        <xsl:attribute name="adjusted-from" select="$normalized-srcpath"/>
-      </xsl:if>
       <xsl:sequence select="., ../svrl:diagnostic-reference"/>
     </tr:message>
   </xsl:template>
@@ -263,10 +248,13 @@
       <tr:document>
         <xsl:for-each-group select="$collected-messages" group-by="@type">
           <tr:messages type="{current-grouping-key()}">
-            <xsl:perform-sort select="current-group()">
-              <!-- Make sure that they will be in document order (because of the structure of Saxon’s generated IDs): -->
-              <xsl:sort select="@xml:id" collation="http://saxon.sf.net/collation?alphanumeric=yes"/>
-            </xsl:perform-sort>
+            
+              <xsl:perform-sort select="current-group()[if ($maxerr gt 0) 
+                                                        then (position() le $maxerr)
+                                                        else true()]">
+                <!-- Make sure that they will be in document order (because of the structure of Saxon’s generated IDs): -->
+                <xsl:sort select="@xml:id" collation="http://saxon.sf.net/collation?alphanumeric=yes"/>
+              </xsl:perform-sort>
           </tr:messages>
         </xsl:for-each-group>
       </tr:document>
@@ -275,15 +263,38 @@
 
   <xsl:variable name="message-types" select="$messages-grouped-by-type/tr:document/tr:messages/@type" as="xs:string*"/>
 
+  <xsl:variable name="linked-messages-adjusted-srcpath" as="document-node(element(tr:document))">
+    <xsl:document>
+      <xsl:apply-templates select="$messages-grouped-by-type" mode="linked-messages-adjusted-srcpath"/>
+    </xsl:document>
+  </xsl:variable>
+
+  <xsl:template match="@srcpath0" mode="linked-messages-adjusted-srcpath">
+    <xsl:variable name="adjusted-srcpath" select="tr:adjust-to-existing-srcpaths(@srcpath0, $all-document-srcpaths, $adjust-srcpath-to-siblings)"/>
+    <xsl:attribute name="srcpath" select="if (
+                        every $ap in tr:adjust-to-existing-srcpaths(., $all-document-srcpaths, $adjust-srcpath-to-siblings) 
+                        satisfies ends-with($ap, '?xpath=')
+                      )
+                      then .
+                      else tr:adjust-to-existing-srcpaths(., $all-document-srcpaths, $adjust-srcpath-to-siblings)"/>
+    <xsl:attribute name="non-adjusted-srcpath" select="."/>
+  </xsl:template>
+  <xsl:template match="@* | node()" mode="linked-messages-adjusted-srcpath">
+    <xsl:copy>
+      <xsl:apply-templates select="@*, node()" mode="#current"/>
+    </xsl:copy>
+  </xsl:template>
+
   <xsl:variable name="linked-messages-grouped-by-srcpath" as="document-node(element(tr:document))">
     <xsl:document>
       <tr:document>
         <xsl:for-each-group
-          select="$messages-grouped-by-type/tr:document/tr:messages/tr:message[if ($maxerr gt 0) 
-                                                                               then (position() le $maxerr)
-                                                                               else true()]"
+          select="$linked-messages-adjusted-srcpath/tr:document/tr:messages/tr:message"
           group-by="tokenize(@srcpath, '\s+')">
           <tr:messages srcpath="{current-grouping-key()}">
+            <xsl:if test="not(@non-adjusted-srcpath = @srcpath)">
+              <xsl:attribute name="adjusted-from" select="@non-adjusted-srcpath"/>
+            </xsl:if>
             <xsl:apply-templates select="current-group()" mode="link"/>
           </tr:messages>
         </xsl:for-each-group>
