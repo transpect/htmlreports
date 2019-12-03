@@ -228,8 +228,12 @@
                   <xsl:when test="$adjust2siblings and not(empty($alternatives))">
                     <xsl:sequence select="$alternatives"/>
                   </xsl:when>
+                  <!--<xsl:when test="count($remove-tails) eq 1 and ends-with($remove-tails[1], '?xpath=')">
+                    <xsl:sequence select="$remove-tails[1]"/>
+                  </xsl:when>-->
                   <xsl:otherwise>
-                    <xsl:sequence select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths, $adjust2siblings)"/>
+<!--                    <xsl:message select="'MMMMMMMMMMMm ', $remove-tails, ' :: '(:, $document-srcpaths, ' :: ':), $adjust2siblings"></xsl:message>-->
+                    <xsl:sequence select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths, true())"/>
                   </xsl:otherwise>
                 </xsl:choose>
               </xsl:otherwise>
@@ -244,6 +248,7 @@
   </xsl:function>
 
   <xsl:variable name="messages-grouped-by-type" as="document-node(element(tr:document))">
+    <xsl:message select="'RRRRRRRRRRRRRRR ', 'messages-grouped-by-type'"></xsl:message>
     <xsl:document>
       <tr:document>
         <xsl:for-each-group select="$collected-messages" group-by="@type">
@@ -259,22 +264,32 @@
         </xsl:for-each-group>
       </tr:document>
     </xsl:document>
+    <xsl:message select="'/rrrrrrrrrrrrr ', 'messages-grouped-by-type'"></xsl:message>
   </xsl:variable>
 
   <xsl:variable name="message-types" select="$messages-grouped-by-type/tr:document/tr:messages/@type" as="xs:string*"/>
 
   <xsl:variable name="linked-messages-adjusted-srcpath" as="document-node(element(tr:document))">
+    <xsl:message select="'SSSSSSSSSSSSSss ', 'linked-messages-adjusted-srcpath'"></xsl:message>
     <xsl:document>
       <tr:document>
         <xsl:apply-templates select="$messages-grouped-by-type/tr:document/tr:messages" mode="linked-messages-adjusted-srcpath"/>
       </tr:document>
     </xsl:document>
+    <xsl:message select="'/sssssssss ', 'linked-messages-adjusted-srcpath'"></xsl:message>
   </xsl:variable>
 
   <xsl:template match="@srcpath0" mode="linked-messages-adjusted-srcpath">
-    <xsl:variable name="adjusted-srcpath" 
+    <xsl:variable name="adjusted-srcpath" as="xs:string+" 
       select="tr:adjust-to-existing-srcpaths(., $all-document-srcpaths, $adjust-srcpath-to-siblings)"/>
+    <xsl:message select="'aaaaaaa', ., count($all-document-srcpaths), ' :: ', count($adjust-srcpath-to-siblings)"></xsl:message>
     <xsl:attribute name="srcpath" select="if (
+                        every $ap in $adjusted-srcpath 
+                        satisfies ends-with($ap, '?xpath=')
+                      )
+                      then .
+                      else $adjusted-srcpath"/>
+    <xsl:message select="'AAAAAAAAAAAAAAAA ',if (
                         every $ap in tr:adjust-to-existing-srcpaths(., $all-document-srcpaths, $adjust-srcpath-to-siblings) 
                         satisfies ends-with($ap, '?xpath=')
                       )
@@ -289,6 +304,7 @@
   </xsl:template>
 
   <xsl:variable name="linked-messages-grouped-by-srcpath" as="document-node(element(tr:document))">
+    <xsl:message select="'PPPPPPPPPP', 'linked-messages-grouped-by-srcpath'"></xsl:message>
     <xsl:document>
       <tr:document>
         <xsl:for-each-group
@@ -303,6 +319,7 @@
         </xsl:for-each-group>
       </tr:document>
     </xsl:document>
+    <xsl:message select="'/ppppppp', 'linked-messages-grouped-by-srcpath'"></xsl:message>
   </xsl:variable>
 
   <xsl:template match="tr:message" mode="link">
@@ -1035,6 +1052,7 @@
       </div>
 
     </span>
+    <xsl:message select="'BBBBBBBBBBBBBBBBB ', @srcpath"></xsl:message>
     <xsl:text>&#x200b;</xsl:text>
     <!-- allow line breaks -->
   </xsl:template>
