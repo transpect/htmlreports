@@ -162,7 +162,7 @@
     <xsl:param name="message-srcpaths" as="xs:string*"/>
     <xsl:param name="document-srcpaths" as="xs:string*"/>
     
-    <xsl:for-each select="$message-srcpaths">
+    <xsl:for-each select="for $m in $message-srcpaths return tokenize($m, '\s+')">
       <xsl:variable name="phrase" select="replace(if (matches(.,'\[[0-9]+\]$')) then replace(.,'^(.*)\[[0-9]+\]$','$1') else '0','([\[\]\?\.])','\\$1')"/>
       <xsl:variable name="actual" select="if (matches(.,'\[[0-9]+\]$')) then number(replace(.,'^.*\[([0-9]+)\]$','$1')) else 0"/>
       <xsl:sequence select="($document-srcpaths[matches(.,'\[[0-9]+\]$')][matches(.,concat('^',$phrase))][number(replace(.,concat('^',$phrase,'\[([0-9]+)\].*$'),'$1')) gt $actual][1],
@@ -174,9 +174,10 @@
     <xsl:param name="message-srcpaths" as="xs:string*"/>
     <xsl:param name="document-srcpaths" as="xs:string*"/>
     <xsl:param name="adjust2siblings" as="xs:boolean"/>
-    <xsl:variable name="matching" as="xs:string*" select="$message-srcpaths[. = $document-srcpaths]"/>
-    <xsl:variable name="with-xpath" select="$message-srcpaths[contains(., '?xpath=/')]" as="xs:string*"/>
-    <xsl:variable name="without-xpath" select="$message-srcpaths[not(contains(., '?xpath=/'))]" as="xs:string*"/>
+    <xsl:variable name="tokenized" as="xs:string*" select="for $m in $message-srcpaths return tokenize($m, '\s+')"/>
+    <xsl:variable name="matching" as="xs:string*" select="$tokenized[. = $document-srcpaths]"/>
+    <xsl:variable name="with-xpath" select="$tokenized[contains(., '?xpath=/')]" as="xs:string*"/>
+    <xsl:variable name="without-xpath" select="$tokenized[not(contains(., '?xpath=/'))]" as="xs:string*"/>
     <!-- This is for srcpaths that have been derived from generated IDs rather than xpath locations
       but have been prefixed with the document’s common source dir uri by a Schematron rule: -->
     <xsl:variable name="only-lastword" as="xs:string*"
@@ -187,8 +188,8 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:choose>
-          <xsl:when test="$without-xpath = $message-srcpaths">
-            <xsl:sequence select="$without-xpath[. = $message-srcpaths]"/>
+          <xsl:when test="$without-xpath = $tokenized">
+            <xsl:sequence select="$without-xpath[. = $tokenized]"/>
           </xsl:when>
           <xsl:when test="exists($with-xpath)">
             <!-- Backtrack – cut away XPath steps from the end and see whether the less comprehensive path
@@ -213,8 +214,8 @@
                   select="distinct-values(
                             for $sp in $with-xpath 
                             return replace($sp, '/[^/]+$', '')
-                          )[not(. = $message-srcpaths)]"/>
-                <xsl:variable name="alternatives" select="tr:get-alternative-srcpath($message-srcpaths,$document-srcpaths)"/>
+                          )[not(. = $tokenized)]"/>
+                <xsl:variable name="alternatives" select="tr:get-alternative-srcpath($tokenized,$document-srcpaths)"/>
                 <xsl:variable name="ancestors" select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths, false())"/>
                 <xsl:choose>
                   <xsl:when test="empty($remove-tails)">
@@ -232,7 +233,8 @@
                     <xsl:sequence select="$remove-tails[1]"/>
                   </xsl:when>-->
                   <xsl:otherwise>
-                    <xsl:sequence select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths, true())"/>
+<!--                    <xsl:message select="'MMMMMMMMMMMm ', string-join($tokenized, 'XXXX'), ' ;; ',$remove-tails, ' :: '(:, $document-srcpaths, ' :: ':), $adjust2siblings"></xsl:message>-->
+                    <xsl:sequence select="tr:adjust-to-existing-srcpaths($remove-tails, $document-srcpaths, $adjust2siblings)"/>
                   </xsl:otherwise>
                 </xsl:choose>
               </xsl:otherwise>
