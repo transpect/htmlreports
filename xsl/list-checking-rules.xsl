@@ -6,25 +6,25 @@
   xmlns:tr="http://transpect.io" 
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:s="http://purl.oclc.org/dsdl/schematron"
+  xmlns:sc="http://transpect.io/schematron-config"
   xmlns="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="#all"
   version="2.0">
 
   <xsl:param name="interface-language" select="'en'" as="xs:string"/>
-  <xsl:param name="s9y1" select="''"/>
   <xsl:param name="title" select="'Checking Rules'" as="xs:string"/>
 
   <xsl:template name="main">
     <html>
       <head>
         <title>
-          <xsl:value-of select="$s9y1"/>
+          <xsl:value-of select="$title"/>
         </title>
         <xsl:call-template name="list-checking-rules-css"/>
       </head>
       <body>
         <h1>
-          <xsl:value-of select="$s9y1"/>
+          <xsl:value-of select="$title"/>
         </h1>
         <h4>
           <xsl:value-of select="format-dateTime(current-dateTime(), '[Y]-[M01]-[D01] [H01]:[m01]')"/>
@@ -60,17 +60,19 @@
   <xsl:template name="output-all-schematron-messages">
     <!-- old list-checking-rules:
     <xsl:apply-templates select="collection()/s:schema" mode="tr:list-checking-rules"/>-->
-    <xsl:for-each-group select="collection()//s:schema//(s:report union s:assert)" group-by="@role">
+    <xsl:param name="all-schemas" as="element(s:schema)*" select="collection()//s:schema"/>
+    <xsl:param name="exists-family" select="exists($all-schemas/@tr:rule-family)" as="xs:boolean"/>
+    <div class="total">
+      <span class="label">Total: </span>
+      <span class="value">
+        <xsl:value-of select="count($all-schemas//(s:report union s:assert))"/>
+      </span>
+    </div>
+    <xsl:for-each-group select="$all-schemas//(s:report union s:assert)" group-by="(@role, 'error')[1]">
       <xsl:sort select="tr:severity-sortkey(.)"/>
-      <xsl:if test="position() = 1">
-        <div class="total">
-          <span class="label">Total: </span>
-          <span class="value"><xsl:value-of select="count(collection()//s:schema//(s:report union s:assert)/@id)"/></span>
-        </div>
-      </xsl:if>
-      <div class="role-group {@role}">
+      <div class="role-group {(@role, 'error')[1]}">
         <div class="heading">
-          <div class="role-name"><xsl:value-of select="tr:get-l10n-severity(@role)"/></div>
+          <div class="role-name"><xsl:value-of select="tr:get-l10n-severity(current-grouping-key())"/></div>
           <div class="message-count"><xsl:value-of select="count(current-group())"/></div>
         </div>
         <div class="collapse">
@@ -89,7 +91,9 @@
                         this.classList.toggle('expanded'); return false">&#9660;</a>
             </div>
         <ul>
-          <xsl:for-each-group select="collection()//s:schema//(s:report union s:assert)[@role = current-grouping-key()]" group-by="normalize-space(string-join(.//text(), ''))">
+          <xsl:for-each-group 
+            select="$all-schemas//(s:report union s:assert)[(@role, 'error')[1] = current-grouping-key()]" 
+            group-by="normalize-space(string-join(.//text(), ''))">
             <!-- no xsl:sort - input order is output order -->
             <li>
               <a href="#" class="switch-info" onclick="this.blur(); this.classList.toggle('active-message-info'); return false">
@@ -97,15 +101,32 @@
                   <div class="message-text"><xsl:sequence select="tr:output-message(.)"/></div>
                   <div class="message-info">
                     <div class="message-id">
-                      <span class="label">id: </span>
-                      <span class="value"><xsl:value-of select="@id"/></span>
+                      <xsl:choose>
+                        <xsl:when test="@id">
+                          <span class="label">id: </span>
+                          <span class="value"><xsl:value-of select="@id"/></span>
+                        </xsl:when>
+                        <xsl:when test="parent::s:rule/@id">
+                          <span class="label">(rule id: </span>
+                          <span class="value"><xsl:value-of select="../@id"/>)</span>
+                        </xsl:when>
+                        <xsl:when test="../parent::s:pattern/@id">
+                          <span class="label">(pattern id: </span>
+                          <span class="value"><xsl:value-of select="../../@id"/>)</span>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <span class="label">(without id)</span>
+                        </xsl:otherwise>
+                      </xsl:choose>
                     </div>
-                    <div class="message-family">
-                      <span class="label">family: </span>
-                      <span class="value"><xsl:value-of select="ancestor::s:schema/@tr:rule-family"/></span>
-                    </div>
+                    <xsl:if test="$exists-family">
+                      <div class="message-family">
+                        <span class="label">family: </span>
+                        <span class="value"><xsl:value-of select="ancestor::s:schema/@tr:rule-family"/></span>
+                      </div>  
+                    </xsl:if>
                     <div class="message-context">
-                      <span class="label">xpath: </span>
+                      <span class="label">context: </span>
                       <span class="value"><xsl:value-of select="parent::s:rule/@context"/></span>
                     </div>
                     <div class="message-element">
@@ -114,14 +135,27 @@
                     </div>
                     <xsl:if test="count(current-group()) ge 2">
                       <div class="message-count">
-                        <span class="label">count: </span>
+                        <span class="label">same msg text count: </span>
                         <span class="value"><xsl:value-of select="count(current-group())"/></span>
                       </div>
                     </xsl:if>
-                    <div class="message-origin hideme">
-                      <span class="label">origin: </span>
-                      <span class="value"><xsl:value-of select="ancestor::s:pattern/processing-instruction('origin')"/></span>
-                    </div>
+                    <xsl:if test="current-group()/sc:xsl-fix">
+                      <div class="message-fix">
+                        <span class="label">XSLT fix: </span>
+                        <span class="value"><xsl:value-of 
+                          select="string-join(for $scf in current-group()/sc:xsl-fix
+                                              return concat($scf/@href, '@', $scf/@mode),
+                                              '; ')"/></span>
+                      </div>
+                    </xsl:if>
+                    <xsl:variable name="origin-info" as="item()*" 
+                      select="(ancestor::s:pattern/processing-instruction('origin'), ancestor::s:pattern/@xml:base)"/>
+                    <xsl:if test="exists($origin-info)">
+                      <div class="message-origin hideme">
+                        <span class="label">origin: </span>
+                        <span class="value"><xsl:value-of select="$origin-info[1]"/></span>
+                      </div>  
+                    </xsl:if>
                   </div>
                 </div>
               </a>
@@ -137,6 +171,7 @@
     <xsl:choose>
       <xsl:when test="$node/@role = 'fatal-error'">1</xsl:when>
       <xsl:when test="$node/@role = 'error'">2</xsl:when>
+      <xsl:when test="empty($node/@role)">2</xsl:when>
       <xsl:when test="$node/@role = 'warning'">3</xsl:when>
       <xsl:when test="$node/@role = 'info'">4</xsl:when>
       <xsl:otherwise>
@@ -156,6 +191,10 @@
 
   <xsl:template match="*:value-of" mode="tr:output-message">
     <span class="value-of" title="{@select}">[…]</span>
+  </xsl:template>
+  
+  <xsl:template match="s:name" mode="tr:output-message">
+    [name]
   </xsl:template>
 
   <xsl:template match="s:span[@class = 'srcpath']" mode="tr:output-message"/>
@@ -179,7 +218,7 @@ div.role-group div.role-name, div.role-group div.heading div.message-count {font
 div.role-group div.heading div.message-count:before {content:"("}
 div.role-group div.heading div.message-count:after {content:")"}
 
-div.role-group li a {text-decoration:none; display:block; width:98%; height:100%; margin-top:.25em}
+div.role-group li a {text-decoration:none; display:block; width:98%; margin-top:.25em}
 .message-info {display:none; margin:0 .25em .25em .8em}
 .switch-info {padding-left:.em}
 a.active-message-info {padding:0 .2em}
