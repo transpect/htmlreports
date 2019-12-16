@@ -20,6 +20,7 @@
         <title>
           <xsl:value-of select="$title"/>
         </title>
+        <meta charset="utf-8"/>
         <xsl:call-template name="list-checking-rules-css"/>
       </head>
       <body>
