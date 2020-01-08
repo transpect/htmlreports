@@ -32,6 +32,10 @@
     <p:documentation>Space-separated list of tokens. Available tokens are: image video script style audio object #all.
     The documentation in tr:html-embed-resources could be more up to date.</p:documentation>
   </p:option>
+  <p:option name="suppress-embedding-by-fileext" select="'eps pdf tif tiff wmf'">
+    <p:documentation>Space-separated list of file extensions. Files which
+    match those extensions are not embedded</p:documentation>
+  </p:option>
   <p:option name="max-base64-encoded-size-kb" select="1000">
     <p:documentation>
       Limit (KB) for embedded base64 data URIs. 
@@ -123,6 +127,7 @@
     </p:input>
     <p:with-option name="max-base64-encoded-size-kb" select="$max-base64-encoded-size-kb"/>
     <p:with-option name="exclude" select="$suppress-embedding"/>
+    <p:with-option name="exclude-by-fileext" select="$suppress-embedding-by-fileext"/>
     <p:with-option name="fail-on-error" select="$fail-on-error">
       <p:documentation>embed resources before local @xml:base attributes get lost</p:documentation>
     </p:with-option>
