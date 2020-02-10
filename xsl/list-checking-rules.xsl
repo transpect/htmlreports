@@ -478,7 +478,7 @@ span.value-of {border-bottom:1px dotted #555}
         <xsl:apply-templates select="@severity" mode="#current"/>
       </b>
       <xsl:text>&#x2002;</xsl:text>
-      <xsl:apply-templates select="(svrl:diagnostic-message[@xml:lang = $interface-language], svrl:text)[1]" mode="#current"/>
+      <xsl:apply-templates select="(svrl:diagnostic-reference[@xml:lang = $interface-language], svrl:text)[1]" mode="#current"/>
     </p>    
   </xsl:template>
   
