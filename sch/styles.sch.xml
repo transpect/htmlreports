@@ -80,14 +80,10 @@
     <xsl:param name="link-target" as="xs:string?"/>
     <xsl:choose>
       <xsl:when test="$lang eq 'de'">
-        <span class="documentation" xmlns="http://www.w3.org/1999/xhtml">→ Für Details zu den erlaubten Formatvorlagennamen, schauen Sie bitte in der <a href="{concat('htt\
-          ps://redmine.le-tex.de/projects/extern/wiki/Formatvorlagen', $link-target)}" xmlns="http://www.w3.org/1999/xhtml">Liste der erlaubtern Formatvorlagen</a>
-          nach oder belesen sich im <a href="https://redmine.le-tex.de/projects/extern/wiki/FAQ"  xmlns="http://www.w3.org/1999/xhtml">FAQ-Bereich</a>.</span>
+        <span class="documentation" xmlns="http://www.w3.org/1999/xhtml">→ Für Details zu den erlaubten Formatvorlagennamen, schauen Sie bitte in der Liste der erlaubtern Formatvorlagen nach.</span>
       </xsl:when>
       <xsl:otherwise>
-        <span class="documentation" xmlns="http://www.w3.org/1999/xhtml">→ For further information please read the <a href="{concat('https://redmine.le-tex.de/projects/ext\
-          ern/wiki/Formatvorlagen', $link-target)}" xmlns="http://www.w3.org/1999/xhtml">style documentation</a>
-          or have a look into the <a href="https://redmine.le-tex.de/projects/extern/wiki/FAQ" xmlns="http://www.w3.org/1999/xhtml">FAQ section</a>.</span>
+        <span class="documentation" xmlns="http://www.w3.org/1999/xhtml">→ For further information please read the style documentation.</span>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
