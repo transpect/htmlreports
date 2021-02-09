@@ -623,6 +623,17 @@
             .BC_no-messages{
               color:#33691e 
               }
+            .BC_message-text {
+              color:#000; 
+              font-weight:normal;
+              }
+            .BC_message-text ul, .BC_message-text ol {
+              margin:0.5em 0 0.5em 1em; 
+              }
+            .BC_message-text span.issue {
+              margin-bottom:0.75em; 
+              font-weight:bold;
+              }
           </style>
           <style type="text/css" id="project-specific-css">/*project specific css*/
             <xsl:call-template name="project-specific-css"/>
