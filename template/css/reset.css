@@ -18,6 +18,9 @@ body {
 ol, ul {
 	list-style: none;
 }
+i, em {
+  font-style: italic;
+}
 blockquote, q {
 	quotes: none;
 }
