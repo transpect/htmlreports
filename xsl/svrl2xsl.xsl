@@ -579,6 +579,16 @@
       <xslout:template match="html:head">
         <xslout:copy copy-namespaces="no">
           <xslout:apply-templates mode="#current"/>
+          <xsl:for-each-group select="//*:text[parent::svrl:successful-report 
+                                              |parent::svrl:failed-assert]
+                                              [not(tr:ignored-in-html(*:span[@class eq 'srcpath']))] 
+                                     |//*:error"
+                              group-by="(self::c:error/@role, 
+                                         ../@role, 
+                                         @type (: legacy c:error att name for severity in tr:propagate-caught-error:), 
+                                         $severity-default-role)[1]">
+            <meta name="tr-count-{current-grouping-key()}" select="{count(current-group())}"/>
+          </xsl:for-each-group>
           <style type="text/css">
             span.fatal-error, span.fatal-error_notoggle, .BC_message.fatal-error, #BC_toggle_fatal-error.active{
               color:#f2dede; 
