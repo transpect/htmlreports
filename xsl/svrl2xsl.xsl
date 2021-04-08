@@ -587,7 +587,7 @@
                                          ../@role, 
                                          @type (: legacy c:error att name for severity in tr:propagate-caught-error:), 
                                          $severity-default-role)[1]">
-            <meta name="tr-count-{current-grouping-key()}" select="{count(current-group())}"/>
+            <meta name="tr-count-{current-grouping-key()}" content="{count(current-group())}"/>
           </xsl:for-each-group>
           <style type="text/css">
             span.fatal-error, span.fatal-error_notoggle, .BC_message.fatal-error, #BC_toggle_fatal-error.active{
