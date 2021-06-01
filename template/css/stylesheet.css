@@ -99,3 +99,4 @@ div.BC_message-text code {color: inherit; background-color:inherit}
 }
 /* sections in which errors are ignored */
 div.bc_ignore {background-color:#faf1cd; border: 2px solid #fae282; padding:0.5em; margin:1em; border-radius:0.5em;}
+span.label {color:#000;}
