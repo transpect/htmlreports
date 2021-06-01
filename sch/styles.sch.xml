@@ -26,7 +26,8 @@
     
    <rule context="*[count($template-style-names) gt count($default-style-names)]
                    [@role[not(matches(., 'virtual'))]]
-                   [not(self::dbk:keywordset or self::dbk:keyword or self::dbk:info or self::dbk:tab)]">
+                   [not(self::dbk:keywordset or self::dbk:keyword or self::dbk:info or self::dbk:tab)]
+                   [not(ancestor-or-self::dbk:bibliography[@role = ('Citavi', 'CSL')])]">
       <let name="base-role" value="replace(@role, '(_-_|[~&#x2dc;]).+$', '')" />
       <let name="style-type" value="$template-styles[@native-name = current()/@role]/@layout-type"/>
       <let name="user-friendly-stylename" value="for $nn in 
