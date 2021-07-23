@@ -11,6 +11,7 @@
   xmlns:tr="http://transpect.io"
   xmlns:c="http://www.w3.org/ns/xproc-step" 
   xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns:svg="http://www.w3.org/2000/svg"
   xmlns:l10n="http://transpect.io/l10n" 
   xmlns:cx="http://xmlcalabash.com/ns/extensions" 
   xmlns:functx="http://www.functx.com"
@@ -1091,12 +1092,18 @@
   </xsl:template>
 
   <!-- Allow HTML markup in the XHTML namespace in messages: -->
-  <xsl:template match="html:* | @*" mode="create-template render-message" xmlns="http://www.w3.org/1999/xhtml">
+  <xsl:template match="html:* | @* | svg:*" mode="create-template render-message" xmlns="http://www.w3.org/1999/xhtml">
     <xsl:copy copy-namespaces="no">
       <xsl:apply-templates select="@*, node()" mode="#current"/>
     </xsl:copy>
   </xsl:template>
 
+  <xsl:template match="@* | svg:*" mode="create-template render-message" xmlns="http://www.w3.org/2000/svg">
+    <xsl:copy copy-namespaces="no">
+      <xsl:apply-templates select="@*, node()" mode="#current"/>
+    </xsl:copy>
+  </xsl:template>
+  
   <xsl:template match="*:span[@class eq 'srcpath']" mode="create-template"/>
 
   <xsl:template match="svrl:ns-prefix-in-attribute-values">
