@@ -15,7 +15,7 @@
   xmlns:l10n="http://transpect.io/l10n" 
   xmlns:cx="http://xmlcalabash.com/ns/extensions" 
   xmlns:functx="http://www.functx.com"
-  exclude-result-prefixes="functx"  
+  exclude-result-prefixes="functx svg"  
   version="2.0">
 
   <xsl:import href="http://transpect.io/xslt-util/functx/xsl/functx.xsl"/>
