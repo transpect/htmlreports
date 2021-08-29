@@ -56,6 +56,18 @@
       </xsl:choose>
     </h2>-->
     <xsl:apply-templates select="collection()//tr:document" mode="tr:brief-report"/>
+    <xsl:if test="some $msgs in collection()//tr:document//tr:messages satisfies (count($msgs/tr:message) gt 1)">
+      <p class="note">
+        <xsl:choose>
+          <xsl:when test="$interface-language = 'de'">Ist oben ein <i>[+ X]</i> angegeben, können Sie die weiteren 
+          Meldungen des jeweiligen Typs im ausführlichen HTML-Report sehen.</xsl:when>
+          <xsl:when test="$interface-language = 'en'">If you see <i>[+ X]</i> in the list above, please look at the
+          HTML rendering of the complete document that contains all error messages.</xsl:when>
+          <xsl:when test="$interface-language = 'fr'">En cas <i>[+ X]</i> est donnée dans la liste ci-dessus, veuillez 
+            consulter la présentation du document en HTML complette.</xsl:when>
+        </xsl:choose>
+      </p>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="output-all-schematron-messages">
@@ -63,12 +75,15 @@
     <xsl:apply-templates select="collection()/s:schema" mode="tr:list-checking-rules"/>-->
     <xsl:param name="all-schemas" as="element(s:schema)*" select="collection()//s:schema"/>
     <xsl:param name="exists-family" select="exists($all-schemas/@tr:rule-family)" as="xs:boolean"/>
-    <div class="total">
-      <span class="label">Total: </span>
-      <span class="value">
-        <xsl:value-of select="count($all-schemas//(s:report union s:assert))"/>
-      </span>
-    </div>
+    <xsl:variable name="all-rules" as="element(*)*" select="$all-schemas//(s:report union s:assert)"/>
+    <xsl:if test="exists($all-rules)">
+      <div class="total">
+        <span class="label">Total: </span>
+        <span class="value">
+          <xsl:value-of select="count($all-schemas//(s:report union s:assert))"/>
+        </span>
+      </div>
+    </xsl:if>
     <xsl:for-each-group select="$all-schemas//(s:report union s:assert)" group-by="(@role, 'error')[1]">
       <xsl:sort select="tr:severity-sortkey(.)"/>
       <div class="role-group {(@role, 'error')[1]}">
