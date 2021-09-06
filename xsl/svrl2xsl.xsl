@@ -1097,12 +1097,6 @@
       <xsl:apply-templates select="@*, node()" mode="#current"/>
     </xsl:copy>
   </xsl:template>
-
-  <xsl:template match="@* | svg:*" mode="create-template render-message" xmlns="http://www.w3.org/2000/svg">
-    <xsl:copy copy-namespaces="no">
-      <xsl:apply-templates select="@*, node()" mode="#current"/>
-    </xsl:copy>
-  </xsl:template>
   
   <xsl:template match="*:span[@class eq 'srcpath']" mode="create-template"/>
 
