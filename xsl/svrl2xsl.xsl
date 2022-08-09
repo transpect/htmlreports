@@ -856,44 +856,7 @@
         </xslout:copy>
       </xslout:template>
 
-      <xslout:template match="html:*[@id eq 'tr-minitoc']">
-        <xslout:variable name="factor" as="xs:decimal"
-                         select="if(count($headlines) lt 20) 
-                                 then  10 
-                                 else 255 div count($headlines)"/>
-        <xslout:copy>
-          <xslout:apply-templates select="@*|node()"/>
-          <ul class="BC_minitoc nav">
-            <li class="hidden active">
-              <a class="page-scroll" href="#page-top"/>
-            </li>
-            <xslout:for-each select="$headlines">
-              <xslout:variable name="color-value" select="tr:dec-to-hex(xs:integer(round-half-to-even(position() * $factor, 0)))" as="xs:string"/>
-              <xslout:variable name="fill-value" select="string-join(for $i in (string-length($color-value) to 1)  return '0', '')" as="xs:string"/>
-              
-              <xslout:variable name="href" select="concat('#scroll-', generate-id(.))"/>
-              <xslout:variable name="class" select="concat('BC_minitoc-item BC_minitoc-level-', local-name())"/>
-              <li>
-                <xslout:attribute name="style" select="concat('border-left: 2px solid #', $r-value, $fill-value, $color-value, $b-value)"/>
-                <xslout:attribute name="class" select="$class"/>
-                <a class="page-scroll">
-                  <xslout:attribute name="href" select="$href"/>
-                  <xslout:choose>
-                    <xslout:when test="not(normalize-space(string-join(.//text()[not(parent::*:s-p)], ''))) and @title">    
-                      <xslout:value-of select="@title"/>
-                    </xslout:when>
-                    <xslout:otherwise>
-                      <xslout:apply-templates mode="#current">
-                        <xslout:with-param name="clean-heading" as="xs:boolean" select="true()" tunnel="yes"/>
-                      </xslout:apply-templates>    
-                    </xslout:otherwise>
-                  </xslout:choose>
-                </a>
-              </li>
-            </xslout:for-each>
-          </ul>
-        </xslout:copy>
-      </xslout:template>
+      <xsl:call-template name="minitoc"/>  
 
       <xslout:template match="html:span[ancestor::html:h1]/@style| html:span[ancestor::html:h2]/@style"/>
 
@@ -1137,6 +1100,53 @@
     <xslout:copy copy-namespaces="no">
       <xslout:apply-templates select="@*, node()" mode="#current"/>
     </xslout:copy>
+  </xsl:template>
+
+  <xsl:template name="minitoc" exclude-result-prefixes="#all">
+    <xslout:template match="html:*[@id eq 'tr-minitoc']">
+      <xslout:variable name="factor" as="xs:decimal"
+        select="if(count($headlines) lt 20) 
+                then  10 
+                else 255 div count($headlines)"/>
+      <xslout:copy>
+        <xslout:apply-templates select="@*|node()"/>
+        <xsl:element name="ul" namespace="http://www.w3.org/1999/xhtml">
+          <xsl:attribute name="class" select="'BC_minitoc nav'"/>
+          <xsl:element name="li" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:attribute name="class" select="'hidden active'"/>
+            <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+              <xsl:attribute name="class" select="'page-scroll'"/>
+              <xsl:attribute name="href" select="'#page-top'"/>
+            </xsl:element>
+          </xsl:element>
+          <xslout:for-each select="$headlines">
+            <xslout:variable name="color-value" select="tr:dec-to-hex(xs:integer(round-half-to-even(position() * $factor, 0)))" as="xs:string"/>
+            <xslout:variable name="fill-value" select="string-join(for $i in (string-length($color-value) to 1)  return '0', '')" as="xs:string"/>
+            
+            <xslout:variable name="href" select="concat('#scroll-', generate-id(.))"/>
+            <xslout:variable name="class" select="concat('BC_minitoc-item BC_minitoc-level-', local-name())"/>
+            <xsl:element name="li" namespace="http://www.w3.org/1999/xhtml">
+              <xslout:attribute name="style" select="concat('border-left: 2px solid #', $r-value, $fill-value, $color-value, $b-value)"/>
+              <xslout:attribute name="class" select="$class"/>
+              <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+                <xsl:attribute name="class" select="'page-scroll'"/>
+                <xslout:attribute name="href" select="$href"/>
+                <xslout:choose>
+                  <xslout:when test="not(normalize-space(string-join(.//text()[not(parent::*:s-p)], ''))) and @title">    
+                    <xslout:value-of select="@title"/>
+                  </xslout:when>
+                  <xslout:otherwise>
+                    <xslout:apply-templates mode="#current">
+                      <xslout:with-param name="clean-heading" as="xs:boolean" select="true()" tunnel="yes"/>
+                    </xslout:apply-templates>    
+                  </xslout:otherwise>
+                </xslout:choose>
+              </xsl:element>
+            </xsl:element>
+          </xslout:for-each>
+        </xsl:element>
+      </xslout:copy>
+    </xslout:template>
   </xsl:template>
 
 </xsl:stylesheet>
