@@ -40,6 +40,9 @@
   <p:input port="html-in" >
     <p:empty/>
   </p:input>
+  <p:input port="styledoc-xslt">
+    <p:document href="../xsl/styledoc.xsl"/>
+  </p:input>
   <p:input port="parameters" kind="parameter" primary="true"/>
   <p:output port="result" primary="true">
     <p:pipe port="source" step="check-styles"/>
@@ -154,7 +157,7 @@
       <p:pipe port="result" step="doc-and-template-styles"/>
     </p:input>
     <p:input port="stylesheet" >
-      <p:document href="../xsl/styledoc.xsl"/>
+      <p:pipe port="styledoc-xslt" step="check-styles"/>
     </p:input>
     <p:input port="parameters">
       <p:empty/>
