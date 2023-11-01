@@ -25,7 +25,7 @@
           p.no-htmlreports {padding-top:2em;font-weight:bold; font-style:italic}
           p.quick-overview.header {font-weight:bold;margin-bottom:.2em}
           p.quick-overview.text {font-size:.9em;margin-top:0}
-          p.quick-overview.text span.counter {margin-right:.2em;font-weight:bold;padding-left:.1em;padding-right:.1em}
+          p.quick-overview.text span.counter {font-weight:bold;padding-left:.1em;padding-right:.1em}
           p.quick-overview.text span.id {background-color:#fff}
           p.quick-overview.text span.counter::after {content:"x:"}
           p.quick-overview.text span.qo-group {margin-left:.5em}
@@ -46,7 +46,7 @@
           td.num-warnings, td.num-others, td.num-errors, td.num-fatal-errors, tr.footer td {text-align:center}
           td.num-warnings.none, td.num-errors.none, td.num-fatal-errors.none {background-color:#A9F5A9}
           td.num-warnings.exists {background-color:#F7FE2E}
-          td.num-others.exists {background-color:#ccc}
+          td.num-others.exists {background-color:#d9edf7}
           td.num-errors.exists {background-color:#FF4000}
           td.num-fatal-errors.exists, span.qo-group.fatal {background-color:#a94442}
           td.filename {padding:.3em}
@@ -54,7 +54,7 @@
           td.filename a {color:#000; text-decoration:none}
           div.collapse + div.BC_family-label {border-top:1px solid #ccc}
           .detail-other *, .detail-warning *, .detail-error * {color:#000;text-decoration:none}
-          .detail-other * {background-color:#ccc;}
+          .detail-other * {background-color:#d9edf7;}
           .detail-warning * {background-color:#F7FE2E;}
           .detail-error * {background-color:#FF4000;}
           .detail-fatal-error * {background-color:#a94442}
@@ -267,29 +267,29 @@
     <tr:language xml:lang="en">
       <tr:text p="html-title">Total report</tr:text>
       <tr:text p="body-title">Total report</tr:text>
-      <tr:text p="meta-created">Created:</tr:text>
-      <tr:text p="meta-number-of-files">Count of files:</tr:text>
+      <tr:text p="meta-created">Created:&#x20;</tr:text>
+      <tr:text p="meta-number-of-files">Count of files:&#x20;</tr:text>
       <tr:text p="meta-no-files">No htmlreport files found!</tr:text>
-      <tr:text p="quick-overview-title">Quick overview:</tr:text>
+      <tr:text p="quick-overview-title">Quick overview:&#x20;</tr:text>
       <tr:text p="fatal-errors">fatal errors</tr:text>
       <tr:text p="th-filename">filename</tr:text>
-      <tr:text p="th-informations">infos.</tr:text>
-      <tr:text p="th-warnings">warns</tr:text>
-      <tr:text p="th-errors">errors</tr:text>
-      <tr:text p="th-fatal-errors">fatals</tr:text>
+      <tr:text p="th-informations">info</tr:text>
+      <tr:text p="th-warnings">warn</tr:text>
+      <tr:text p="th-errors">error</tr:text>
+      <tr:text p="th-fatal-errors">fatal</tr:text>
       <tr:text p="td-summaries">sums:</tr:text>
     </tr:language>
     <tr:language xml:lang="de">
       <tr:text p="html-title">Gesamt-Report</tr:text>
       <tr:text p="body-title">Gesamt-Report</tr:text>
-      <tr:text p="meta-created">Erstellt:</tr:text>
-      <tr:text p="meta-number-of-files">Anzahl Dateien:</tr:text>
+      <tr:text p="meta-created">Erstellt:&#x20;</tr:text>
+      <tr:text p="meta-number-of-files">Anzahl Dateien:&#x20;</tr:text>
       <tr:text p="meta-no-files">Keine HTML-Report-Dateien gefunden!</tr:text>
-      <tr:text p="quick-overview-title">Schnellübersicht:</tr:text>
+      <tr:text p="quick-overview-title">Schnellübersicht:&#x20;</tr:text>
       <tr:text p="fatal-errors">Fatale Fehler</tr:text>
       <tr:text p="th-filename">Dateiname</tr:text>
-      <tr:text p="th-informations">Infos</tr:text>
-      <tr:text p="th-warnings">Warnungen</tr:text>
+      <tr:text p="th-informations">Info</tr:text>
+      <tr:text p="th-warnings">Warn.</tr:text>
       <tr:text p="th-errors">Fehler</tr:text>
       <tr:text p="th-fatal-errors">Fatal</tr:text>
       <tr:text p="td-summaries">Summen:</tr:text>
