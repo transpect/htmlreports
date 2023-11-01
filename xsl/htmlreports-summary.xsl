@@ -29,7 +29,7 @@
           p.quick-overview.text span.id {background-color:#fff}
           p.quick-overview.text span.counter::after {content:"x:"}
           p.quick-overview.text span.qo-group {margin-left:.5em}
-          p.quick-overview .detail-error .counter,p.quick-overview .detail-fatal-error .counter {color:#fff}
+          p.quick-overview .detail-2-error .counter,p.quick-overview .detail-1-fatal-error .counter {color:#fff}
           p.quick-overview, table.summary {margin-left:auto;margin-right:auto;width:90%}
           table.summary {width:90%;border-bottom:1px solid #ccc; margin-top:2em}
           div a#tr_info-report_contains_no_errors {text-decoration:none }
@@ -53,11 +53,11 @@
           span.badge {padding-left:1em;font-weight:bold}
           td.filename a {color:#000; text-decoration:none}
           div.collapse + div.BC_family-label {border-top:1px solid #ccc}
-          .detail-other *, .detail-warning *, .detail-error * {color:#000;text-decoration:none}
-          .detail-other * {background-color:#d9edf7;}
-          .detail-warning * {background-color:#F7FE2E;}
-          .detail-error * {background-color:#FF4000;}
-          .detail-fatal-error * {background-color:#a94442}
+          .detail-4-other *, .detail-3-warning *, .detail-2-error *, .detail-1-fatal-error * {color:#000;text-decoration:none}
+          .detail-4-other * {background-color:#d9edf7;}
+          .detail-3-warning * {background-color:#F7FE2E;}
+          .detail-2-error * {background-color:#FF4000;}
+          .detail-1-fatal-error * {background-color:#a94442}
           ul.list-group {margin-top:0}
           div.BC_family-label {margin-top:1em}
           div.BC_summary {margin-left:1.5em}
@@ -155,32 +155,22 @@
             <!-- https://redmine.le-tex.de/issues/15103 -->
             <p class="quick-overview header"><xsl:sequence select="tr:local('quick-overview-title')"/></p>
             <p class="quick-overview text">
-              <xsl:if test=".//span[contains(@class, 'BC_marker')][not(ancestor::div[@class eq 'BC_summary'])][contains(@class, 'fatal-error')]">
-                <xsl:text>(</xsl:text>
-                <span class="qo-group fatal">
-                  <span class="counter">
-                    <xsl:value-of select="count(.//span[contains(@class, 'BC_marker')][not(ancestor::div[@class eq 'BC_summary'])][contains(@class, 'fatal-error')])"/>
-                  </span>
-                  <span class="id">
+              <xsl:for-each select="distinct-values($all-messages/@class)">
+                <xsl:sort select="."/>
+                <xsl:for-each-group select="$all-messages[@class = current()]" 
+                  group-by="string-join(.//text()[not(ancestor::span[contains(@class, 'badge')])], '')">
+                  <xsl:sort select="sum(current-group()//text()[ancestor::span[contains(@class, 'badge')]])" order="descending"/>
+                  <span class="qo-group {@class}">
+                    <span class="counter">
+                      <xsl:value-of select="sum(current-group()//text()[ancestor::span[contains(@class, 'badge')]])"/>
+                    </span>
                     <xsl:text>&#x20;</xsl:text>
-                    <xsl:sequence select="tr:local('fatal-errors')"/>
+                    <span class="id">
+                      <xsl:value-of select="current-group()[1]//text()[not(ancestor::span[contains(@class, 'badge')])]"/>
+                    </span>
                   </span>
-                </span>
-                <xsl:text>)</xsl:text>
-              </xsl:if>
-              <xsl:for-each-group select="$all-messages" 
-                group-by="string-join(.//text()[not(ancestor::span[contains(@class, 'badge')])], '')">
-                <xsl:sort select="sum(current-group()//text()[ancestor::span[contains(@class, 'badge')]])" order="descending"/>
-                <span class="qo-group {@class}">
-                  <span class="counter">
-                    <xsl:value-of select="sum(current-group()//text()[ancestor::span[contains(@class, 'badge')]])"/>
-                  </span>
-                  <xsl:text>&#x20;</xsl:text>
-                  <span class="id">
-                    <xsl:value-of select="current-group()[1]//text()[not(ancestor::span[contains(@class, 'badge')])]"/>
-                  </span>
-                </span>
-              </xsl:for-each-group>
+                </xsl:for-each-group>
+              </xsl:for-each>
             </p>
             
             <table class="summary">
@@ -228,8 +218,9 @@
   <xsl:template match="li[contains(@class, 'BC_tooltip')]">
     <xsl:copy>
       <xsl:attribute name="class" 
-        select="if(contains(@class, 'error')) then 'detail-error' else 
-                if(contains(@class, 'warning')) then 'detail-warning' else 'detail-other'"/>
+        select="if(contains(@class, 'fatal')) then 'detail-1-fatal-error' else
+                if(contains(@class, 'error')) then 'detail-2-error' else 
+                if(contains(@class, 'warning')) then 'detail-3-warning' else 'detail-4-other'"/>
       <a href="{concat(ancestor::html/@c:report-filename, (.//a/@href)[1])}">
         <xsl:apply-templates mode="#current"/>
       </a>
@@ -271,7 +262,6 @@
       <tr:text p="meta-number-of-files">Count of files:&#x20;</tr:text>
       <tr:text p="meta-no-files">No htmlreport files found!</tr:text>
       <tr:text p="quick-overview-title">Quick overview:&#x20;</tr:text>
-      <tr:text p="fatal-errors">fatal errors</tr:text>
       <tr:text p="th-filename">filename</tr:text>
       <tr:text p="th-informations">info</tr:text>
       <tr:text p="th-warnings">warn</tr:text>
@@ -286,7 +276,6 @@
       <tr:text p="meta-number-of-files">Anzahl Dateien:&#x20;</tr:text>
       <tr:text p="meta-no-files">Keine HTML-Report-Dateien gefunden!</tr:text>
       <tr:text p="quick-overview-title">Schnellübersicht:&#x20;</tr:text>
-      <tr:text p="fatal-errors">Fatale Fehler</tr:text>
       <tr:text p="th-filename">Dateiname</tr:text>
       <tr:text p="th-informations">Info</tr:text>
       <tr:text p="th-warnings">Warn.</tr:text>
