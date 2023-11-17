@@ -150,8 +150,11 @@
         <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron"/>
       </xsl:for-each-group>
       <xsl:for-each-group select="$schematrons/s:schema/s:pattern" group-by="@id">
+        <xsl:variable name="id-values-of-rules-turned-off"
+      select="tokenize(normalize-space(string-join($schematrons/s:schema/@tr:id-values-of-rules-turned-off, ' ')), '\s')"/>
         <xsl:apply-templates select="tr:most-important-element(current-group())" mode="tr:assemble-schematron">
           <xsl:with-param name="title" select="$_title" tunnel="yes"/>
+          <xsl:with-param name="id-values-of-rules-turned-off" select="$id-values-of-rules-turned-off" tunnel="yes"/>
         </xsl:apply-templates>
       </xsl:for-each-group>
       <xsl:variable name="_diagnostics">
@@ -201,19 +204,22 @@
   </xsl:template>
 	
 	<xsl:template match="s:assert | s:report" mode="tr:assemble-schematron">
+		<xsl:param name="id-values-of-rules-turned-off" tunnel="yes"/>
 		<xsl:choose>
 		  <xsl:when test="$schematron-rule-msg eq 'yes' and $debug eq 'yes'">
 				<xso:message select="{concat('''', local-name(), ' ', if(@id) then @id else 'no @id found', '''')}"/>		
 			</xsl:when>
 		</xsl:choose>
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="#current"/>
-		  <xsl:if test="not(exists(s:span[@class eq 'srcpath']))">
-		    <span class="srcpath"><xso:value-of select="ancestor-or-self::*[@srcpath][1]/@srcpath"/></span>
-		  </xsl:if>
-		  <xsl:call-template name="default-category"/>
-			<xsl:apply-templates mode="#current"/>
-		</xsl:copy>
+    <xsl:if test="not(@id = $id-values-of-rules-turned-off)">
+      <xsl:copy>
+        <xsl:apply-templates select="@*" mode="#current"/>
+        <xsl:if test="not(exists(s:span[@class eq 'srcpath']))">
+          <span class="srcpath"><xso:value-of select="ancestor-or-self::*[@srcpath][1]/@srcpath"/></span>
+        </xsl:if>
+        <xsl:call-template name="default-category"/>
+        <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+    </xsl:if>
 	</xsl:template>
   
   <xsl:template match="s:diagnostic" mode="tr:assemble-schematron">
