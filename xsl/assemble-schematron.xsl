@@ -202,14 +202,14 @@
       <xsl:apply-templates mode="#current"/>
     </xsl:copy>
   </xsl:template>
-	
-	<xsl:template match="s:assert | s:report" mode="tr:assemble-schematron">
-		<xsl:param name="id-values-of-rules-turned-off" tunnel="yes"/>
-		<xsl:choose>
-		  <xsl:when test="$schematron-rule-msg eq 'yes' and $debug eq 'yes'">
-				<xso:message select="{concat('''', local-name(), ' ', if(@id) then @id else 'no @id found', '''')}"/>		
-			</xsl:when>
-		</xsl:choose>
+  
+  <xsl:template match="s:assert | s:report" mode="tr:assemble-schematron">
+    <xsl:param name="id-values-of-rules-turned-off" tunnel="yes"/>
+    <xsl:choose>
+      <xsl:when test="$schematron-rule-msg eq 'yes' and $debug eq 'yes'">
+        <xso:message select="{concat('''', local-name(), ' ', if(@id) then @id else 'no @id found', '''')}"/>		
+      </xsl:when>
+    </xsl:choose>
     <xsl:if test="not(@id = $id-values-of-rules-turned-off)">
       <xsl:copy>
         <xsl:apply-templates select="@*" mode="#current"/>
@@ -223,18 +223,18 @@
 	</xsl:template>
   
   <xsl:template match="s:diagnostic" mode="tr:assemble-schematron">
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="#current"/>
-		  <xsl:call-template name="default-category"/>
-			<xsl:apply-templates mode="#current"/>
-		</xsl:copy>
-	</xsl:template>
+    <xsl:copy>
+      <xsl:apply-templates select="@*" mode="#current"/>
+      <xsl:call-template name="default-category"/>
+      <xsl:apply-templates mode="#current"/>
+    </xsl:copy>
+  </xsl:template>
   
   <xsl:template name="default-category">
-	  <xsl:param name="title" as="element(s:title)?" tunnel="yes"/>
+    <xsl:param name="title" as="element(s:title)?" tunnel="yes"/>
     <xsl:if test="$rule-category-span-class and not(exists(s:span[@class = $rule-category-span-class]))">
       <span class="{$rule-category-span-class}">
-        <xsl:copy-of select="$title/node()"/>
+        <xsl:copy-of select="if ($title[normalize-space()]) then $title/node() else $family"/>
       </span>
     </xsl:if>
   </xsl:template>
