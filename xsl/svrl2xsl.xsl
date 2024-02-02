@@ -381,7 +381,7 @@
         <xslout:sequence select="$token = tokenize($space-separated-list, '\s+')"/>
       </xslout:function>
 
-      <xslout:variable name="src-dir-uri" select="/html:html/html:head/html:meta[@name eq 'source-dir-uri']/@content" as="xs:string?"/>
+      <xslout:variable name="src-dir-uri" select="/html:html/html:head/html:meta[@name eq 'source-dir-uri'][1]/@content" as="xs:string?"/>
       
       <xslout:variable name="r-value" as="xs:string" select="{$r-value}"/>
       <xslout:variable name="b-value" as="xs:string" select="{$b-value}"/>
