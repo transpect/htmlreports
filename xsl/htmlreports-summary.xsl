@@ -27,7 +27,7 @@
           p.quick-overview.text {font-size:.9em;margin-top:0}
           p.quick-overview.text span.counter {font-weight:bold;padding-left:.1em;padding-right:.1em}
           p.quick-overview.text span.id {background-color:#fff}
-          p.quick-overview.text span.counter::after {content:"x:"}
+          p.quick-overview.text span.counter::after {content:"×"}
           p.quick-overview.text span.qo-group {margin-left:.5em}
           p.quick-overview .detail-2-error .counter,p.quick-overview .detail-1-fatal-error .counter {color:#fff}
           p.quick-overview, table.summary {margin-left:auto;margin-right:auto;width:90%}
