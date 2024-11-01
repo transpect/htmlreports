@@ -226,6 +226,9 @@
         <p:with-param name="allow-foreign" select="'true'">
           <p:empty/>
         </p:with-param>
+        <p:with-option name="family" select="/c:param-set/c:param[@name eq 'family']/@value">
+          <p:pipe port="result" step="consolidate-params"/>
+        </p:with-option>
       </tr:oxy-validate-with-schematron>
                 
       <p:sink/>
