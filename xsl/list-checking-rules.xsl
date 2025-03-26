@@ -214,6 +214,13 @@
   </xsl:template>
 
   <xsl:template match="s:span[@class = 'srcpath']" mode="tr:output-message"/>
+  
+  <xsl:template match="s:span[@class = 'rule-base-uri']" mode="tr:output-message">
+    <span title="{string(.)}" class="rule-base-uri">
+      <xsl:value-of select="tokenize(., '/')[last()]"/>
+    </span>
+  </xsl:template>
+  
 
   <xsl:template name="list-checking-rules-css">
     <style type="text/css">
@@ -259,6 +266,7 @@ div.collapse:hover {cursor:pointer; text-decoration: underline}
 
 span.label {font-weight:bold}
 span.value-of {border-bottom:1px dotted #555}
+span.rule-base-uri {background-color:#ddd}
     </style>
   </xsl:template>
 
