@@ -173,7 +173,7 @@
       <p:pipe port="params" step="patch-svrl"/>
     </p:input>
     <p:input port="stylesheet">
-      <p:document href="../xsl/regroup-messages-to-category.xsl"/>
+      <p:pipe port="result" step="load-group-report-xsl"/>
     </p:input>
     <p:with-param name="discard-empty-schematron-outputs" select="($discard-empty-schematron-outputs, 'no')[1]"/>
   </p:xslt>
@@ -283,6 +283,17 @@
     <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
   </tr:load-cascaded>
 
+  <p:sink/>
+  
+  <tr:load-cascaded name="load-group-report-xsl" filename="htmlreports/regroup-messages-to-category.xsl"
+    fallback="http://transpect.io/htmlreports/xsl/regroup-messages-to-category.xsl">
+    <p:input port="paths">
+      <p:pipe port="params" step="patch-svrl"/>
+    </p:input>
+    <p:with-option name="debug" select="$debug"/>
+    <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
+  </tr:load-cascaded>
+  
   <p:sink/>
 
   <p:xslt name="create-patch-xsl" cx:depends-on="load-svrl2xsl">
