@@ -89,7 +89,7 @@
       <div class="role-group {(@role, 'error')[1]}">
         <div class="heading">
           <div class="role-name"><xsl:value-of select="tr:get-l10n-severity(current-grouping-key())"/></div>
-          <div class="message-count"><xsl:value-of select="count(current-group())"/></div>
+          <div class="message-count"><xsl:value-of select="count(distinct-values(for $cg in current-group() return normalize-space(string-join($cg//text(), ''))))"/></div>
         </div>
         <div class="collapse">
             <a class="label plus" 
