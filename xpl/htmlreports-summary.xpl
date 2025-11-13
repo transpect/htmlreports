@@ -22,6 +22,9 @@
   <p:option name="htmlreport-file-regex" required="false" select="'^.*.report.xhtml$'">
     <p:documentation>RegEx for finding all htmlreport files in report-dir.</p:documentation>
   </p:option>
+  <p:option name="htmlreport-file-exclude-regex" required="false" select="'^_ltx-bogo_$'">
+    <p:documentation>RegEx for files in report-dir which will NOT included in reports.xhtml.</p:documentation>
+  </p:option>
   <p:option name="summary-report-filename" required="false" select="'reports.xhtml'"/>
   <p:option name="language" required="false" select="'en'"/>
   <p:option name="debug" required="false" select="'no'"/>
@@ -43,12 +46,14 @@
       <tr:recursive-directory-list name="find-reports">
       <p:with-option name="path" select="$report-dir"/>
       <p:with-option name="include-filter" select="$htmlreport-file-regex"/>
+      <p:with-option name="exclude-filter" select="$htmlreport-file-exclude-regex"/>
     </tr:recursive-directory-list>
     </p:when>
     <p:otherwise>
       <p:directory-list name="find-reports">
         <p:with-option name="path" select="$report-dir"/>
         <p:with-option name="include-filter" select="$htmlreport-file-regex"/>
+        <p:with-option name="exclude-filter" select="$htmlreport-file-exclude-regex"/>
       </p:directory-list>
     </p:otherwise>
   </p:choose>
