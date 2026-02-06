@@ -19,7 +19,7 @@
   <let name="default-style-names" value="('NormalParagraphStyle', 'No_character_style', 'hub:page-number', 'hub:separator', 'hub:identifier', 'hub:foreign',
                                           'hub:index', 'frontispiz', 'frontispiz2', 'about-contrib', 'title-page', 'copyright-page', 'dedication', 'hub:caption-text', 
                                           'hub:caption-number', 'hub:lists', 'hub:embedded', 'start', 'end', 'hub:ooxml-symbol','page','hub:toc','display-name',
-                                          'initials', 'footnote', 'endnote','Kommentarzeichen','Kommentartext','annotation reference', 'omml')"/>
+                                          'initials', 'footnote', 'endnote','Kommentarzeichen','CommentReference','Kommentartext','annotation reference', 'omml')"/>
   <let name="template-style-names" value="(distinct-values(for $n in $template-styles/@name return replace($n, '(_-_|[~&#x2dc;]).+$', '')),
                                            $default-style-names)"/>
   <let name="template-style-regexes" value="(distinct-values(for $n in $template-styles/@regex return $n))"/>
