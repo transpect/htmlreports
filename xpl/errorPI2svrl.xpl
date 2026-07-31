@@ -2,6 +2,7 @@
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc" 
   xmlns:c="http://www.w3.org/ns/xproc-step"
   xmlns:tr="http://transpect.io"
+  xmlns:cx="http://xmlcalabash.com/ns/extensions"
   version="1.0" 
   exclude-inline-prefixes="#all"
   type="tr:errorPI2svrl" 
@@ -42,6 +43,7 @@
   
   <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
   <p:import href="http://transpect.io/xproc-util/store-debug/xpl/store-debug.xpl"/>
+  <p:import href="http://transpect.io/xproc-util/xslt-mode/xpl/xslt-mode.xpl"/>
   <p:import href="http://transpect.io/xproc-util/simple-progress-msg/xpl/simple-progress-msg.xpl"/>
   
   <tr:simple-progress-msg name="start-msg" file="error-pi2svrl-start.txt">
@@ -58,7 +60,7 @@
   
   <p:sink/>
   
-  <p:xslt name="create-svrls">
+  <tr:xslt-mode name="create-svrls" mode="#default">
     <p:input port="source">
       <p:pipe step="errorPI2svrl" port="source"/>
     </p:input>
@@ -70,7 +72,10 @@
     <p:with-param name="pi-names" select="$pi-names"/>
     <p:with-param name="severity" select="$severity"/>
     <p:with-param name="step-name" select="$step-name"/>
-  </p:xslt>
+    <p:with-option name="debug" select="$debug"/>
+    <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
+    <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
+  </tr:xslt-mode>
 
   <p:sink/>
 
