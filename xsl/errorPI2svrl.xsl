@@ -19,14 +19,14 @@
   <xsl:output indent="yes"/>
 
   <!-- Space-separated list of PI names -->
-  <xsl:param name="pi-names" as="xs:string"/>
-  
-  <!-- message | warning | error | fatal-error -->
-  <xsl:param name="severity" as="xs:string"/>
+  <xsl:param name="pi-names" as="xs:string" select="'letex'"/>
 
-  <xsl:param name="group-by-srcpath" as="xs:string"/>
+  <!-- message | info | warning | error | fatal-error -->
+  <xsl:param name="severity" as="xs:string" select="'warning'"/>
 
-  <xsl:param name="step-name" as="xs:string"/>
+  <xsl:param name="group-by-srcpath" as="xs:string" select="'yes'"/>
+
+  <xsl:param name="step-name" as="xs:string" select="''"/>
 
   <!-- e.g., "RNG_tei-cssa: message text" -->
   <xsl:variable name="msg-regex" select="'^((\w+)[-_]([-_\w]+)):?\s+(.+)$'" as="xs:string"/>
@@ -35,13 +35,16 @@
 		select="(/*/@source-dir-uri, /*/*:info/*:keywordset[@role = 'hub']/*:keyword[@role = 'source-dir-uri'], '')[1]"/>
 
   <xsl:template match="/">
-    <xsl:for-each-group select="//processing-instruction()[name() = tokenize($pi-names, '\s+')]" group-by="replace(., $msg-regex, '$2')">
-      <xsl:result-document href="{resolve-uri(concat(current-grouping-key(), '.svrl.xml'))}">
+    <xsl:for-each-group select="//processing-instruction()[name() = tokenize($pi-names, '\s+')]" group-by="if (matches(., $msg-regex)) then replace(., $msg-regex, '$2') else 'UNKNOWN'">
+      <!--<xsl:message select="concat('errorPI2svrl: family=', current-grouping-key(),
+                                 ' matched=', string(matches(current-group()[1], $msg-regex)),
+                                 ' href=', resolve-uri(concat(encode-for-uri(current-grouping-key()), '.svrl.xml')))"/>-->
+      <xsl:result-document href="{resolve-uri(concat(encode-for-uri(current-grouping-key()), '.svrl.xml'))}">
         <svrl:schematron-output tr:rule-family="{current-grouping-key()}">
           <xsl:if test="normalize-space($step-name)">
             <xsl:attribute name="tr:step-name" select="$step-name"/>
           </xsl:if>
-          <xsl:for-each-group select="current-group()" group-by="replace(., $msg-regex, if($group-by-srcpath='yes') then '$1' else '$3')">
+          <xsl:for-each-group select="current-group()" group-by="if (matches(., $msg-regex)) then replace(., $msg-regex, if($group-by-srcpath='yes') then '$1' else '$3') else 'UNKNOWN'">
             <svrl:active-pattern document="{base-uri()}" id="{current-grouping-key()}" name="{current-grouping-key()}"/>
             <xsl:apply-templates select="current-group()">
               <xsl:with-param name="id" select="current-grouping-key()"/>
