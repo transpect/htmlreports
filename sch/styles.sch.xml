@@ -16,7 +16,7 @@
   <let name="base-dir" value="/tr:doc-and-template-styles/*[1]/dbk:info/dbk:keywordset/dbk:keyword[@role eq 'source-dir-uri']"/>
   <!-- all styles from cssa file -->
   <let name="template-styles" value="/tr:doc-and-template-styles/*[2]/self::css:rules/css:rule"/>
-  <let name="default-style-names" value="('NormalParagraphStyle', 'No_character_style', 'hub:page-number', 'hub:separator', 'hub:identifier', 'hub:foreign',
+  <let name="default-style-names" value="('NormalParagraphStyle', 'No_paragraph_style', 'No_character_style', 'hub:page-number', 'hub:separator', 'hub:identifier', 'hub:foreign',
                                           'hub:index', 'frontispiz', 'frontispiz2', 'about-contrib', 'title-page', 'copyright-page', 'dedication', 'hub:caption-text', 
                                           'hub:caption-number', 'hub:lists', 'hub:embedded', 'start', 'end', 'hub:ooxml-symbol','page','hub:toc','display-name',
                                           'initials', 'footnote', 'endnote','Kommentarzeichen','CommentReference','Kommentartext','annotation reference', 'omml', 'mml')"/>
